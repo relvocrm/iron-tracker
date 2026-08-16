@@ -34,7 +34,11 @@
     --font-display:'Barlow Condensed',"Arial Narrow",sans-serif;
     --font-body:'Inter',system-ui,-apple-system,sans-serif;
     --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --app-max-width:560px;
   }
+  @media(min-width:768px){ :root{ --app-max-width:740px; } }
+  @media(min-width:1024px){ :root{ --app-max-width:960px; } }
+  @media(min-width:1440px){ :root{ --app-max-width:1160px; } }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
@@ -49,7 +53,7 @@
   ::selection{background:var(--accent-soft);color:var(--text);}
   button{font-family:inherit;}
   input,select,textarea{font-family:inherit;}
-  .app{max-width:560px;margin:0 auto;padding:0 16px;}
+  .app{max-width:var(--app-max-width);margin:0 auto;padding:0 16px;transition:max-width .2s ease;}
 
   /* ---------- Header ---------- */
   .header{
@@ -78,7 +82,7 @@
     padding:8px 10px calc(8px + env(safe-area-inset-bottom));
     z-index:50;
   }
-  .tabbar-inner{max-width:560px;margin:0 auto;display:flex;justify-content:space-around;}
+  .tabbar-inner{max-width:var(--app-max-width);margin:0 auto;display:flex;justify-content:space-around;}
   .tab-btn{
     background:none;border:none;color:var(--text-faint);
     display:flex;flex-direction:column;align-items:center;gap:3px;
@@ -138,7 +142,7 @@
 
   /* ---------- Tile grid (Home dashboard + Gym category picker) ---------- */
   .tile-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
-  @media(min-width:460px){ .tile-grid{grid-template-columns:repeat(3,1fr);} }
+  @media(min-width:460px){ .tile-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));} }
   .tile{
     position:relative;
     background:linear-gradient(160deg, rgba(255,255,255,.025), transparent 60%), var(--panel);
@@ -164,7 +168,6 @@
   .tile.add::before{display:none;}
   .tile.add .plus{font-size:22px;color:var(--text-dim);line-height:1;}
   .tile.add .t-name{font-size:11.5px;letter-spacing:.4px;color:var(--text-dim);}
-  .tile.suggested{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;}
   .tile.edit-mode{border-color:var(--border-strong);border-style:dashed;}
 
   /* Home dashboard tile: separate clickable body from Edit/Delete actions */
@@ -209,40 +212,104 @@
 
   /* ---------- Business module ---------- */
   .biz-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
-  .biz-subtabs{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
+  .biz-subtabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
   .biz-subtab-btn{
     flex:0 0 auto;background:var(--panel-2);border:1px solid var(--border-strong);color:var(--text-dim);
-    padding:10px 13px;border-radius:11px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;
+    padding:9px 15px;border-radius:10px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;
+    transition:background .15s,border-color .15s,color .15s;
   }
   .biz-subtab-btn.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);}
-  .biz-subtab-add{flex:0 0 40px;padding:10px 0;text-align:center;font-size:15px;}
+  .biz-subtab-add{
+    flex:0 0 auto;width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center;
+    font-size:17px;border-radius:10px;line-height:1;
+  }
   .biz-tab-header{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
   .biz-tab-header .sheet-table-name{flex:1;font-size:15px;}
 
   /* ---------- Ledger (Milestone accounting) ---------- */
-  .ledger-table{font-variant-numeric:tabular-nums;}
-  .ledger-table th, .ledger-table td{min-width:74px;}
-  .ledger-table th:first-child, .ledger-table td:first-child{min-width:132px;}
+  .ledger-table{font-variant-numeric:tabular-nums;table-layout:fixed;}
+  .ledger-table th:nth-child(1), .ledger-table td:nth-child(1){width:27%;}
+  .ledger-table th:nth-child(2), .ledger-table td:nth-child(2){width:19%;}
+  .ledger-table th:nth-child(3), .ledger-table td:nth-child(3){width:16%;}
+  .ledger-table th:nth-child(4), .ledger-table td:nth-child(4){width:16%;}
+  .ledger-table th:nth-child(5), .ledger-table td:nth-child(5){width:16%;}
+  .ledger-table th:nth-child(6), .ledger-table td:nth-child(6){width:6%;}
   .ledger-table thead th{
     background:var(--panel-2);font-family:var(--font-mono);font-size:10px;font-weight:600;
-    letter-spacing:.5px;text-transform:uppercase;color:var(--text-faint);padding:8px 9px !important;
+    letter-spacing:.5px;text-transform:uppercase;color:var(--text-faint);padding:8px 6px !important;
   }
-  .ledger-num-head{text-align:right !important;padding-right:12px !important;}
+  .ledger-num-head{text-align:right !important;padding-right:10px !important;}
   .ledger-text-cell{text-align:left;padding-left:2px;}
   .ledger-text-input{text-align:left;}
   .ledger-num-cell{
-    text-align:right;font-family:var(--font-mono);font-weight:600;font-size:13px;
-    letter-spacing:.2px;padding-right:8px !important;
+    text-align:right;font-family:var(--font-mono);font-weight:600;font-size:12.5px;
+    letter-spacing:.2px;padding-right:6px !important;
   }
-  .ledger-num-input{text-align:right;padding-right:8px !important;}
+  .ledger-num-input{text-align:right;padding-right:6px !important;}
   .ledger-profit{color:var(--up);}
   .ledger-profit.neg{color:var(--danger);}
   .ledger-opening-row td{background:rgba(111,163,194,.09);border-bottom:1px solid rgba(111,163,194,.25);}
   .ledger-opening-row .sheet-cell-locked{color:var(--down);}
   .ledger-opening-row .ledger-text-cell{color:var(--text);}
   .ledger-totals-row td{background:var(--panel-2);border-top:2px solid var(--border-strong);padding-top:11px !important;padding-bottom:11px !important;}
-  .ledger-totals-row .sheet-cell-locked{font-size:13.5px;}
+  .ledger-totals-row .sheet-cell-locked{font-size:12.5px;}
   .ledger-input{text-align:center;}
+  .closing-balance-banner{
+    margin-top:14px;padding:16px;border-radius:var(--radius-sm);text-align:center;
+    background:var(--accent-soft);border:1px solid var(--accent-dim);
+  }
+  .closing-balance-banner.neg{background:var(--danger-soft);border-color:var(--danger);}
+  .cbb-label{font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);font-weight:600;}
+  .cbb-value{font-family:var(--font-display);font-size:32px;font-weight:800;color:var(--accent);margin:4px 0;letter-spacing:.3px;}
+  .closing-balance-banner.neg .cbb-value{color:var(--danger);}
+  .cbb-formula{font-family:var(--font-mono);font-size:10px;color:var(--text-faint);line-height:1.5;}
+
+  /* ---------- Asset Valuation & Outstanding ---------- */
+  .asset-grid{display:flex;flex-direction:column;gap:18px;}
+  @media(min-width:560px){ .asset-grid{flex-direction:row;} .asset-subtable{flex:1;min-width:0;} }
+  .asset-subtable-title{
+    font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.8px;
+    text-transform:uppercase;color:var(--text-dim);margin-bottom:9px;
+  }
+  .asset-table{table-layout:fixed;}
+  .asset-table th:nth-child(1), .asset-table td:nth-child(1){width:62%;}
+  .asset-table th:nth-child(2), .asset-table td:nth-child(2){width:31%;}
+  .asset-table th:nth-child(3), .asset-table td:nth-child(3){width:7%;}
+
+  /* ---------- EMI Management ---------- */
+  .emi-reminders-sub{font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:.3px;text-transform:none;color:var(--text-faint);}
+  .emi-reminder-row{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    background:var(--panel-2);border:1px solid var(--border);border-left:3px solid var(--border-strong);
+    border-radius:var(--radius-sm);padding:11px 13px;margin-bottom:9px;cursor:pointer;
+  }
+  .emi-reminder-row:active{transform:scale(.98);}
+  .emi-reminder-row.soon{border-left-color:var(--accent);}
+  .emi-reminder-row.urgent{border-left-color:var(--danger);background:var(--danger-soft);}
+  .emi-reminder-name{font-weight:600;font-size:13.5px;}
+  .emi-reminder-sub{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);margin-top:2px;}
+  .emi-reminder-right{text-align:right;}
+  .emi-reminder-amount{font-family:var(--font-mono);font-weight:700;font-size:14px;color:var(--text);}
+  .emi-reminder-days{font-size:10.5px;font-weight:600;color:var(--text-dim);margin-top:2px;}
+  .emi-reminder-days.soon{color:var(--accent);}
+  .emi-reminder-days.urgent{color:var(--danger);}
+  .emi-card{
+    background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-sm);
+    padding:10px 11px;margin-bottom:8px;
+  }
+  .emi-card.closed{opacity:.7;}
+  .emi-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;}
+  .emi-card-name{font-weight:700;font-size:13px;line-height:1.25;}
+  .emi-card-ref{font-family:var(--font-mono);font-size:10px;color:var(--text-faint);margin-top:1px;}
+  .emi-card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;}
+  @media(min-width:460px){ .emi-card-grid{grid-template-columns:repeat(4,1fr);} }
+  .emi-stat{background:var(--panel-2);border-radius:7px;padding:6px 8px;}
+  .emi-stat-label{font-size:8.5px;letter-spacing:.4px;text-transform:uppercase;color:var(--text-faint);margin-bottom:2px;}
+  .emi-stat-value{font-family:var(--font-mono);font-weight:700;font-size:12.5px;color:var(--text);line-height:1.2;}
+  .emi-stat-value.emi-stat-small{font-size:10.5px;}
+  .emi-card-actions{display:flex;gap:6px;margin-top:8px;}
+  .emi-card-actions .btn{padding:7px 6px;font-size:10.5px;flex:1;}
+  .emi-card-actions .icon-btn{flex:0 0 auto;padding:6px 8px;}
 
   /* ---------- Tracking Sheet (spreadsheet) ---------- */
   .sheet-table-card{
@@ -262,34 +329,40 @@
   .sheet-table-name:focus{outline:none;border-color:var(--accent);}
   .sheet-edit-table-btn{width:auto;flex-shrink:0;white-space:nowrap;padding:8px 10px;font-size:11.5px;}
   .sheet-edit-table-btn.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);}
-  .sheet-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:10px;}
-  .sheet-table{border-collapse:collapse;width:100%;table-layout:auto;}
-  .sheet-table th, .sheet-table td{border:1px solid var(--border);padding:0;}
-  .sheet-corner{background:var(--panel-2);width:26px;}
-  .sheet-col-head, .sheet-row-head{background:var(--panel-2);position:relative;width:76px;padding:6px 7px !important;vertical-align:top;}
-  .sheet-row-head{width:88px;position:sticky;left:0;z-index:1;}
-  .sheet-freq-head{width:66px;}
-  .sheet-locked-text{display:block;font-size:11.5px;font-weight:700;color:var(--text);padding:1px 0;word-break:break-word;line-height:1.3;}
+  .sheet-scroll{overflow:hidden;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:10px;}
+  .sheet-table{border-collapse:collapse;width:100%;table-layout:fixed;}
+  .sheet-table th, .sheet-table td{border:1px solid var(--border);padding:0;overflow:hidden;}
+  .sheet-corner{background:var(--panel-2);width:7%;}
+  .sheet-col-head, .sheet-row-head{background:var(--panel-2);position:relative;padding:6px 5px !important;vertical-align:top;}
+  .sheet-row-head{width:25%;}
+  .sheet-freq-head{width:18%;}
+  .sheet-locked-text{
+    display:block;font-size:11.5px;font-weight:700;color:var(--text);padding:1px 0;line-height:1.3;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
   .sheet-col-input, .sheet-row-input{
     width:100%;background:var(--panel);border:1px solid var(--accent-dim);border-radius:5px;
     padding:4px 5px;font-size:11.5px;font-weight:700;color:var(--text);font-family:var(--font-body);margin-bottom:4px;
   }
   .sheet-col-input:focus, .sheet-row-input:focus{outline:none;border-color:var(--accent);}
-  .sheet-mini-actions{display:flex;gap:5px;margin-top:4px;}
+  .sheet-mini-actions{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap;}
   .sheet-mini-btn{
     background:none;border:none;font-size:10px;cursor:pointer;padding:2px;opacity:.75;line-height:1;
   }
   .sheet-mini-btn:active{opacity:1;}
   .sheet-merge-panel{margin-top:8px;padding:8px;background:var(--panel);border:1px solid var(--accent-dim);border-radius:7px;}
-  .sheet-merge-target{font-size:12px;padding:6px 8px;}
+  .sheet-merge-target{font-size:12px;padding:6px 8px;width:100%;}
   .sheet-cell-input{
-    width:100%;min-width:60px;background:var(--accent-soft);border:none;padding:7px 5px;text-align:center;
-    font-family:var(--font-mono);font-size:12.5px;color:var(--text);
+    width:100%;background:var(--accent-soft);border:none;padding:7px 4px;text-align:center;
+    font-family:var(--font-mono);font-size:12px;color:var(--text);
   }
   .sheet-cell-input:focus{outline:none;}
-  .sheet-cell-locked{display:block;padding:7px 5px;text-align:center;font-family:var(--font-mono);font-size:12.5px;color:var(--text-dim);min-width:60px;}
-  .sheet-freq-cell{width:66px;padding:4px !important;}
-  .sheet-freq-select{font-size:10.5px;padding:6px 4px;width:100%;}
+  .sheet-cell-locked{
+    display:block;padding:7px 4px;text-align:center;font-family:var(--font-mono);font-size:12px;color:var(--text-dim);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .sheet-freq-cell{padding:4px !important;}
+  .sheet-freq-select{font-size:10.5px;padding:6px 2px;width:100%;}
   .sheet-add-row-controls{display:flex;align-items:center;gap:8px;}
   .sheet-newrow-input{flex:1;}
   .biz-stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:8px;}
@@ -370,23 +443,16 @@
   .theme-gym .btn-ghost{border-color:rgba(255,94,58,.35);}
   .theme-gym .tile{border-color:rgba(255,94,58,.22);}
   .theme-gym .tile .t-icon{background:rgba(255,94,58,.16);}
-  .theme-gym .tile.suggested{
+  .tile.active-glow{
+    border-color:var(--tile-accent, var(--accent));
+    background:linear-gradient(160deg, var(--tile-accent-soft, var(--accent-soft)), var(--panel) 60%);
+    box-shadow:0 0 0 1px var(--tile-accent, var(--accent)) inset, 0 10px 28px -10px var(--tile-accent-soft, var(--accent-soft)), 0 2px 10px rgba(0,0,0,.25);
+    transition:box-shadow .3s ease, background .3s ease;
+  }
+  .theme-gym .tile.active-glow{
     border-color:#ff5e3a;
-    box-shadow:0 0 0 1.5px #ff5e3a inset, 0 0 26px rgba(255,94,58,.32);
-    background:linear-gradient(160deg, rgba(255,94,58,.14), var(--panel) 55%);
-    animation:gymPulse 2.6s ease-in-out infinite;
-  }
-  .suggest-badge{animation:gymBadgePulse 2.2s ease-in-out infinite;}
-  @keyframes gymPulse{
-    0%,100%{ box-shadow:0 0 0 1.5px #ff5e3a inset, 0 0 22px rgba(255,94,58,.28); }
-    50%{ box-shadow:0 0 0 1.5px #ff5e3a inset, 0 0 34px rgba(255,94,58,.5); }
-  }
-  @keyframes gymBadgePulse{
-    0%,100%{ box-shadow:0 3px 12px rgba(255,94,58,.4); transform:scale(1); }
-    50%{ box-shadow:0 3px 20px rgba(255,94,58,.75); transform:scale(1.04); }
-  }
-  @media(prefers-reduced-motion: reduce){
-    .theme-gym .tile.suggested, .suggest-badge{ animation:none; }
+    background:linear-gradient(160deg, rgba(255,94,58,.16), var(--panel) 60%);
+    box-shadow:0 0 0 1.5px #ff5e3a inset, 0 12px 32px -10px rgba(255,94,58,.4), 0 2px 10px rgba(0,0,0,.3);
   }
   .theme-gym .card{border-color:rgba(255,94,58,.18);}
   .theme-gym .active-cat .name span{color:#ff8a3d;}
@@ -464,11 +530,11 @@
   #rtPresets{justify-content:center;margin-bottom:10px;}
 
   /* ---------- Category comparison table ---------- */
-  .compare-table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap;}
-  .compare-table th, .compare-table td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--border);}
-  .compare-table th{font-family:var(--font-mono);font-weight:600;color:var(--text-dim);font-size:10.5px;}
+  .compare-table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed;}
+  .compare-table th, .compare-table td{padding:8px 6px;text-align:center;border-bottom:1px solid var(--border);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .compare-table th{font-family:var(--font-mono);font-weight:600;color:var(--text-dim);font-size:10px;}
   .compare-table .cth-date{font-weight:400;color:var(--text-faint);font-size:9px;}
-  .compare-table td.ex-col, .compare-table th:first-child{text-align:left;font-weight:600;color:var(--text);white-space:normal;min-width:100px;}
+  .compare-table td.ex-col, .compare-table th:first-child{text-align:left;font-weight:600;color:var(--text);width:26%;}
   .compare-table tbody tr:last-child td{border-bottom:none;}
 
   /* ---------- Rest / Leave day card ---------- */
@@ -556,6 +622,8 @@
   .badge-pill{font-family:var(--font-mono);font-size:10px;padding:3px 9px;border-radius:999px;background:var(--panel-2);color:var(--text-dim);border:1px solid var(--border);white-space:nowrap;}
   .badge-pill.status{color:var(--accent);border-color:var(--accent-dim);background:var(--accent-soft);}
   .badge-pill.completed{color:var(--up);border-color:var(--up);background:rgba(139,192,132,.14);}
+  .badge-pill.pending-red{color:var(--danger);border-color:var(--danger);background:var(--danger-soft);font-weight:700;}
+  .pending-task-card{border-left:3px solid var(--danger);}
   .entry-card .ehead-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
   .entry-card .enum{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);white-space:nowrap;}
 
@@ -600,7 +668,35 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .toast.err{border-color:var(--danger);color:var(--danger);}
 
-  @media(min-width:600px){ .app{padding:0 20px;} }
+  /* ---------- Modal (detail popups) ---------- */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(8,9,11,.65);backdrop-filter:blur(3px);
+    z-index:200;display:flex;align-items:flex-end;justify-content:center;
+  }
+  .modal-card{
+    background:var(--panel);border:1px solid var(--border-strong);border-radius:20px 20px 0 0;
+    padding:20px;max-width:480px;width:100%;max-height:85vh;overflow-y:auto;
+    box-shadow:0 -10px 34px rgba(0,0,0,.45);animation:modalUp .2s ease;
+  }
+  @keyframes modalUp{ from{transform:translateY(24px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+  @media(min-width:600px){
+    .modal-overlay{align-items:center;}
+    .modal-card{border-radius:18px;margin:20px;}
+  }
+  .modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;}
+  .modal-title{font-family:var(--font-display);font-size:19px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin:0;}
+  .modal-close-btn{
+    background:var(--panel-2);border:1px solid var(--border-strong);color:var(--text-dim);
+    width:30px;height:30px;border-radius:9px;font-size:14px;cursor:pointer;flex-shrink:0;
+  }
+  .modal-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+  .modal-row:last-child{border-bottom:none;}
+  .modal-label{font-size:11.5px;letter-spacing:.4px;text-transform:uppercase;color:var(--text-faint);}
+  .modal-value{font-family:var(--font-mono);font-size:13.5px;font-weight:600;color:var(--text);text-align:right;}
+
+  @media(min-width:600px){ .app{padding:0 24px;} }
+  @media(min-width:1024px){ .app{padding:0 32px;} }
+  @media(min-width:1440px){ .app{padding:0 40px;} }
 </style>
 </head>
 <body>
@@ -651,11 +747,24 @@
 
     <div id="progSubControls"></div>
     <div id="bizStatsWrap"></div>
+    <div id="bizWorkflowMissedWrap"></div>
     <div id="bodyWeightWrap"></div>
     <div id="progContent"></div>
     <div id="categoryComparisonWrap"></div>
     <div id="categorySessionsWrap"></div>
     <div id="progLogList"></div>
+  </div>
+
+  <!-- ===================== SUMMARY TAB ===================== -->
+  <div class="panel" id="panel-summary">
+    <div class="section-title" style="margin-top:0;">Summary</div>
+    <p class="hub-intro">Asset Valuation and EMI Management live here — shared across your whole Business module, not tied to any one business.</p>
+    <div class="biz-subtabs" id="summarySubtabs">
+      <button class="biz-subtab-btn active" data-summarytab="asset">📈 Asset Valuation</button>
+      <button class="biz-subtab-btn" data-summarytab="emi">🏦 EMI Management</button>
+    </div>
+    <div id="summaryAssetPanel"><div id="summaryAssetInner"></div></div>
+    <div id="summaryEmiPanel" style="display:none;"><div id="summaryEmiInner"></div></div>
   </div>
 
   <!-- ===================== BACKUP TAB ===================== -->
@@ -715,6 +824,10 @@
       <svg viewBox="0 0 24 24"><path d="M4 19V10M11 19V5M18 19v-7"/></svg>
       Progress
     </button>
+    <button class="tab-btn" data-tab="summary" id="navSummaryBtn">
+      <svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-5 3 3 5-7"/></svg>
+      Summary
+    </button>
     <button class="tab-btn" data-tab="backup" id="navBackupBtn">
       <svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 01-1-7.9A5 5 0 0116 8a4.5 4.5 0 011 8.9M12 11v7m0-7l-3 3m3-3l3 3"/></svg>
       Backup
@@ -723,6 +836,10 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="modalOverlay" style="display:none;">
+  <div class="modal-card" id="modalCard"></div>
+</div>
 
 <script>
 (function(){
@@ -813,6 +930,119 @@
       rows: [{id: uid(), particular:"Opening Balance", segment:"", debit:"", credit:"0", locked:true}]
     };
   }
+  var WEEKDAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  var WORKFLOW_LOOKBACK_DAYS = 90;
+  function freshWorkflowTab(name){
+    return {
+      id: uid(), name: name || "Workflow", type:"workflow",
+      items: [
+        {id: uid(), name:"Video Content", scheduleType:"weekly", weekday:5, dayOfMonth:null, time:null},
+        {id: uid(), name:"Contact Save", scheduleType:"monthly", weekday:null, dayOfMonth:1, time:null},
+        {id: uid(), name:"Ticket", scheduleType:"daily", weekday:null, dayOfMonth:null, time:"14:00"},
+        {id: uid(), name:"Monitor after ticket", scheduleType:"daily", weekday:null, dayOfMonth:null, time:null}
+      ],
+      completions: []
+    };
+  }
+  function isoDateStr(d){
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+  }
+  function isItemDueOn(item, dateObj){
+    if(item.scheduleType === "daily") return true;
+    if(item.scheduleType === "weekly") return dateObj.getDay() === item.weekday;
+    if(item.scheduleType === "monthly") return dateObj.getDate() === item.dayOfMonth;
+    return false;
+  }
+  function ordinal(n){
+    var s = ["th","st","nd","rd"], v = n % 100;
+    return n + (s[(v-20)%10] || s[v] || s[0]);
+  }
+  function formatTimeLabel(t){
+    var parts = t.split(":");
+    var h = parseInt(parts[0], 10), m = parts[1];
+    var ampm = h >= 12 ? "PM" : "AM";
+    var h12 = h % 12; if(h12 === 0) h12 = 12;
+    return h12 + ":" + m + " " + ampm;
+  }
+  function workflowScheduleLabel(item){
+    if(item.scheduleType === "daily") return "Every day" + (item.time ? " (" + formatTimeLabel(item.time) + ")" : "");
+    if(item.scheduleType === "weekly") return "Every " + WEEKDAY_NAMES[item.weekday];
+    if(item.scheduleType === "monthly") return "Every " + ordinal(item.dayOfMonth) + " of the month";
+    return "";
+  }
+  // Scans a rolling lookback window and returns three distinct lists: completed today, still-pending today, and missed
+  // (includes past incomplete due dates AND today's items whose scheduled time has already passed).
+  function computeWorkflowStatus(tab){
+    var now = new Date();
+    var today = new Date(); today.setHours(0,0,0,0);
+    var completedToday = [], pendingToday = [], missedList = [];
+    tab.items.forEach(function(item){
+      for(var i = WORKFLOW_LOOKBACK_DAYS; i >= 0; i--){
+        var d = new Date(today.getTime() - i * 86400000);
+        if(!isItemDueOn(item, d)) continue;
+        var dateStr = isoDateStr(d);
+        var completion = tab.completions.find(function(c){ return c.itemId === item.id && c.dueDate === dateStr; });
+        var isCompleted = !!(completion && completion.status === "completed");
+        if(i === 0){
+          if(isCompleted){
+            completedToday.push({item:item, dateStr:dateStr, completion:completion});
+          }else{
+            var isPastTime = false;
+            if(item.time){
+              var parts = item.time.split(":");
+              var schedDate = new Date();
+              schedDate.setHours(parseInt(parts[0],10), parseInt(parts[1],10), 0, 0);
+              isPastTime = now > schedDate;
+            }
+            if(isPastTime) missedList.push({item:item, dateStr:dateStr, completion:null});
+            else pendingToday.push({item:item, dateStr:dateStr, completion:null});
+          }
+        }else if(!isCompleted){
+          missedList.push({item:item, dateStr:dateStr, completion:completion||null});
+        }
+      }
+    });
+    missedList.sort(function(a,b){ return new Date(b.dateStr) - new Date(a.dateStr); });
+    return {completedToday: completedToday, pendingToday: pendingToday, missed: missedList};
+  }
+  function freshAssetTab(name){
+    return {id: uid(), name: name || "Asset Valuation", type:"asset", assets:[], liabilities:[]};
+  }
+  function freshEmiTab(name){
+    return {id: uid(), name: name || "EMI Management", type:"emi", loans:[]};
+  }
+  // Computes paid/left counts, next due date, and natural completion date from Start Date + Number of EMIs (monthly cycle).
+  // Due dates are start+1 month, start+2 months, ... start+N months — the start date itself is NOT a due date.
+  // "Left" only decreases once a due date has strictly passed (the due date itself still counts as unpaid/upcoming).
+  function computeEmiInfo(loan){
+    var numEmis = parseInt(loan.numEmis, 10) || 0;
+    if(!loan.startDate || numEmis <= 0){
+      return {paid:0, left:numEmis, nextDueDate:null, completionDate:null, naturallyClosed:false, daysToNext:null};
+    }
+    var start = new Date(loan.startDate + "T00:00:00");
+    var today = new Date(); today.setHours(0,0,0,0);
+    var paid = 0;
+    for(var i = 1; i <= numEmis; i++){
+      var dueDate = new Date(start);
+      dueDate.setMonth(dueDate.getMonth() + i);
+      if(today.getTime() > dueDate.getTime()) paid = i;
+      else break;
+    }
+    var left = Math.max(0, numEmis - paid);
+    var nextDueDate = null, daysToNext = null;
+    if(left > 0){
+      var nd = new Date(start); nd.setMonth(nd.getMonth() + paid + 1);
+      nextDueDate = nd;
+      daysToNext = Math.round((nd.getTime() - today.getTime()) / 86400000);
+    }
+    var completionDate = new Date(start); completionDate.setMonth(completionDate.getMonth() + numEmis);
+    return {paid:paid, left:left, nextDueDate:nextDueDate, completionDate:completionDate, naturallyClosed: left === 0, daysToNext:daysToNext};
+  }
+  function emiEffectiveStatus(loan, info){
+    if(loan.statusOverride === "closed") return "closed";
+    if(loan.statusOverride === "active") return "active";
+    return info.naturallyClosed ? "closed" : "active";
+  }
   function freshBizTabs(){
     return [freshSocialTab("Social Media"), freshLedgerTab("Milestone")];
   }
@@ -827,6 +1057,10 @@
       business.tabs = tabs;
     }
     if(!Array.isArray(business.segments) || business.segments.length === 0) business.segments = DEFAULT_SEGMENT_OPTIONS.slice();
+    // Requested convenience: automatically give a business literally named "Relvo Market" a Workflow tab if it doesn't have one yet.
+    if(business.name && business.name.trim().toLowerCase() === "relvo market" && !business.tabs.some(function(t){ return t.type === "workflow"; })){
+      business.tabs.push(freshWorkflowTab("Workflow"));
+    }
   }
 
   function freshBusinessModule(){
@@ -886,7 +1120,9 @@
       modules: freshModules(),
       deletedDefaults: [],
       role: "admin",
-      adminPin: ""
+      adminPin: "",
+      globalAsset: {assets:[], liabilities:[]},
+      globalEmi: {loans:[]}
     };
   }
 
@@ -976,11 +1212,46 @@
     if(!d.moduleOrder) d.moduleOrder = [];
     if(!d.modules) d.modules = {};
     if(!Array.isArray(d.deletedDefaults)) d.deletedDefaults = [];
+    if(!d.globalAsset) d.globalAsset = {assets:[], liabilities:[]};
+    if(!Array.isArray(d.globalAsset.assets)) d.globalAsset.assets = [];
+    if(!Array.isArray(d.globalAsset.liabilities)) d.globalAsset.liabilities = [];
+    if(!d.globalEmi) d.globalEmi = {loans:[]};
+    if(!Array.isArray(d.globalEmi.loans)) d.globalEmi.loans = [];
     // One-time upgrade: older versions had Business as a generic log-type module.
     // Convert it into a proper multi-business module without losing anything already logged.
     if(d.modules.business && d.modules.business.type === "log"){
       d.modules.business = migrateLogBusinessToMultiBusiness(d.modules.business);
     }
+    // One-time relocation: Asset Valuation and EMI tabs no longer live inside individual businesses —
+    // pull any that exist out into the global Summary data, preserving every row.
+    if(d.modules.business && Array.isArray(d.modules.business.businesses)){
+      d.modules.business.businesses.forEach(function(biz){
+        if(!Array.isArray(biz.tabs)) return;
+        var keep = [];
+        biz.tabs.forEach(function(tab){
+          if(tab.type === "asset"){
+            d.globalAsset.assets = d.globalAsset.assets.concat(tab.assets || []);
+            d.globalAsset.liabilities = d.globalAsset.liabilities.concat(tab.liabilities || []);
+          }else if(tab.type === "emi"){
+            d.globalEmi.loans = d.globalEmi.loans.concat(tab.loans || []);
+          }else{
+            keep.push(tab);
+          }
+        });
+        biz.tabs = keep;
+      });
+    }
+    d.globalAsset.assets.forEach(function(r){ if(!r.id) r.id = uid(); if(typeof r.name === "undefined") r.name = ""; if(typeof r.value === "undefined") r.value = ""; });
+    d.globalAsset.liabilities.forEach(function(r){ if(!r.id) r.id = uid(); if(typeof r.name === "undefined") r.name = ""; if(typeof r.value === "undefined") r.value = ""; });
+    d.globalEmi.loans.forEach(function(l){
+      if(!l.id) l.id = uid();
+      if(typeof l.particular === "undefined") l.particular = "";
+      if(typeof l.startDate === "undefined") l.startDate = "";
+      if(typeof l.vehicleRef === "undefined") l.vehicleRef = "";
+      if(typeof l.emiAmount === "undefined") l.emiAmount = "";
+      if(typeof l.numEmis === "undefined") l.numEmis = "";
+      if(typeof l.statusOverride === "undefined") l.statusOverride = null;
+    });
     var defaults = freshModules();
     Object.keys(defaults).forEach(function(key){
       if(d.deletedDefaults.indexOf(key) !== -1) return; // user deliberately removed this default — leave it gone
@@ -1055,6 +1326,14 @@
               });
               tab.rows[0].locked = true;
               tab.rows[0].particular = tab.rows[0].particular || "Opening Balance";
+            }else if(tab.type === "workflow"){
+              if(!Array.isArray(tab.items)) tab.items = freshWorkflowTab().items;
+              if(!Array.isArray(tab.completions)) tab.completions = [];
+              tab.items.forEach(function(item){
+                if(!item.id) item.id = uid();
+                if(!item.scheduleType) item.scheduleType = "daily";
+              });
+              tab.completions.forEach(function(c){ if(!c.id) c.id = uid(); });
             }
           });
         });
@@ -1190,6 +1469,23 @@
     toastTimer = setTimeout(function(){ toastEl.className = "toast"; }, 2200);
   }
 
+  // ---------- modal (detail popups) ----------
+  var modalOverlayEl = document.getElementById("modalOverlay");
+  var modalCardEl = document.getElementById("modalCard");
+  function showModal(innerHTML){
+    modalCardEl.innerHTML = innerHTML;
+    modalOverlayEl.style.display = "flex";
+    var closeBtn = document.getElementById("modalCloseBtn");
+    if(closeBtn) closeBtn.addEventListener("click", closeModal);
+  }
+  function closeModal(){
+    modalOverlayEl.style.display = "none";
+    modalCardEl.innerHTML = "";
+  }
+  modalOverlayEl.addEventListener("click", function(e){
+    if(e.target === modalOverlayEl) closeModal();
+  });
+
   // ---------- icon picker (shared component) ----------
   function buildIconPicker(container, selectedIcon, onPick){
     container.innerHTML = "";
@@ -1207,6 +1503,7 @@
     btn.addEventListener("click", function(){ switchTab(btn.getAttribute("data-tab")); });
   });
   function switchTab(name){
+    if(name === "summary" && isStaff()){ toast("Summary is restricted to Admin", true); return; }
     activeTab = name;
     document.querySelectorAll(".tab-btn").forEach(function(b){
       b.classList.toggle("active", b.getAttribute("data-tab") === name);
@@ -1219,11 +1516,32 @@
     }
     if(name === "home") renderHome();
     if(name === "progress") renderProgress();
+    if(name === "summary") renderSummary();
     if(name === "backup") renderBackup();
   }
 
   function syncRoleUI(){
-    // Nav stays visible for both roles — Backup tab content itself adapts based on role.
+    var summaryBtn = document.getElementById("navSummaryBtn");
+    if(summaryBtn) summaryBtn.style.display = isStaff() ? "none" : "flex";
+  }
+
+  function renderSummary(){
+    renderSummaryAssetPanel();
+    renderSummaryEmiPanel();
+    wireSummaryTabs();
+  }
+
+  function wireSummaryTabs(){
+    document.querySelectorAll("#summarySubtabs .biz-subtab-btn").forEach(function(btn){
+      btn.onclick = function(){
+        var target = btn.getAttribute("data-summarytab");
+        document.querySelectorAll("#summarySubtabs .biz-subtab-btn").forEach(function(b){
+          b.classList.toggle("active", b === btn);
+        });
+        document.getElementById("summaryAssetPanel").style.display = target === "asset" ? "block" : "none";
+        document.getElementById("summaryEmiPanel").style.display = target === "emi" ? "block" : "none";
+      };
+    });
   }
 
   function renderHeader(){
@@ -1436,6 +1754,7 @@
      ========================================================= */
   var businessView = "list"; // "list" or a business id
   var bizSubView = "tasks"; // "tasks" | a business.tabs[].id
+  var bizTabNameEditing = {}; // tabId -> bool, transient
   var bizManageOpen = false;
   var showAddBusinessForm = false;
   var editingSegmentName = null;
@@ -1533,7 +1852,7 @@
     var wrap = document.getElementById("bizTabbar");
     var html = '<button class="biz-subtab-btn' + (bizSubView === "tasks" ? " active" : "") + '" data-tabid="tasks">📋 Tasks</button>';
     business.tabs.forEach(function(t){
-      var icon = t.type === "ledger" ? "💰" : "📊";
+      var icon = t.type === "ledger" ? "💰" : (t.type === "workflow" ? "🗓️" : "📊");
       html += '<button class="biz-subtab-btn' + (bizSubView === t.id ? " active" : "") + '" data-tabid="' + t.id + '">' + icon + ' ' + esc(t.name) + '</button>';
     });
     if(!isStaff()) html += '<button class="biz-subtab-btn biz-subtab-add" id="btnAddTab" title="Add tab">+</button>';
@@ -1563,6 +1882,7 @@
         '<div class="field" style="margin-bottom:10px;"><label>Tab type</label><select class="input" id="newTabType">' +
           '<option value="social">Tracking Table (like Social Media)</option>' +
           '<option value="ledger">Ledger (like Milestone)</option>' +
+          '<option value="workflow">Workflow (recurring schedule)</option>' +
         '</select></div>' +
         '<div class="btn-row"><button class="btn btn-ghost btn-sm" id="newTabCancel">Cancel</button><button class="btn btn-primary" id="newTabCreate">Create Tab</button></div>' +
       '</div>';
@@ -1571,7 +1891,7 @@
       var name = document.getElementById("newTabName").value.trim();
       var type = document.getElementById("newTabType").value;
       if(!name){ toast("Enter a tab name", true); return; }
-      var newTab = type === "ledger" ? freshLedgerTab(name) : freshSocialTab(name);
+      var newTab = type === "ledger" ? freshLedgerTab(name) : (type === "workflow" ? freshWorkflowTab(name) : freshSocialTab(name));
       business.tabs.push(newTab);
       saveData();
       showAddTabForm = false;
@@ -1586,25 +1906,45 @@
     var tab = business.tabs.find(function(t){ return t.id === bizSubView; });
     if(!tab){ bizSubView = "tasks"; renderBusinessModuleBody(module); return; }
     if(tab.type === "ledger" && isStaff()){
-      panel.innerHTML = '<div class="empty-state"><div class="big">🔒</div><p>This ledger is restricted to Admin access.</p></div>';
+      panel.innerHTML = '<div class="empty-state"><div class="big">🔒</div><p>This section is restricted to Admin access.</p></div>';
       return;
     }
+    var nameEditing = !!bizTabNameEditing[tab.id];
     var headerHTML = '<div class="biz-tab-header">' +
-      '<input class="input sheet-table-name" id="bizTabRename" value="' + esc(tab.name) + '" ' + (isStaff() ? "disabled" : "") + '>' +
-      (isStaff() ? '' : '<button class="icon-btn biz-tab-del" title="Delete tab"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>') +
+      (nameEditing
+        ? '<input class="input sheet-table-name" id="bizTabRename" value="' + esc(tab.name) + '">'
+        : '<span class="sheet-table-title biz-tab-title">' + esc(tab.name) + '</span>') +
+      (isStaff() ? '' :
+        '<button class="icon-btn biz-tab-edit" title="Edit name"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>' +
+        '<button class="icon-btn biz-tab-del" title="Delete tab"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>'
+      ) +
     '</div><div id="bizTabInner"></div>';
     panel.innerHTML = headerHTML;
 
     if(!isStaff()){
-      document.getElementById("bizTabRename").addEventListener("focusout", function(){
-        var name = this.value.trim();
-        if(name){ tab.name = name; saveData(); renderBizTabbar(module, business); }
-        else this.value = tab.name;
+      if(nameEditing){
+        var renameInput = document.getElementById("bizTabRename");
+        renameInput.focus();
+        renameInput.select();
+        renameInput.addEventListener("focusout", function(){
+          var name = this.value.trim();
+          if(name){ tab.name = name; saveData(); renderBizTabbar(module, business); }
+          bizTabNameEditing[tab.id] = false;
+          renderBizTabPanel(module, business);
+        });
+        renameInput.addEventListener("keydown", function(e){
+          if(e.key === "Enter"){ e.preventDefault(); this.blur(); }
+        });
+      }
+      panel.querySelector(".biz-tab-edit").addEventListener("click", function(){
+        bizTabNameEditing[tab.id] = true;
+        renderBizTabPanel(module, business);
       });
       panel.querySelector(".biz-tab-del").addEventListener("click", function(){
         if(!confirm('Delete tab "' + tab.name + '"? Are you absolutely sure?')) return;
         if(!confirm("This action cannot be undone! Everything in this tab will be lost.")) return;
         business.tabs = business.tabs.filter(function(t){ return t.id !== tab.id; });
+        delete bizTabNameEditing[tab.id];
         bizSubView = "tasks";
         saveData();
         renderBusinessModuleBody(module);
@@ -1613,6 +1953,7 @@
     }
 
     if(tab.type === "social") renderBizSheetPanel(module, business, tab);
+    else if(tab.type === "workflow") renderBizWorkflowPanel(module, business, tab);
     else renderBizLedgerPanel(module, business, tab);
   }
 
@@ -2051,9 +2392,7 @@
     var editMode = st.tableEditMode;
     var html = '<div class="sheet-table-card" data-table-id="' + table.id + '">';
     html += '<div class="sheet-table-header">' +
-      (editMode
-        ? '<input class="input sheet-table-name" data-table-id="' + table.id + '" value="' + esc(table.name) + '">'
-        : '<span class="sheet-table-title">' + esc(table.name) + '</span>') +
+      '<span class="sheet-table-title">' + esc(table.name) + '</span>' +
       '<button class="btn btn-ghost btn-sm sheet-edit-table-btn' + (editMode ? " active" : "") + '" data-action="toggletableedit" data-table-id="' + table.id + '">' + (editMode ? "🔓 Editing" : "✏️ Edit Table") + '</button>' +
       '<button class="icon-btn sheet-table-del" data-table-id="' + table.id + '" title="Delete table"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>' +
     '</div>';
@@ -2330,9 +2669,19 @@
     var editMode = !!ledgerEditMode[tab.id];
     var opening = tab.rows[0];
     var txRows = tab.rows.slice(1);
+
+    // Profit is ONLY computed when a row has BOTH a non-empty, non-zero Debit and Credit — otherwise it's strictly 0.
+    function rowProfit(r){
+      var hasDebit = r.debit !== "" && numOrZero(r.debit) !== 0;
+      var hasCredit = r.credit !== "" && numOrZero(r.credit) !== 0;
+      return (hasDebit && hasCredit) ? (numOrZero(r.credit) - numOrZero(r.debit)) : 0;
+    }
+
     var totalDebit = txRows.reduce(function(sum, r){ return sum + numOrZero(r.debit); }, 0);
     var totalCredit = txRows.reduce(function(sum, r){ return sum + numOrZero(r.credit); }, 0);
-    var closingBalance = numOrZero(opening.credit) + totalCredit - totalDebit;
+    var totalProfit = txRows.reduce(function(sum, r){ return sum + rowProfit(r); }, 0);
+    // Formula as specified: Opening Balance - Debit + Credit + Profit
+    var closingBalance = numOrZero(opening.credit) - totalDebit + totalCredit + totalProfit;
 
     var html = '<div class="sheet-table-card">';
     html += '<div class="sheet-table-header">' +
@@ -2350,7 +2699,7 @@
 
     tab.rows.forEach(function(row, idx){
       var isOpening = idx === 0;
-      var profit = (row.debit !== "" && row.credit !== "") ? (numOrZero(row.credit) - numOrZero(row.debit)) : null;
+      var profit = isOpening ? null : rowProfit(row);
       html += '<tr data-row-id="' + row.id + '" class="' + (isOpening ? "ledger-opening-row" : "") + '">';
       html += '<td>' + ((editMode && !isOpening)
         ? '<input class="sheet-cell-input ledger-input ledger-text-input" data-field="particular" data-row-id="' + row.id + '" value="' + esc(row.particular) + '">'
@@ -2372,17 +2721,23 @@
     });
 
     html += '<tr class="ledger-totals-row">' +
-      '<td><span class="sheet-cell-locked ledger-text-cell"><b>Totals / Closing Balance</b></span></td>' +
+      '<td><span class="sheet-cell-locked ledger-text-cell"><b>Totals</b></span></td>' +
       '<td><span class="sheet-cell-locked">—</span></td>' +
       '<td><span class="sheet-cell-locked ledger-num-cell"><b>' + fmtMoney(totalDebit) + '</b></span></td>' +
       '<td><span class="sheet-cell-locked ledger-num-cell"><b>' + fmtMoney(totalCredit) + '</b></span></td>' +
-      '<td><span class="sheet-cell-locked ledger-num-cell ledger-profit' + (closingBalance < 0 ? " neg" : "") + '"><b>' + fmtMoney(closingBalance) + '</b></span></td>' +
+      '<td><span class="sheet-cell-locked ledger-num-cell ledger-profit' + (totalProfit < 0 ? " neg" : "") + '"><b>' + fmtMoney(totalProfit) + '</b></span></td>' +
       (editMode ? '<td></td>' : '') +
     '</tr>';
     html += '</tbody></table></div>';
 
+    html += '<div class="closing-balance-banner' + (closingBalance < 0 ? " neg" : "") + '">' +
+      '<div class="cbb-label">Closing Balance</div>' +
+      '<div class="cbb-value">' + fmtMoney(closingBalance) + '</div>' +
+      '<div class="cbb-formula">Opening (' + fmtMoney(numOrZero(opening.credit)) + ') − Debit (' + fmtMoney(totalDebit) + ') + Credit (' + fmtMoney(totalCredit) + ') + Profit (' + fmtMoney(totalProfit) + ')</div>' +
+    '</div>';
+
     if(editMode){
-      html += '<button class="btn btn-primary btn-sm" id="btnAddLedgerRow" style="margin-top:4px;">+ Row</button>';
+      html += '<button class="btn btn-primary btn-sm" id="btnAddLedgerRow" style="margin-top:12px;">+ Row</button>';
     }
     html += '</div>';
     panel.innerHTML = html;
@@ -2423,6 +2778,513 @@
         tab.rows = tab.rows.filter(function(r){ return r.id !== btn.getAttribute("data-row-id"); });
         saveData();
         renderBizLedgerPanel(module, business, tab);
+      });
+    });
+  }
+
+  /* ---------- Workflow (recurring schedule) ---------- */
+  var workflowConfirmState = {}; // "itemId|dateStr" -> bool, transient
+  var workflowManageOpen = {}; // tabId -> bool, transient
+
+  function workflowPendingCardHTML(entry){
+    var item = entry.item;
+    var confirming = !!workflowConfirmState[item.id + "|" + entry.dateStr];
+    var html = '<div class="task-card"><div class="task-top">' +
+      '<div class="task-body"><div class="task-title">' + esc(item.name) + '</div>' +
+      '<div class="task-badges"><span class="badge-pill">' + esc(workflowScheduleLabel(item)) + '</span></div></div>' +
+      '<button class="btn btn-primary btn-sm workflow-mark-btn" data-item-id="' + item.id + '" data-date="' + entry.dateStr + '">Mark Done</button>' +
+    '</div>';
+    if(confirming){
+      html += '<div class="task-confirm"><span>Mark "' + esc(item.name) + '" as done for today?</span>' +
+        '<div class="btn-row" style="margin-top:8px;">' +
+          '<button class="btn btn-ghost btn-sm workflow-confirm-no" data-item-id="' + item.id + '" data-date="' + entry.dateStr + '">Cancel</button>' +
+          '<button class="btn btn-primary btn-sm workflow-confirm-yes" data-item-id="' + item.id + '" data-date="' + entry.dateStr + '">Confirm</button>' +
+        '</div></div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function workflowCompletedCardHTML(entry){
+    return '<div class="task-card"><div class="task-top">' +
+      '<div class="task-body"><div class="task-title" style="text-decoration:line-through;color:var(--text-faint);">' + esc(entry.item.name) + '</div>' +
+      '<div class="task-badges"><span class="badge-pill completed">✓ Done today</span></div></div>' +
+    '</div></div>';
+  }
+
+  function workflowMissedCardHTML(entry){
+    return '<div class="card card-tight pending-task-card"><div class="hist-row" style="border:none;padding:0;">' +
+      '<div class="left"><div class="date" style="font-weight:600;">' + esc(entry.item.name) + '</div><div class="sess">Missed · ' + fmtDate(entry.dateStr) + (entry.item.time ? " · " + formatTimeLabel(entry.item.time) : "") + '</div></div>' +
+      '<div class="right"><span class="badge-pill pending-red">Missed</span></div>' +
+      '</div></div>';
+  }
+
+  function renderBizWorkflowPanel(module, business, tab){
+    var panel = document.getElementById("bizTabInner");
+    var status = computeWorkflowStatus(tab);
+    var manageOpen = !!workflowManageOpen[tab.id];
+
+    var html = '<div class="sheet-table-card">';
+    html += '<div class="section-title" style="margin-top:0;color:var(--up);">✅ Completed Today</div>';
+    html += status.completedToday.length === 0
+      ? '<div class="empty-state"><div class="big">🗓️</div><p>Nothing completed yet today.</p></div>'
+      : status.completedToday.map(workflowCompletedCardHTML).join("");
+    html += '</div>';
+
+    html += '<div class="sheet-table-card">';
+    html += '<div class="section-title" style="margin-top:0;">⏳ Pending Activities</div>';
+    html += status.pendingToday.length === 0
+      ? '<div class="empty-state"><div class="big">🎉</div><p>Nothing pending right now.</p></div>'
+      : status.pendingToday.map(workflowPendingCardHTML).join("");
+    html += '</div>';
+
+    html += '<div class="sheet-table-card">';
+    html += '<div class="section-title" style="margin-top:0;color:var(--danger);">⚠️ Missed Activities</div>';
+    if(status.missed.length === 0){
+      html += '<div class="empty-state"><div class="big">✅</div><p>Nothing missed — great consistency!</p></div>';
+    }else{
+      html += expandableListHTML(status.missed, "workflowMissed:" + tab.id, LIST_LIMIT, workflowMissedCardHTML);
+    }
+    html += '</div>';
+
+    html += '<button class="link-btn" id="btnToggleWorkflowManage" style="padding-left:0;">' + (manageOpen ? "Hide schedule manager" : "Manage schedule") + '</button>';
+    html += '<div id="workflowManagePanel"></div>';
+
+    panel.innerHTML = html;
+    wireWorkflowPanel(panel, module, business, tab);
+    wireViewMoreButtons(panel, function(){ renderBizWorkflowPanel(module, business, tab); });
+    renderWorkflowManagePanel(module, business, tab);
+
+    document.getElementById("btnToggleWorkflowManage").addEventListener("click", function(){
+      workflowManageOpen[tab.id] = !manageOpen;
+      renderBizWorkflowPanel(module, business, tab);
+    });
+  }
+
+  function wireWorkflowPanel(panel, module, business, tab){
+    panel.querySelectorAll(".workflow-mark-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        workflowConfirmState[btn.getAttribute("data-item-id") + "|" + btn.getAttribute("data-date")] = true;
+        renderBizWorkflowPanel(module, business, tab);
+      });
+    });
+    panel.querySelectorAll(".workflow-confirm-no").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        workflowConfirmState[btn.getAttribute("data-item-id") + "|" + btn.getAttribute("data-date")] = false;
+        renderBizWorkflowPanel(module, business, tab);
+      });
+    });
+    panel.querySelectorAll(".workflow-confirm-yes").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var itemId = btn.getAttribute("data-item-id"), dateStr = btn.getAttribute("data-date");
+        var existing = tab.completions.find(function(c){ return c.itemId === itemId && c.dueDate === dateStr; });
+        if(existing){ existing.status = "completed"; existing.completedAt = new Date().toISOString(); }
+        else{ tab.completions.push({id: uid(), itemId: itemId, dueDate: dateStr, status:"completed", completedAt: new Date().toISOString()}); }
+        workflowConfirmState[itemId + "|" + dateStr] = false;
+        saveData();
+        renderHeader();
+        renderBizWorkflowPanel(module, business, tab);
+        var item = tab.items.find(function(i){ return i.id === itemId; });
+        toast((item ? item.name : "Task") + " marked done ✅");
+      });
+    });
+  }
+
+  function renderWorkflowManagePanel(module, business, tab){
+    var wrap = document.getElementById("workflowManagePanel");
+    if(!workflowManageOpen[tab.id]){ wrap.innerHTML = ""; return; }
+    var html = '<div class="manage-panel">';
+    tab.items.forEach(function(item){
+      html += '<div class="field-toggle-row"><div><div class="ftlabel">' + esc(item.name) + '</div><div class="fthint">' + esc(workflowScheduleLabel(item)) + '</div></div>' +
+        '<button class="icon-btn workflow-item-del" data-item-id="' + item.id + '" title="Remove from schedule"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>';
+    });
+    if(tab.items.length === 0) html += '<p class="backup-note">Nothing scheduled yet.</p>';
+    html += '<div class="manage-item" style="margin-top:14px;"><label>Add scheduled task</label>' +
+      '<input class="input" id="wfNewName" placeholder="Task name" style="margin-bottom:8px;">' +
+      '<select class="input" id="wfNewType" style="margin-bottom:8px;">' +
+        '<option value="daily">Every day</option>' +
+        '<option value="weekly">Every week (specific day)</option>' +
+        '<option value="monthly">Every month (specific date)</option>' +
+      '</select>' +
+      '<div id="wfNewExtra"></div>' +
+      '<button class="btn btn-primary btn-sm" id="wfAddBtn" style="margin-top:8px;">Add to schedule</button>' +
+    '</div></div>';
+    wrap.innerHTML = html;
+
+    function renderExtra(){
+      var type = document.getElementById("wfNewType").value;
+      var extra = document.getElementById("wfNewExtra");
+      if(type === "weekly"){
+        extra.innerHTML = '<select class="input" id="wfNewWeekday">' + WEEKDAY_NAMES.map(function(w,i){ return '<option value="' + i + '"' + (i===5?" selected":"") + '>' + w + '</option>'; }).join("") + '</select>';
+      }else if(type === "monthly"){
+        extra.innerHTML = '<input class="input input-mono" type="number" min="1" max="31" id="wfNewDayOfMonth" value="1">';
+      }else{
+        extra.innerHTML =
+          '<label style="margin-top:8px;">Time (optional)</label>' +
+          '<div class="row-2" style="gap:8px;">' +
+            '<select class="input" id="wfNewHour"><option value="">No time — all day</option>' +
+              [1,2,3,4,5,6,7,8,9,10,11,12].map(function(h){ return '<option value="' + h + '">' + h + '</option>'; }).join("") +
+            '</select>' +
+            '<select class="input" id="wfNewMinute">' +
+              ["00","05","10","15","20","25","30","35","40","45","50","55"].map(function(m){ return '<option value="' + m + '">' + m + '</option>'; }).join("") +
+            '</select>' +
+          '</div>' +
+          '<select class="input" id="wfNewAMPM" style="margin-top:8px;"><option value="AM">AM</option><option value="PM" selected>PM</option></select>';
+      }
+    }
+    renderExtra();
+    document.getElementById("wfNewType").addEventListener("change", renderExtra);
+
+    wrap.querySelectorAll(".workflow-item-del").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var itemId = btn.getAttribute("data-item-id");
+        var item = tab.items.find(function(i){ return i.id === itemId; });
+        if(!item) return;
+        if(!confirm('Remove "' + item.name + '" from the schedule? Past completion history stays recorded, but it will no longer be scheduled going forward.')) return;
+        tab.items = tab.items.filter(function(i){ return i.id !== itemId; });
+        saveData();
+        renderBizWorkflowPanel(module, business, tab);
+        toast("Removed from schedule");
+      });
+    });
+    document.getElementById("wfAddBtn").addEventListener("click", function(){
+      var name = document.getElementById("wfNewName").value.trim();
+      var type = document.getElementById("wfNewType").value;
+      if(!name){ toast("Enter a task name", true); return; }
+      var newItem = {id: uid(), name: name, scheduleType: type, weekday:null, dayOfMonth:null, time:null};
+      if(type === "weekly") newItem.weekday = parseInt(document.getElementById("wfNewWeekday").value, 10);
+      else if(type === "monthly") newItem.dayOfMonth = parseInt(document.getElementById("wfNewDayOfMonth").value, 10) || 1;
+      else{
+        var hourVal = document.getElementById("wfNewHour").value;
+        if(hourVal){
+          var hour12 = parseInt(hourVal, 10);
+          var minute = document.getElementById("wfNewMinute").value;
+          var ampm = document.getElementById("wfNewAMPM").value;
+          var hour24 = ampm === "PM" ? (hour12 % 12) + 12 : (hour12 % 12);
+          newItem.time = String(hour24).padStart(2,"0") + ":" + minute;
+        }
+      }
+      tab.items.push(newItem);
+      saveData();
+      workflowManageOpen[tab.id] = true;
+      renderBizWorkflowPanel(module, business, tab);
+      toast(name + " added to schedule");
+    });
+  }
+
+  /* ---------- Asset Valuation & Outstanding (O/S) ---------- */
+  function assetSubTableHTML(tab, kind, editMode){
+    var rows = tab[kind];
+    var isAssets = kind === "assets";
+    var nameLabel = isAssets ? "Asset Name" : "Liability / O/S Name";
+    var html = '<div class="asset-subtable">';
+    html += '<div class="asset-subtable-title">' + (isAssets ? "Assets" : "Outstanding / Liabilities") + '</div>';
+    if(rows.length === 0){
+      html += '<p class="backup-note" style="margin-bottom:10px;">No ' + (isAssets ? "assets" : "liabilities") + ' added yet.</p>';
+    }else{
+      html += '<div class="sheet-scroll"><table class="sheet-table asset-table"><thead><tr>' +
+        '<th class="sheet-col-head">' + nameLabel + '</th>' +
+        '<th class="sheet-col-head ledger-num-head">Value</th>' +
+        (editMode ? '<th class="sheet-corner"></th>' : '') +
+      '</tr></thead><tbody>';
+      rows.forEach(function(r){
+        html += '<tr data-row-id="' + r.id + '">';
+        html += '<td>' + (editMode
+          ? '<input class="sheet-cell-input ledger-input ledger-text-input asset-input" data-kind="' + kind + '" data-field="name" data-row-id="' + r.id + '" value="' + esc(r.name) + '">'
+          : '<span class="sheet-cell-locked ledger-text-cell">' + (esc(r.name) || "—") + '</span>') + '</td>';
+        html += '<td>' + (editMode
+          ? '<input class="sheet-cell-input ledger-input ledger-num-input asset-input" type="text" inputmode="decimal" data-kind="' + kind + '" data-field="value" data-row-id="' + r.id + '" value="' + esc(r.value) + '">'
+          : '<span class="sheet-cell-locked ledger-num-cell">' + (r.value !== "" ? displayMoney(r.value) : "—") + '</span>') + '</td>';
+        if(editMode) html += '<td><button class="sheet-mini-btn asset-del-row" data-kind="' + kind + '" data-row-id="' + r.id + '" title="Delete row">✕</button></td>';
+        html += '</tr>';
+      });
+      html += '</tbody></table></div>';
+    }
+    if(editMode){
+      html += '<button class="btn btn-ghost btn-sm asset-add-row" data-kind="' + kind + '">+ Add ' + (isAssets ? "Asset" : "Liability") + '</button>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  var assetEditModeGlobal = false;
+  function renderSummaryAssetPanel(){
+    var panel = document.getElementById("summaryAssetInner");
+    if(!panel) return;
+    var tab = data.globalAsset;
+    var editMode = assetEditModeGlobal;
+    var totalAssets = tab.assets.reduce(function(sum, r){ return sum + numOrZero(r.value); }, 0);
+    var totalLiabilities = tab.liabilities.reduce(function(sum, r){ return sum + numOrZero(r.value); }, 0);
+    var net = totalAssets - totalLiabilities;
+
+    var html = '<div class="sheet-table-card">';
+    html += '<div class="sheet-table-header">' +
+      '<span class="sheet-table-title">Asset Valuation</span>' +
+      '<button class="btn btn-ghost btn-sm sheet-edit-table-btn' + (editMode ? " active" : "") + '" id="btnToggleAssetEdit">' + (editMode ? "🔓 Editing" : "✏️ Edit Table") + '</button>' +
+    '</div>';
+    html += '<div class="asset-grid">';
+    html += assetSubTableHTML(tab, "assets", editMode);
+    html += assetSubTableHTML(tab, "liabilities", editMode);
+    html += '</div>';
+    html += '<div class="biz-stats-grid" style="grid-template-columns:repeat(3,1fr);margin-top:16px;">' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Total Assets</div><div class="bsc-value" style="color:var(--up);">' + fmtMoney(totalAssets) + '</div></div>' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Total Outstanding</div><div class="bsc-value" style="color:var(--danger);">' + fmtMoney(totalLiabilities) + '</div></div>' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Net</div><div class="bsc-value" style="color:' + (net < 0 ? "var(--danger)" : "var(--up)") + ';">' + fmtMoney(net) + '</div></div>' +
+    '</div>';
+    html += '</div>';
+    panel.innerHTML = html;
+
+    document.getElementById("btnToggleAssetEdit").addEventListener("click", function(){
+      assetEditModeGlobal = !assetEditModeGlobal;
+      renderSummaryAssetPanel();
+    });
+
+    panel.addEventListener("focusout", function assetFocusOut(e){
+      var el = e.target;
+      if(!el.classList || !el.classList.contains("asset-input")) return;
+      var kind = el.getAttribute("data-kind");
+      var row = tab[kind].find(function(r){ return r.id === el.getAttribute("data-row-id"); });
+      if(!row) return;
+      row[el.getAttribute("data-field")] = el.value;
+      saveData();
+      renderSummaryAssetPanel();
+    });
+
+    panel.querySelectorAll(".asset-del-row").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var kind = btn.getAttribute("data-kind");
+        if(!confirm("Delete this row? This can't be undone.")) return;
+        tab[kind] = tab[kind].filter(function(r){ return r.id !== btn.getAttribute("data-row-id"); });
+        saveData();
+        renderSummaryAssetPanel();
+      });
+    });
+    panel.querySelectorAll(".asset-add-row").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var kind = btn.getAttribute("data-kind");
+        tab[kind].push({id: uid(), name:"", value:""});
+        saveData();
+        renderSummaryAssetPanel();
+      });
+    });
+  }
+
+  /* ---------- EMI Management ---------- */
+  var emiShowAddForm = false;
+  var emiEditingId = null;
+  var emiConfirmState = {}; // loanId -> bool, transient
+
+  function emiReminderCardHTML(entry){
+    var loan = entry.loan, info = entry.info;
+    var urgency = info.daysToNext <= 3 ? "urgent" : (info.daysToNext <= 7 ? "soon" : "normal");
+    var daysText = info.daysToNext === 0 ? "Due today" : (info.daysToNext === 1 ? "1 day left" : info.daysToNext + " days left");
+    return '<div class="emi-reminder-row ' + urgency + '" data-loan-id="' + loan.id + '">' +
+      '<div class="emi-reminder-main"><div class="emi-reminder-name">' + esc(loan.particular || "EMI") + '</div>' +
+      '<div class="emi-reminder-sub">Due ' + fmtDate(isoDateStr(info.nextDueDate)) + '</div></div>' +
+      '<div class="emi-reminder-right"><div class="emi-reminder-amount">' + displayMoney(loan.emiAmount) + '</div>' +
+      '<div class="emi-reminder-days ' + urgency + '">' + daysText + '</div></div>' +
+    '</div>';
+  }
+
+  function emiDetailModalHTML(loan){
+    var info = computeEmiInfo(loan);
+    var status = emiEffectiveStatus(loan, info);
+    var isClosed = status === "closed";
+    var numEmis = parseInt(loan.numEmis, 10) || 0;
+    var dueLabel = isClosed ? "Completed Date" : "Due Date";
+    var dueValue = isClosed
+      ? (info.completionDate ? fmtDate(isoDateStr(info.completionDate)) : "—")
+      : (info.nextDueDate ? fmtDate(isoDateStr(info.nextDueDate)) : "—");
+    return '<div class="modal-header"><h3 class="modal-title">EMI Details</h3><button class="modal-close-btn" id="modalCloseBtn">✕</button></div>' +
+      '<div class="modal-body">' +
+        '<div class="modal-row"><span class="modal-label">Particular</span><span class="modal-value">' + esc(loan.particular || "—") + '</span></div>' +
+        '<div class="modal-row"><span class="modal-label">Vehicle / Reference</span><span class="modal-value">' + esc(loan.vehicleRef || "—") + '</span></div>' +
+        '<div class="modal-row"><span class="modal-label">EMI Amount</span><span class="modal-value">' + displayMoney(loan.emiAmount) + '</span></div>' +
+        '<div class="modal-row"><span class="modal-label">Start Date</span><span class="modal-value">' + (loan.startDate ? fmtDate(loan.startDate) : "—") + '</span></div>' +
+        '<div class="modal-row"><span class="modal-label">' + dueLabel + '</span><span class="modal-value">' + dueValue + '</span></div>' +
+        '<div class="modal-row"><span class="modal-label">Total vs Left EMIs</span><span class="modal-value">' + numEmis + ' total · ' + info.left + ' left</span></div>' +
+        '<div class="modal-row"><span class="modal-label">Status</span><span class="badge-pill ' + (isClosed ? "completed" : "status") + '">' + (isClosed ? "✓ Closed" : "Active") + '</span></div>' +
+      '</div>';
+  }
+
+  function emiCardHTML(loan){
+    var info = computeEmiInfo(loan);
+    var status = emiEffectiveStatus(loan, info);
+    var isClosed = status === "closed";
+    var confirming = !!emiConfirmState[loan.id];
+    var numEmis = parseInt(loan.numEmis, 10) || 0;
+    var html = '<div class="emi-card' + (isClosed ? " closed" : "") + '">';
+    html += '<div class="emi-card-top">' +
+      '<div class="emi-card-title"><div class="emi-card-name">' + esc(loan.particular || "Untitled EMI") + '</div>' +
+      (loan.vehicleRef ? '<div class="emi-card-ref">' + esc(loan.vehicleRef) + '</div>' : '') + '</div>' +
+      '<span class="badge-pill ' + (isClosed ? "completed" : "status") + '">' + (isClosed ? "✓ Closed" : "Active") + '</span>' +
+    '</div>';
+    html += '<div class="emi-card-grid">' +
+      '<div class="emi-stat"><div class="emi-stat-label">EMI Amount</div><div class="emi-stat-value">' + displayMoney(loan.emiAmount) + '</div></div>' +
+      '<div class="emi-stat"><div class="emi-stat-label">Left / Total</div><div class="emi-stat-value">' + info.left + ' / ' + numEmis + '</div></div>' +
+      '<div class="emi-stat"><div class="emi-stat-label">Start Date</div><div class="emi-stat-value emi-stat-small">' + (loan.startDate ? fmtDate(loan.startDate) : "—") + '</div></div>' +
+      '<div class="emi-stat"><div class="emi-stat-label">' + (isClosed ? "Completed" : "Next Due") + '</div><div class="emi-stat-value emi-stat-small">' +
+        (isClosed ? (info.completionDate ? fmtDate(isoDateStr(info.completionDate)) : "—") : (info.nextDueDate ? fmtDate(isoDateStr(info.nextDueDate)) : "—")) +
+      '</div></div>' +
+    '</div>';
+    html += '<div class="emi-card-actions">' +
+      '<button class="btn btn-ghost emi-edit-btn" data-loan-id="' + loan.id + '">✏️ Edit</button>' +
+      '<button class="btn btn-ghost emi-status-btn" data-loan-id="' + loan.id + '">' + (isClosed ? "Reopen" : "Close") + '</button>' +
+      '<button class="icon-btn emi-del-btn" data-loan-id="' + loan.id + '" title="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>' +
+    '</div>';
+    if(confirming){
+      html += '<div class="task-confirm"><span>' + (isClosed ? "Reopen this EMI?" : "Mark this EMI as Closed?") + '</span>' +
+        '<div class="btn-row" style="margin-top:8px;">' +
+          '<button class="btn btn-ghost btn-sm emi-confirm-no" data-loan-id="' + loan.id + '">Cancel</button>' +
+          '<button class="btn btn-primary btn-sm emi-confirm-yes" data-loan-id="' + loan.id + '">Confirm</button>' +
+        '</div></div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function renderSummaryEmiPanel(){
+    var panel = document.getElementById("summaryEmiInner");
+    if(!panel) return;
+    var tab = data.globalEmi;
+    var loans = tab.loans;
+
+    var reminders = [];
+    loans.forEach(function(loan){
+      var info = computeEmiInfo(loan);
+      if(emiEffectiveStatus(loan, info) === "closed") return;
+      if(info.nextDueDate && info.daysToNext !== null && info.daysToNext >= 0 && info.daysToNext <= 30){
+        reminders.push({loan:loan, info:info});
+      }
+    });
+    reminders.sort(function(a,b){ return a.info.daysToNext - b.info.daysToNext; });
+
+    var html = '<div class="sheet-table-card emi-reminders-card">';
+    html += '<div class="section-title" style="margin-top:0;">🔔 Upcoming EMI Reminders <span class="emi-reminders-sub">(Next 30 Days)</span></div>';
+    html += reminders.length === 0
+      ? '<div class="empty-state"><div class="big">✅</div><p>No EMIs due in the next 30 days.</p></div>'
+      : reminders.map(emiReminderCardHTML).join("");
+    html += '</div>';
+
+    html += '<div class="sheet-table-card">';
+    html += '<div class="sheet-table-header"><span class="sheet-table-title">EMI Loans</span>' +
+      '<button class="btn btn-primary btn-sm" id="btnAddEmi">+ Add EMI</button></div>';
+    html += '<div id="emiFormWrap"></div>';
+    html += loans.length === 0
+      ? '<div class="empty-state"><div class="big">🏦</div><p>No EMIs added yet. Tap "+ Add EMI" to get started.</p></div>'
+      : loans.map(emiCardHTML).join("");
+    html += '</div>';
+
+    panel.innerHTML = html;
+    renderEmiForm(tab);
+    wireEmiPanel(panel, tab);
+
+    document.getElementById("btnAddEmi").addEventListener("click", function(){
+      emiShowAddForm = !emiShowAddForm;
+      emiEditingId = null;
+      renderEmiForm(tab);
+    });
+  }
+
+  function renderEmiForm(tab){
+    var wrap = document.getElementById("emiFormWrap");
+    if(!wrap) return;
+    var editLoan = emiEditingId ? tab.loans.find(function(l){ return l.id === emiEditingId; }) : null;
+    if(!emiShowAddForm && !editLoan){ wrap.innerHTML = ""; return; }
+    var loan = editLoan || {particular:"", startDate: todayDateInputValue(), vehicleRef:"", emiAmount:"", numEmis:""};
+    wrap.innerHTML =
+      '<div class="quickadd">' +
+        '<div class="ex-name">' + (editLoan ? "Edit EMI" : "Add New EMI") + '</div>' +
+        '<div class="field" style="margin-bottom:10px;"><label>Particular</label><input class="input" id="emiParticular" placeholder="Loan / person / purpose" value="' + esc(loan.particular) + '"></div>' +
+        '<div class="row-2">' +
+          '<div class="field" style="margin-bottom:10px;"><label>EMI Start Date</label><input class="input" type="date" id="emiStartDate" value="' + esc(loan.startDate) + '"></div>' +
+          '<div class="field" style="margin-bottom:10px;"><label>Vehicle / Reference</label><input class="input" id="emiVehicleRef" placeholder="Optional" value="' + esc(loan.vehicleRef) + '"></div>' +
+        '</div>' +
+        '<div class="row-2">' +
+          '<div class="field" style="margin-bottom:10px;"><label>EMI Amount</label><input class="input input-mono" type="text" inputmode="decimal" id="emiAmount" value="' + esc(loan.emiAmount) + '"></div>' +
+          '<div class="field" style="margin-bottom:10px;"><label>Number of EMIs</label><input class="input input-mono" type="number" min="1" id="emiNumEmis" value="' + esc(loan.numEmis) + '"></div>' +
+        '</div>' +
+        '<div class="btn-row"><button class="btn btn-ghost btn-sm" id="emiFormCancel">Cancel</button><button class="btn btn-primary" id="emiFormSave">' + (editLoan ? "Save Changes" : "Add EMI") + '</button></div>' +
+      '</div>';
+
+    document.getElementById("emiFormCancel").addEventListener("click", function(){
+      emiShowAddForm = false; emiEditingId = null;
+      renderSummaryEmiPanel();
+    });
+    document.getElementById("emiFormSave").addEventListener("click", function(){
+      var particular = document.getElementById("emiParticular").value.trim();
+      var startDate = document.getElementById("emiStartDate").value;
+      var vehicleRef = document.getElementById("emiVehicleRef").value.trim();
+      var emiAmount = document.getElementById("emiAmount").value.trim();
+      var numEmis = document.getElementById("emiNumEmis").value.trim();
+      if(!particular){ toast("Enter a particular / name", true); return; }
+      if(!startDate){ toast("Select a start date", true); return; }
+      if(!numEmis || parseInt(numEmis, 10) < 1){ toast("Enter a valid number of EMIs", true); return; }
+      if(editLoan){
+        editLoan.particular = particular; editLoan.startDate = startDate; editLoan.vehicleRef = vehicleRef;
+        editLoan.emiAmount = emiAmount; editLoan.numEmis = numEmis;
+      }else{
+        tab.loans.push({id: uid(), particular:particular, startDate:startDate, vehicleRef:vehicleRef, emiAmount:emiAmount, numEmis:numEmis, statusOverride:null});
+      }
+      saveData();
+      emiShowAddForm = false; emiEditingId = null;
+      renderSummaryEmiPanel();
+      toast(editLoan ? "EMI updated" : "EMI added");
+    });
+  }
+
+  function wireEmiPanel(panel, tab){
+    panel.querySelectorAll(".emi-reminder-row").forEach(function(row){
+      row.addEventListener("click", function(){
+        var loan = tab.loans.find(function(l){ return l.id === row.getAttribute("data-loan-id"); });
+        if(!loan) return;
+        showModal(emiDetailModalHTML(loan));
+      });
+    });
+    panel.querySelectorAll(".emi-edit-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        emiEditingId = btn.getAttribute("data-loan-id");
+        emiShowAddForm = false;
+        renderEmiForm(tab);
+      });
+    });
+    panel.querySelectorAll(".emi-del-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var loanId = btn.getAttribute("data-loan-id");
+        var loan = tab.loans.find(function(l){ return l.id === loanId; });
+        if(!loan) return;
+        if(!confirm('Delete EMI "' + (loan.particular || "this entry") + '"? This can\'t be undone.')) return;
+        tab.loans = tab.loans.filter(function(l){ return l.id !== loanId; });
+        delete emiConfirmState[loanId];
+        saveData();
+        renderSummaryEmiPanel();
+        toast("EMI deleted");
+      });
+    });
+    panel.querySelectorAll(".emi-status-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        emiConfirmState[btn.getAttribute("data-loan-id")] = true;
+        renderSummaryEmiPanel();
+      });
+    });
+    panel.querySelectorAll(".emi-confirm-no").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        emiConfirmState[btn.getAttribute("data-loan-id")] = false;
+        renderSummaryEmiPanel();
+      });
+    });
+    panel.querySelectorAll(".emi-confirm-yes").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var loanId = btn.getAttribute("data-loan-id");
+        var loan = tab.loans.find(function(l){ return l.id === loanId; });
+        if(!loan) return;
+        var info = computeEmiInfo(loan);
+        var currentStatus = emiEffectiveStatus(loan, info);
+        loan.statusOverride = currentStatus === "closed" ? "active" : "closed";
+        emiConfirmState[loanId] = false;
+        saveData();
+        renderSummaryEmiPanel();
+        toast("Status updated");
       });
     });
   }
@@ -2689,7 +3551,7 @@
     var suggestedId = suggestedCategoryId(module);
     module.categories.forEach(function(cat){
       var tile = document.createElement("button");
-      tile.className = "tile" + (cat.id === suggestedId ? " suggested" : "");
+      tile.className = "tile" + (cat.id === suggestedId ? " active-glow" : "");
       tile.style.setProperty("--tile-accent", module.accent);
       tile.style.setProperty("--tile-accent-soft", hexToRgba(module.accent, .16));
       var sessions = module.sessions.filter(function(s){ return s.categoryId === cat.id; });
@@ -2710,7 +3572,6 @@
         }
       }
       tile.innerHTML =
-        (isSuggested ? '<span class="suggest-badge">Suggested for Today 🔥</span>' : '') +
         '<div class="t-icon">🏋️</div><div class="t-name">' + esc(cat.name) + '</div><div class="t-meta">' + metaText + '</div>';
       tile.addEventListener("click", function(){ selectGymCategory(module, cat); });
       wrap.appendChild(tile);
@@ -3361,6 +4222,7 @@
   function renderProgressBody(){
     document.getElementById("progSubControls").innerHTML = "";
     document.getElementById("bizStatsWrap").innerHTML = "";
+    document.getElementById("bizWorkflowMissedWrap").innerHTML = "";
     document.getElementById("bodyWeightWrap").innerHTML = "";
     document.getElementById("categorySessionsWrap").innerHTML = "";
     document.getElementById("categoryComparisonWrap").innerHTML = "";
@@ -3464,7 +4326,7 @@
     var exNames = [];
     chrono.forEach(function(s){ s.entries.forEach(function(e){ if(exNames.indexOf(e.exercise) === -1) exNames.push(e.exercise); }); });
 
-    var table = '<div class="card" style="overflow-x:auto;padding:14px 0;">' +
+    var table = '<div class="card" style="padding:14px 0;">' +
       '<table class="compare-table"><thead><tr><th>Exercise</th>' +
       chrono.map(function(s){ return '<th>S' + s.number + '<br><span class="cth-date">' + fmtDate(s.date) + '</span></th>'; }).join("") +
       '</tr></thead><tbody>' +
@@ -3644,9 +4506,55 @@
     var business = businesses.find(function(b){ return b.id === progBizId; });
     if(!business) return;
     renderBizProgressStats(business);
+    renderBizWorkflowMissedReport(business);
     renderBizProgressTrend(business);
     renderBizRecentLog(business);
     renderBizAllLog(business);
+  }
+
+  function renderBizWorkflowMissedReport(business){
+    var wrap = document.getElementById("bizWorkflowMissedWrap");
+    var workflowTabs = (business.tabs || []).filter(function(t){ return t.type === "workflow"; });
+    if(workflowTabs.length === 0){ wrap.innerHTML = ""; return; }
+
+    var allCompleted = [], allPending = [], allMissed = [];
+    workflowTabs.forEach(function(t){
+      var status = computeWorkflowStatus(t);
+      status.completedToday.forEach(function(e){ allCompleted.push({tabName:t.name, item:e.item, dateStr:e.dateStr}); });
+      status.pendingToday.forEach(function(e){ allPending.push({tabName:t.name, item:e.item, dateStr:e.dateStr}); });
+      status.missed.forEach(function(e){ allMissed.push({tabName:t.name, item:e.item, dateStr:e.dateStr}); });
+    });
+    allMissed.sort(function(a,b){ return new Date(b.dateStr) - new Date(a.dateStr); });
+
+    function rowHTML(e, kind){
+      var badge = kind === "completed" ? '<span class="badge-pill completed">✓ Done</span>'
+        : kind === "pending" ? '<span class="badge-pill">Pending</span>'
+        : '<span class="badge-pill pending-red">Missed</span>';
+      var cardCls = kind === "missed" ? " pending-task-card" : "";
+      var sub = kind === "missed" ? (esc(e.tabName) + " · Missed " + fmtDate(e.dateStr)) : esc(e.tabName);
+      return '<div class="card card-tight' + cardCls + '"><div class="hist-row" style="border:none;padding:0;">' +
+        '<div class="left"><div class="date" style="font-weight:600;">' + esc(e.item.name) + '</div><div class="sess">' + sub + '</div></div>' +
+        '<div class="right">' + badge + '</div></div></div>';
+    }
+
+    var html = '<div class="section-title" style="margin-top:22px;color:var(--up);">✅ Completed Today</div>';
+    html += allCompleted.length === 0
+      ? '<div class="empty-state"><div class="big">🗓️</div><p>Nothing completed yet today.</p></div>'
+      : allCompleted.map(function(e){ return rowHTML(e, "completed"); }).join("");
+
+    html += '<div class="section-title">⏳ Pending Activities</div>';
+    html += allPending.length === 0
+      ? '<div class="empty-state"><div class="big">🎉</div><p>Nothing pending right now.</p></div>'
+      : allPending.map(function(e){ return rowHTML(e, "pending"); }).join("");
+
+    html += '<div class="section-title" style="color:var(--danger);">⚠️ Missed Activities</div>';
+    if(allMissed.length === 0){
+      html += '<div class="empty-state"><div class="big">✅</div><p>No missed workflow tasks — nice work staying on schedule.</p></div>';
+    }else{
+      html += expandableListHTML(allMissed, "workflowMissedProgress:" + business.id, LIST_LIMIT, function(e){ return rowHTML(e, "missed"); });
+    }
+    wrap.innerHTML = html;
+    wireViewMoreButtons(wrap, function(){ renderBizWorkflowMissedReport(business); });
   }
 
   function renderBizProgressStats(business){
@@ -3689,10 +4597,17 @@
   }
 
   function taskSummaryCardHTML(task){
+    var isPending = task.status !== "completed";
     var titleStyle = task.status === "completed" ? "text-decoration:line-through;color:var(--text-faint);" : "";
-    return '<div class="card card-tight"><div class="hist-row" style="border:none;padding:0;flex-wrap:wrap;">' +
+    var badge;
+    if(!isPending){
+      badge = '<span class="badge-pill completed">✓ Completed ' + fmtDate(task.completedAt) + '</span>';
+    }else{
+      badge = '<span class="badge-pill pending-red">Pending' + (task.deadline ? ' · ' + fmtDate(task.deadline) : '') + '</span>';
+    }
+    return '<div class="card card-tight' + (isPending ? " pending-task-card" : "") + '"><div class="hist-row" style="border:none;padding:0;flex-wrap:wrap;">' +
       '<div class="left"><div class="date" style="font-weight:600;' + titleStyle + '">' + esc(task.title) + '</div></div>' +
-      '<div class="right">' + (task.status === "completed" ? '<span class="badge-pill completed">✓ Completed ' + fmtDate(task.completedAt) + '</span>' : taskDeadlineBadge(task)) + '</div>' +
+      '<div class="right">' + badge + '</div>' +
       '</div></div>';
   }
 
@@ -3839,6 +4754,7 @@
         saveData();
         homeView = "dashboard";
         renderHeader();
+        syncRoleUI();
         switchTab("home");
         toast("Switched to Staff Mode");
       });
@@ -3855,6 +4771,7 @@
         data.role = "admin";
         saveData();
         renderHeader();
+        syncRoleUI();
         renderBackup();
         toast("Switched to Admin");
       });
