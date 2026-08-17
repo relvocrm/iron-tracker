@@ -39,6 +39,38 @@
   @media(min-width:768px){ :root{ --app-max-width:740px; } }
   @media(min-width:1024px){ :root{ --app-max-width:960px; } }
   @media(min-width:1440px){ :root{ --app-max-width:1160px; } }
+
+  [data-theme="light"]{
+    --bg:#f4f3ef;
+    --bg-grad: radial-gradient(1200px 600px at 50% -10%, #ffffff 0%, #f4f3ef 60%);
+    --panel:#ffffff;
+    --panel-2:#f0efe9;
+    --border:#e3e1d9;
+    --border-strong:#cdcabf;
+    --text:#1c1e22;
+    --text-dim:#5c5f66;
+    --text-faint:#8a8d94;
+    --accent:#ff6b35;
+    --accent-dim:#c9542a;
+    --accent-soft:rgba(255,107,53,.12);
+    --up:#3f9a45;
+    --down:#3d7fa0;
+    --danger:#d13f3e;
+    --danger-soft:rgba(209,63,62,.10);
+  }
+  body, .card, .panel, .tile, .task-card, .emi-card, .sheet-table-card, .quickadd,
+  .manage-panel, .biz-stat-cell, .modal-card, input, select, textarea, .btn, .chip,
+  .badge-pill, .tabbar, .tab-btn{
+    transition:background-color .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease;
+  }
+
+  .theme-toggle-btn{
+    background:var(--panel-2);border:1px solid var(--border-strong);color:var(--text-dim);
+    width:38px;height:38px;border-radius:12px;font-size:16px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;
+  }
+  .theme-toggle-btn:active{transform:scale(.92);}
+  .header-right{display:flex;align-items:center;gap:10px;}
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
@@ -698,6 +730,14 @@
   @media(min-width:1024px){ .app{padding:0 32px;} }
   @media(min-width:1440px){ .app{padding:0 40px;} }
 </style>
+<script>
+(function(){
+  try{
+    var t = localStorage.getItem("ironLogTheme");
+    document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+  }catch(e){}
+})();
+</script>
 </head>
 <body>
 
@@ -710,9 +750,12 @@
         <small>Personal Life Hub</small>
       </div>
     </div>
-    <div class="session-badge">
-      <div class="num" id="headerTotalCount">0</div>
-      <div class="lbl">Total Logged</div>
+    <div class="header-right">
+      <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Dark/Light theme"><span id="themeToggleIcon">🌙</span></button>
+      <div class="session-badge">
+        <div class="num" id="headerTotalCount">0</div>
+        <div class="lbl">Total Logged</div>
+      </div>
     </div>
   </div>
 
@@ -933,13 +976,14 @@
   var WEEKDAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   var WORKFLOW_LOOKBACK_DAYS = 90;
   function freshWorkflowTab(name){
+    var now = new Date().toISOString();
     return {
       id: uid(), name: name || "Workflow", type:"workflow",
       items: [
-        {id: uid(), name:"Video Content", scheduleType:"weekly", weekday:5, dayOfMonth:null, time:null},
-        {id: uid(), name:"Contact Save", scheduleType:"monthly", weekday:null, dayOfMonth:1, time:null},
-        {id: uid(), name:"Ticket", scheduleType:"daily", weekday:null, dayOfMonth:null, time:"14:00"},
-        {id: uid(), name:"Monitor after ticket", scheduleType:"daily", weekday:null, dayOfMonth:null, time:null}
+        {id: uid(), name:"Video Content", scheduleType:"weekly", weekday:5, dayOfMonth:null, time:null, createdAt:now},
+        {id: uid(), name:"Contact Save", scheduleType:"monthly", weekday:null, dayOfMonth:1, time:null, createdAt:now},
+        {id: uid(), name:"Ticket", scheduleType:"daily", weekday:null, dayOfMonth:null, time:"14:00", createdAt:now},
+        {id: uid(), name:"Monitor after ticket", scheduleType:"daily", weekday:null, dayOfMonth:null, time:null, createdAt:now}
       ],
       completions: []
     };
@@ -976,9 +1020,17 @@
     var now = new Date();
     var today = new Date(); today.setHours(0,0,0,0);
     var completedToday = [], pendingToday = [], missedList = [];
+    var seenMissedKeys = {};
     tab.items.forEach(function(item){
+      var itemCreated = null;
+      if(item.createdAt){
+        itemCreated = new Date(item.createdAt);
+        itemCreated.setHours(0,0,0,0);
+      }
       for(var i = WORKFLOW_LOOKBACK_DAYS; i >= 0; i--){
         var d = new Date(today.getTime() - i * 86400000);
+        // Never fabricate a "due" occurrence before this item actually existed.
+        if(itemCreated && d.getTime() < itemCreated.getTime()) continue;
         if(!isItemDueOn(item, d)) continue;
         var dateStr = isoDateStr(d);
         var completion = tab.completions.find(function(c){ return c.itemId === item.id && c.dueDate === dateStr; });
@@ -994,11 +1046,16 @@
               schedDate.setHours(parseInt(parts[0],10), parseInt(parts[1],10), 0, 0);
               isPastTime = now > schedDate;
             }
-            if(isPastTime) missedList.push({item:item, dateStr:dateStr, completion:null});
-            else pendingToday.push({item:item, dateStr:dateStr, completion:null});
+            if(isPastTime){
+              var todayKey = item.id + "|" + dateStr;
+              if(!seenMissedKeys[todayKey]){ seenMissedKeys[todayKey] = true; missedList.push({item:item, dateStr:dateStr, completion:null}); }
+            }else{
+              pendingToday.push({item:item, dateStr:dateStr, completion:null});
+            }
           }
         }else if(!isCompleted){
-          missedList.push({item:item, dateStr:dateStr, completion:completion||null});
+          var key = item.id + "|" + dateStr;
+          if(!seenMissedKeys[key]){ seenMissedKeys[key] = true; missedList.push({item:item, dateStr:dateStr, completion:completion||null}); }
         }
       }
     });
@@ -1012,8 +1069,16 @@
     return {id: uid(), name: name || "EMI Management", type:"emi", loans:[]};
   }
   // Computes paid/left counts, next due date, and natural completion date from Start Date + Number of EMIs (monthly cycle).
-  // Due dates are start+1 month, start+2 months, ... start+N months — the start date itself is NOT a due date.
-  // "Left" only decreases once a due date has strictly passed (the due date itself still counts as unpaid/upcoming).
+  function addMonthsSafe(date, months){
+    var day = date.getDate();
+    var d = new Date(date.getFullYear(), date.getMonth(), 1);
+    d.setMonth(d.getMonth() + months);
+    var daysInTargetMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    d.setDate(Math.min(day, daysInTargetMonth));
+    return d;
+  }
+  // The Start Date itself is EMI #1's due date — it counts as due/passed the moment that date arrives.
+  // Due dates are start+0, start+1, start+2, ... start+(N-1) months. "Left" decreases as each due date arrives.
   function computeEmiInfo(loan){
     var numEmis = parseInt(loan.numEmis, 10) || 0;
     if(!loan.startDate || numEmis <= 0){
@@ -1022,26 +1087,37 @@
     var start = new Date(loan.startDate + "T00:00:00");
     var today = new Date(); today.setHours(0,0,0,0);
     var paid = 0;
-    for(var i = 1; i <= numEmis; i++){
-      var dueDate = new Date(start);
-      dueDate.setMonth(dueDate.getMonth() + i);
-      if(today.getTime() > dueDate.getTime()) paid = i;
+    for(var i = 0; i < numEmis; i++){
+      var dueDate = addMonthsSafe(start, i);
+      if(today.getTime() >= dueDate.getTime()) paid = i + 1;
       else break;
     }
     var left = Math.max(0, numEmis - paid);
     var nextDueDate = null, daysToNext = null;
     if(left > 0){
-      var nd = new Date(start); nd.setMonth(nd.getMonth() + paid + 1);
+      var nd = addMonthsSafe(start, paid);
       nextDueDate = nd;
       daysToNext = Math.round((nd.getTime() - today.getTime()) / 86400000);
     }
-    var completionDate = new Date(start); completionDate.setMonth(completionDate.getMonth() + numEmis);
+    var completionDate = addMonthsSafe(start, numEmis - 1);
     return {paid:paid, left:left, nextDueDate:nextDueDate, completionDate:completionDate, naturallyClosed: left === 0, daysToNext:daysToNext};
   }
   function emiEffectiveStatus(loan, info){
     if(loan.statusOverride === "closed") return "closed";
     if(loan.statusOverride === "active") return "active";
     return info.naturallyClosed ? "closed" : "active";
+  }
+  // Combines status + display figures in one place, so a loan closed early (before its date-based schedule
+  // would naturally reach 0) always displays as fully settled (0 left) instead of showing a stale remaining count.
+  function getEmiFullStatus(loan){
+    var raw = computeEmiInfo(loan);
+    var status = emiEffectiveStatus(loan, raw);
+    var numEmis = parseInt(loan.numEmis, 10) || 0;
+    var display = raw;
+    if(status === "closed" && raw.left !== 0){
+      display = {paid: numEmis, left: 0, nextDueDate: null, completionDate: raw.completionDate, naturallyClosed: true, daysToNext: null};
+    }
+    return {status: status, info: display, raw: raw};
   }
   function freshBizTabs(){
     return [freshSocialTab("Social Media"), freshLedgerTab("Milestone")];
@@ -1332,6 +1408,9 @@
               tab.items.forEach(function(item){
                 if(!item.id) item.id = uid();
                 if(!item.scheduleType) item.scheduleType = "daily";
+                // Items saved before creation-tracking existed get "today" as their boundary —
+                // this stops the app from retroactively inventing missed days before the item ever existed.
+                if(!item.createdAt) item.createdAt = new Date().toISOString();
               });
               tab.completions.forEach(function(c){ if(!c.id) c.id = uid(); });
             }
@@ -2951,7 +3030,7 @@
       var name = document.getElementById("wfNewName").value.trim();
       var type = document.getElementById("wfNewType").value;
       if(!name){ toast("Enter a task name", true); return; }
-      var newItem = {id: uid(), name: name, scheduleType: type, weekday:null, dayOfMonth:null, time:null};
+      var newItem = {id: uid(), name: name, scheduleType: type, weekday:null, dayOfMonth:null, time:null, createdAt: new Date().toISOString()};
       if(type === "weekly") newItem.weekday = parseInt(document.getElementById("wfNewWeekday").value, 10);
       else if(type === "monthly") newItem.dayOfMonth = parseInt(document.getElementById("wfNewDayOfMonth").value, 10) || 1;
       else{
@@ -3087,9 +3166,9 @@
   }
 
   function emiDetailModalHTML(loan){
-    var info = computeEmiInfo(loan);
-    var status = emiEffectiveStatus(loan, info);
-    var isClosed = status === "closed";
+    var full = getEmiFullStatus(loan);
+    var info = full.info;
+    var isClosed = full.status === "closed";
     var numEmis = parseInt(loan.numEmis, 10) || 0;
     var dueLabel = isClosed ? "Completed Date" : "Due Date";
     var dueValue = isClosed
@@ -3108,9 +3187,9 @@
   }
 
   function emiCardHTML(loan){
-    var info = computeEmiInfo(loan);
-    var status = emiEffectiveStatus(loan, info);
-    var isClosed = status === "closed";
+    var full = getEmiFullStatus(loan);
+    var info = full.info;
+    var isClosed = full.status === "closed";
     var confirming = !!emiConfirmState[loan.id];
     var numEmis = parseInt(loan.numEmis, 10) || 0;
     var html = '<div class="emi-card' + (isClosed ? " closed" : "") + '">';
@@ -4905,7 +4984,23 @@
     reader.readAsText(file);
   });
 
+  // ---------- theme ----------
+  var THEME_KEY = "ironLogTheme";
+  function currentTheme(){
+    return document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+  }
+  function applyTheme(theme){
+    document.documentElement.setAttribute("data-theme", theme === "light" ? "light" : "dark");
+    var icon = document.getElementById("themeToggleIcon");
+    if(icon) icon.textContent = theme === "light" ? "☀️" : "🌙";
+    try{ localStorage.setItem(THEME_KEY, theme); }catch(e){}
+  }
+  document.getElementById("themeToggleBtn").addEventListener("click", function(){
+    applyTheme(currentTheme() === "light" ? "dark" : "light");
+  });
+
   // ---------- init ----------
+  applyTheme(currentTheme());
   syncRoleUI();
   renderHeader();
   renderHome();
