@@ -1159,6 +1159,38 @@
       type:"business", isDefault:true, businesses:[biz]
     };
   }
+  function freshStaffMember(name, staffId){
+    return {
+      id: uid(), name: name || "New Staff", staffId: staffId || "", createdAt: new Date().toISOString(),
+      tasks: [], workflowItems: [], attendance: [], leaves: []
+    };
+  }
+  function freshStaffModule(){
+    return {
+      id:"staff", name:"Staff", icon:"👥", accent:ACCENT_PALETTE[2], type:"staff", isDefault:true,
+      office: {lat:null, lng:null, radius:75},
+      staffMembers: []
+    };
+  }
+  // One-time upgrade: if a generic module was named "Staff", convert it into the specialized directory —
+  // its old contents (whatever they were) are intentionally not carried over, per the requested reset.
+  function migrateLogStaffToDirectory(oldModule){
+    return {
+      id: oldModule.id, name: oldModule.name || "Staff", icon: oldModule.icon || "👥",
+      accent: oldModule.accent || ACCENT_PALETTE[2], type:"staff", isDefault:false,
+      office: {lat:null, lng:null, radius:75}, staffMembers: []
+    };
+  }
+  function haversineMeters(lat1, lng1, lat2, lng2){
+    var R = 6371000;
+    var dLat = (lat2 - lat1) * Math.PI / 180;
+    var dLng = (lng2 - lng1) * Math.PI / 180;
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
+      Math.sin(dLng/2) * Math.sin(dLng/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
   function freshLogModule(cfg){
     return {
       id:cfg.id, name:cfg.name, icon:cfg.icon, accent:cfg.accent, type:"log", isDefault:!!cfg.isDefault,
@@ -1173,6 +1205,7 @@
     return {
       gym: freshGymModule(),
       business: freshBusinessModule(),
+      staff: freshStaffModule(),
       official: freshLogModule({id:"official", name:"Official", icon:"📁", accent:ACCENT_PALETTE[3], isDefault:true,
         types:["Document","Renewal","Appointment","Bill Payment","Application","ID / License"],
         fields:{amount:false, dueDate:true, member:false, status:true},
@@ -1187,7 +1220,7 @@
         statusOptions:["Upcoming","Done"]})
     };
   }
-  var DEFAULT_MODULE_KEYS = ["gym","business","official","personal","family"];
+  var DEFAULT_MODULE_KEYS = ["gym","business","staff","official","personal","family"];
   function freshData(){
     return {
       unit:"kg",
@@ -1298,6 +1331,14 @@
     if(d.modules.business && d.modules.business.type === "log"){
       d.modules.business = migrateLogBusinessToMultiBusiness(d.modules.business);
     }
+    // One-time upgrade: any module literally named "Staff" becomes the specialized Staff Directory,
+    // replacing whatever was inside it (as requested — this is an intentional reset, not a data-preserving migration).
+    Object.keys(d.modules).forEach(function(mid){
+      var mm = d.modules[mid];
+      if(mm && mm.type === "log" && mm.name && mm.name.trim().toLowerCase() === "staff"){
+        d.modules[mid] = migrateLogStaffToDirectory(mm);
+      }
+    });
     // One-time relocation: Asset Valuation and EMI tabs no longer live inside individual businesses —
     // pull any that exist out into the global Summary data, preserving every row.
     if(d.modules.business && Array.isArray(d.modules.business.businesses)){
@@ -1370,6 +1411,7 @@
             if(!t.createdAt) t.createdAt = new Date().toISOString();
             if(typeof t.completedAt === "undefined") t.completedAt = t.status === "completed" ? t.createdAt : null;
             if(typeof t.notes === "undefined") t.notes = "";
+            if(typeof t.assignedTo === "undefined") t.assignedTo = null;
           });
           if(!Array.isArray(b.frequencyOptions) || b.frequencyOptions.length === 0) b.frequencyOptions = DEFAULT_FREQUENCY_OPTIONS.slice();
           migrateBusinessTabs(b);
@@ -1411,10 +1453,34 @@
                 // Items saved before creation-tracking existed get "today" as their boundary —
                 // this stops the app from retroactively inventing missed days before the item ever existed.
                 if(!item.createdAt) item.createdAt = new Date().toISOString();
+                if(typeof item.assignedTo === "undefined") item.assignedTo = null;
               });
               tab.completions.forEach(function(c){ if(!c.id) c.id = uid(); });
             }
           });
+        });
+      }else if(m.type === "staff"){
+        if(!m.office) m.office = {lat:null, lng:null, radius:75};
+        if(typeof m.office.radius !== "number") m.office.radius = 75;
+        if(!Array.isArray(m.staffMembers)) m.staffMembers = [];
+        m.staffMembers.forEach(function(s){
+          if(!s.id) s.id = uid();
+          if(!s.staffId) s.staffId = "";
+          if(!s.createdAt) s.createdAt = new Date().toISOString();
+          if(!Array.isArray(s.tasks)) s.tasks = [];
+          if(!Array.isArray(s.workflowItems)) s.workflowItems = [];
+          if(!Array.isArray(s.attendance)) s.attendance = [];
+          if(!Array.isArray(s.leaves)) s.leaves = [];
+          s.tasks.forEach(function(t){
+            if(!t.id) t.id = uid();
+            if(!t.status) t.status = "pending";
+            if(typeof t.deadline === "undefined") t.deadline = null;
+            if(!t.createdAt) t.createdAt = new Date().toISOString();
+            if(typeof t.completedAt === "undefined") t.completedAt = t.status === "completed" ? t.createdAt : null;
+            if(typeof t.notes === "undefined") t.notes = "";
+          });
+          s.attendance.forEach(function(a){ if(!a.id) a.id = uid(); });
+          s.leaves.forEach(function(l){ if(!l.id) l.id = uid(); if(!l.status) l.status = "pending"; });
         });
       }else{
         m.type = "log";
@@ -1483,12 +1549,23 @@
     (m.businesses || []).forEach(function(b){ (b.tasks || []).forEach(function(t){ out.push(t); }); });
     return out;
   }
+  function allStaffAttendance(m){
+    var out = [];
+    (m.staffMembers || []).forEach(function(s){ (s.attendance || []).forEach(function(a){ out.push(a); }); });
+    return out;
+  }
   function moduleStats(m){
     if(m.type === "business"){
       var tasks = allBizTasks(m);
       if(!tasks.length) return {count:0, lastDate:null};
       var lastTask = tasks.reduce(function(a,b){ return new Date(b.createdAt) > new Date(a.createdAt) ? b : a; });
       return {count:tasks.length, lastDate:lastTask.createdAt};
+    }
+    if(m.type === "staff"){
+      var att = allStaffAttendance(m);
+      if(!att.length) return {count: (m.staffMembers||[]).length, lastDate:null};
+      var lastAtt = att.reduce(function(a,b){ return new Date(b.date) > new Date(a.date) ? b : a; });
+      return {count:att.length, lastDate:lastAtt.date};
     }
     var list = m.type === "gym" ? m.sessions : m.entries;
     if(!list.length) return {count:0, lastDate:null};
@@ -1522,6 +1599,17 @@
       if(totalOverdue > 0) return totalOverdue + " Overdue Task" + (totalOverdue===1?"":"s") + " ⚠️";
       if(totalPending > 0) return totalPending + " Pending Task" + (totalPending===1?"":"s");
       return list.length + " Business" + (list.length===1?"":"es");
+    }
+    if(m.type === "staff"){
+      var members = m.staffMembers || [];
+      if(members.length === 0) return "No staff yet";
+      var pendingTasks = 0;
+      members.forEach(function(s){
+        (s.tasks||[]).forEach(function(t){ if(t.status !== "completed") pendingTasks++; });
+        pendingTasks += getAssignedTasksForStaff(s.id).filter(function(e){ return e.task.status !== "completed"; }).length;
+      });
+      if(pendingTasks > 0) return pendingTasks + " Pending Task" + (pendingTasks===1?"":"s");
+      return members.length + " Staff Member" + (members.length===1?"":"s");
     }
     var stats = moduleStats(m);
     if(m.fields && m.fields.status && m.statusOptions && m.statusOptions.length){
@@ -1583,6 +1671,7 @@
   });
   function switchTab(name){
     if(name === "summary" && isStaff()){ toast("Summary is restricted to Admin", true); return; }
+    if(name === "progress" && isStaff()){ toast("Progress is restricted to Admin", true); return; }
     activeTab = name;
     document.querySelectorAll(".tab-btn").forEach(function(b){
       b.classList.toggle("active", b.getAttribute("data-tab") === name);
@@ -1602,6 +1691,8 @@
   function syncRoleUI(){
     var summaryBtn = document.getElementById("navSummaryBtn");
     if(summaryBtn) summaryBtn.style.display = isStaff() ? "none" : "flex";
+    var progressBtn = document.querySelector('.tab-btn[data-tab="progress"]');
+    if(progressBtn) progressBtn.style.display = isStaff() ? "none" : "flex";
   }
 
   function renderSummary(){
@@ -1631,6 +1722,10 @@
      HOME TAB — dashboard + module screens
      ========================================================= */
   function renderHome(){
+    if(isStaff()){
+      renderStaffGate();
+      return;
+    }
     if(homeView === "dashboard"){
       document.getElementById("homeDashboard").style.display = "block";
       document.getElementById("homeModuleScreen").style.display = "none";
@@ -1791,8 +1886,14 @@
       }
       var accent = ACCENT_PALETTE[moduleList().length % ACCENT_PALETTE.length];
       var id = uid();
-      data.modules[id] = freshLogModule({id:id, name:name, icon:selectedNewModuleIcon, accent:accent, isDefault:false,
-        types:[], fields:{amount:false, dueDate:false, member:false, status:true}, statusOptions:["Open","Done"]});
+      if(name.trim().toLowerCase() === "staff"){
+        var staffMod = freshStaffModule();
+        staffMod.id = id; staffMod.name = name; staffMod.icon = selectedNewModuleIcon || "👥"; staffMod.accent = accent;
+        data.modules[id] = staffMod;
+      }else{
+        data.modules[id] = freshLogModule({id:id, name:name, icon:selectedNewModuleIcon, accent:accent, isDefault:false,
+          types:[], fields:{amount:false, dueDate:false, member:false, status:true}, statusOptions:["Open","Done"]});
+      }
       data.moduleOrder.push(id);
       saveData();
       showAddModuleForm = false;
@@ -1810,7 +1911,7 @@
     wrap.classList.toggle("theme-gym", isGym);
     document.body.classList.toggle("theme-gym", isGym);
     var stats = moduleStats(module);
-    var noun = module.type === "gym" ? "session" : (module.type === "business" ? "activity log" : "entry");
+    var noun = module.type === "gym" ? "session" : (module.type === "business" ? "activity log" : (module.type === "staff" ? "attendance record" : "entry"));
     var headerHTML =
       '<div class="module-header">' +
         '<button class="back-btn" id="btnBackHome"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>' +
@@ -1825,6 +1926,7 @@
 
     if(module.type === "gym") renderGymModuleBody(module);
     else if(module.type === "business") renderBusinessModuleBody(module);
+    else if(module.type === "staff") renderStaffModuleBody(module);
     else renderLogModuleBody(module);
   }
 
@@ -2036,16 +2138,26 @@
     else renderBizLedgerPanel(module, business, tab);
   }
 
+  function staffAssignOptions(){
+    var staffModule = findStaffModuleAny();
+    return (staffModule ? staffModule.staffMembers : []) || [];
+  }
+
   function renderBizTasksPanel(module, business){
     var panel = document.getElementById("bizTasksPanel");
+    var staffOptions = staffAssignOptions();
     panel.innerHTML =
         '<div class="section-title" style="margin-top:0;">Add a task</div>' +
         '<div class="quickadd">' +
           '<div class="field" style="margin-bottom:10px;"><label>Task</label><input class="input" id="taskTitleInput" placeholder="e.g. Shoot reels, follow up with client…"></div>' +
           '<div class="row-2">' +
-            '<div class="field" style="margin-bottom:0;"><label>Deadline <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><input class="input" type="date" id="taskDeadlineInput"></div>' +
-            '<div class="field" style="margin-bottom:0;display:flex;align-items:flex-end;"><button class="btn btn-primary" id="taskAddBtn" style="width:100%;">Add Task</button></div>' +
+            '<div class="field" style="margin-bottom:10px;"><label>Deadline <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><input class="input" type="date" id="taskDeadlineInput"></div>' +
+            '<div class="field" style="margin-bottom:10px;"><label>Assign To</label><select class="input" id="taskAssignInput">' +
+              '<option value="">Myself (Admin)</option>' +
+              staffOptions.map(function(s){ return '<option value="' + s.id + '">' + esc(s.name) + '</option>'; }).join("") +
+            '</select></div>' +
           '</div>' +
+          '<button class="btn btn-primary" id="taskAddBtn" style="width:100%;">Add Task</button>' +
         '</div>' +
         '<div class="section-title">Pending Tasks</div>' +
         '<div id="bizPendingList"></div>' +
@@ -2059,14 +2171,16 @@
       document.getElementById("taskAddBtn").addEventListener("click", function(){
         var title = document.getElementById("taskTitleInput").value.trim();
         var deadline = document.getElementById("taskDeadlineInput").value || null;
+        var assignedTo = document.getElementById("taskAssignInput").value || null;
         if(!title){ toast("Enter a task", true); return; }
-        business.tasks.push({id: uid(), title: title, deadline: deadline, status: "pending", createdAt: new Date().toISOString(), completedAt: null, notes: ""});
+        business.tasks.push({id: uid(), title: title, deadline: deadline, status: "pending", createdAt: new Date().toISOString(), completedAt: null, notes: "", assignedTo: assignedTo});
         saveData();
         renderHeader();
         document.getElementById("taskTitleInput").value = "";
         document.getElementById("taskDeadlineInput").value = "";
         rerenderBizTaskLists(module, business);
-        toast(title + " added 📌");
+        var assignedName = assignedTo ? (staffOptions.find(function(s){ return s.id === assignedTo; }) || {}).name : null;
+        toast(assignedName ? (title + " assigned to " + assignedName) : (title + " added 📌"));
       });
       document.getElementById("btnToggleBizCompleted").addEventListener("click", function(){
         bizCompletedOpen = !bizCompletedOpen;
@@ -2141,6 +2255,13 @@
     });
   }
 
+  function assignedToBadgeHTML(task){
+    if(!task.assignedTo) return '';
+    var staffModule = findStaffModuleAny();
+    var member = staffModule ? findStaffMember(staffModule, task.assignedTo) : null;
+    return '<span class="badge-pill" style="color:var(--down);border-color:var(--down);">👤 ' + esc(member ? member.name : "Unassigned staff") + '</span>';
+  }
+
   function taskRowHTML(task){
     var state = getTaskState(task.id);
     var isCompleted = task.status === "completed";
@@ -2152,7 +2273,7 @@
     html += '<div class="task-title" style="' + titleStyle + '">' + esc(task.title) + '</div>';
     html += '<div class="task-badges">' + (isCompleted
       ? '<span class="badge-pill completed">✓ Completed ' + fmtDate(task.completedAt) + '</span>'
-      : taskDeadlineBadge(task)) + '</div>';
+      : taskDeadlineBadge(task)) + assignedToBadgeHTML(task) + '</div>';
     html += '</div>';
     html += '<div class="task-actions">';
     if(!isCompleted) html += '<button class="icon-btn task-edit" data-tid="' + task.id + '" title="Edit task"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>';
@@ -2972,9 +3093,11 @@
   function renderWorkflowManagePanel(module, business, tab){
     var wrap = document.getElementById("workflowManagePanel");
     if(!workflowManageOpen[tab.id]){ wrap.innerHTML = ""; return; }
+    var staffOptions = staffAssignOptions();
     var html = '<div class="manage-panel">';
     tab.items.forEach(function(item){
-      html += '<div class="field-toggle-row"><div><div class="ftlabel">' + esc(item.name) + '</div><div class="fthint">' + esc(workflowScheduleLabel(item)) + '</div></div>' +
+      var assignedName = item.assignedTo ? (function(){ var sm = findStaffMember(findStaffModuleAny() || {}, item.assignedTo); return sm ? sm.name : "Unassigned staff"; })() : "Myself";
+      html += '<div class="field-toggle-row"><div><div class="ftlabel">' + esc(item.name) + '</div><div class="fthint">' + esc(workflowScheduleLabel(item)) + ' · Assigned: ' + esc(assignedName) + '</div></div>' +
         '<button class="icon-btn workflow-item-del" data-item-id="' + item.id + '" title="Remove from schedule"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>';
     });
     if(tab.items.length === 0) html += '<p class="backup-note">Nothing scheduled yet.</p>';
@@ -2984,6 +3107,10 @@
         '<option value="daily">Every day</option>' +
         '<option value="weekly">Every week (specific day)</option>' +
         '<option value="monthly">Every month (specific date)</option>' +
+      '</select>' +
+      '<select class="input" id="wfNewAssign" style="margin-bottom:8px;">' +
+        '<option value="">Myself (Admin)</option>' +
+        staffOptions.map(function(s){ return '<option value="' + s.id + '">' + esc(s.name) + '</option>'; }).join("") +
       '</select>' +
       '<div id="wfNewExtra"></div>' +
       '<button class="btn btn-primary btn-sm" id="wfAddBtn" style="margin-top:8px;">Add to schedule</button>' +
@@ -3030,7 +3157,7 @@
       var name = document.getElementById("wfNewName").value.trim();
       var type = document.getElementById("wfNewType").value;
       if(!name){ toast("Enter a task name", true); return; }
-      var newItem = {id: uid(), name: name, scheduleType: type, weekday:null, dayOfMonth:null, time:null, createdAt: new Date().toISOString()};
+      var newItem = {id: uid(), name: name, scheduleType: type, weekday:null, dayOfMonth:null, time:null, createdAt: new Date().toISOString(), assignedTo: document.getElementById("wfNewAssign").value || null};
       if(type === "weekly") newItem.weekday = parseInt(document.getElementById("wfNewWeekday").value, 10);
       else if(type === "monthly") newItem.dayOfMonth = parseInt(document.getElementById("wfNewDayOfMonth").value, 10) || 1;
       else{
@@ -3366,6 +3493,516 @@
         toast("Status updated");
       });
     });
+  }
+
+  /* =========================================================
+     STAFF MODULE (Admin-managed directory, tasks, geofenced attendance, leave)
+     ========================================================= */
+  var staffView = "directory"; // "directory" | a staffMember.id
+  var staffAddFormOpen = false;
+  var staffOfficeConfigOpen = false;
+  var staffTaskConfirm = {}; // taskId -> bool, transient
+  var STAFF_PROFILE_KEY = "ironLogStaffProfile";
+  var DEVICE_AUTH_KEY = "ironLogAuthorizedDevice";
+  function isDeviceAuthorized(){
+    try{ return localStorage.getItem(DEVICE_AUTH_KEY) === "true"; }catch(e){ return false; }
+  }
+  function setDeviceAuthorized(val){
+    try{ localStorage.setItem(DEVICE_AUTH_KEY, val ? "true" : "false"); }catch(e){}
+  }
+
+  function findStaffMember(module, id){ return (module.staffMembers || []).find(function(s){ return s.id === id; }); }
+  function loadStaffProfile(){
+    try{ return JSON.parse(localStorage.getItem(STAFF_PROFILE_KEY) || "null"); }catch(e){ return null; }
+  }
+  function saveStaffProfile(p){
+    try{
+      if(p) localStorage.setItem(STAFF_PROFILE_KEY, JSON.stringify(p));
+      else localStorage.removeItem(STAFF_PROFILE_KEY);
+    }catch(e){}
+  }
+  function findStaffModuleAny(){ return moduleList().find(function(m){ return m.type === "staff"; }); }
+
+  function renderStaffModuleBody(module){
+    var body = document.getElementById("moduleBody");
+    if(staffView === "directory" || !findStaffMember(module, staffView)){
+      staffView = "directory";
+      body.innerHTML =
+        '<div class="section-title" style="margin-top:0;">Office Location</div>' +
+        '<button class="link-btn" id="btnToggleOfficeConfig" style="padding-left:0;">' + (staffOfficeConfigOpen ? "Hide" : "Configure geofence") + '</button>' +
+        '<div id="staffOfficeConfigWrap"></div>' +
+        '<div class="section-title">Staff Directory</div>' +
+        '<div class="tile-grid" id="staffGrid"></div>' +
+        '<div id="addStaffFormWrap"></div>';
+      document.getElementById("btnToggleOfficeConfig").addEventListener("click", function(){
+        staffOfficeConfigOpen = !staffOfficeConfigOpen;
+        renderStaffModuleBody(module);
+      });
+      renderStaffOfficeConfig(module);
+      renderStaffGrid(module);
+      renderAddStaffForm(module);
+    }else{
+      var staff = findStaffMember(module, staffView);
+      body.innerHTML =
+        '<div class="biz-header">' +
+          '<button class="back-btn" id="btnBackToStaffDir"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>' +
+          '<div class="m-icon" style="background:' + hexToRgba(module.accent,.16) + ';font-size:20px;">👤</div>' +
+          '<div><div class="m-name" style="font-size:18px;">' + esc(staff.name) + '</div><div class="m-meta">ID: ' + esc(staff.staffId || "—") + '</div></div>' +
+        '</div>' +
+        '<p class="backup-note">To assign work to ' + esc(staff.name) + ', open any Business → Tasks or Workflow → and pick them from the "Assign To" list. Everything assigned appears here automatically.</p>' +
+        '<div class="section-title" style="margin-top:0;">Assigned Tasks</div>' +
+        '<div id="staffTaskList"></div>' +
+        '<div class="section-title">Assigned Workflows</div>' +
+        '<div id="staffWorkflowList"></div>' +
+        '<div class="section-title">Attendance History</div>' +
+        '<div id="staffAttendanceList"></div>' +
+        '<div class="section-title">Leave / Break Requests</div>' +
+        '<div id="staffLeaveList"></div>';
+
+      document.getElementById("btnBackToStaffDir").addEventListener("click", function(){
+        staffView = "directory";
+        renderStaffModuleBody(module);
+      });
+      renderStaffTaskList(module, staff, true);
+      renderStaffWorkflowList(module, staff);
+      renderStaffAttendanceList(staff);
+      renderStaffLeaveList(module, staff, true);
+    }
+  }
+
+  function renderStaffGrid(module){
+    var wrap = document.getElementById("staffGrid");
+    wrap.innerHTML = "";
+    (module.staffMembers || []).forEach(function(s){
+      var pending = (s.tasks || []).filter(function(t){ return t.status !== "completed"; }).length +
+        getAssignedTasksForStaff(s.id).filter(function(e){ return e.task.status !== "completed"; }).length;
+      var tile = document.createElement("button");
+      tile.className = "tile";
+      tile.style.setProperty("--tile-accent", module.accent);
+      tile.style.setProperty("--tile-accent-soft", hexToRgba(module.accent, .16));
+      tile.innerHTML = '<div class="t-icon">👤</div><div class="t-name">' + esc(s.name) + '</div><div class="t-meta">' + (pending > 0 ? (pending + " pending task" + (pending===1?"":"s")) : "All caught up") + '</div>';
+      tile.addEventListener("click", function(){ staffView = s.id; renderStaffModuleBody(module); });
+      wrap.appendChild(tile);
+    });
+    var addTile = document.createElement("button");
+    addTile.className = "tile add";
+    addTile.innerHTML = '<div class="plus">+</div><div class="t-name">Add Staff</div>';
+    addTile.addEventListener("click", function(){ staffAddFormOpen = !staffAddFormOpen; renderAddStaffForm(module); });
+    wrap.appendChild(addTile);
+  }
+
+  function renderAddStaffForm(module){
+    var wrap = document.getElementById("addStaffFormWrap");
+    if(!wrap) return;
+    if(!staffAddFormOpen){ wrap.innerHTML = ""; return; }
+    wrap.innerHTML =
+      '<div class="quickadd">' +
+        '<div class="field" style="margin-bottom:10px;"><label>Name</label><input class="input" id="newStaffName" placeholder="Full name"></div>' +
+        '<div class="field" style="margin-bottom:10px;"><label>Staff ID</label><input class="input" id="newStaffId" placeholder="e.g. EMP-004"></div>' +
+        '<div class="btn-row"><button class="btn btn-ghost btn-sm" id="newStaffCancel">Cancel</button><button class="btn btn-primary" id="newStaffCreate">Add Staff</button></div>' +
+      '</div>';
+    document.getElementById("newStaffCancel").addEventListener("click", function(){ staffAddFormOpen = false; renderAddStaffForm(module); });
+    document.getElementById("newStaffCreate").addEventListener("click", function(){
+      var name = document.getElementById("newStaffName").value.trim();
+      var sid = document.getElementById("newStaffId").value.trim();
+      if(!name){ toast("Enter a name", true); return; }
+      module.staffMembers.push(freshStaffMember(name, sid));
+      saveData(); renderHeader();
+      staffAddFormOpen = false;
+      renderStaffModuleBody(module);
+      toast(name + " added");
+    });
+  }
+
+  function renderStaffOfficeConfig(module){
+    var wrap = document.getElementById("staffOfficeConfigWrap");
+    if(!wrap) return;
+    if(!staffOfficeConfigOpen){ wrap.innerHTML = ""; return; }
+    var office = module.office;
+    wrap.innerHTML =
+      '<div class="card">' +
+        '<p class="backup-note">Set the office location once — every staff punch is checked against this point and your chosen radius.</p>' +
+        '<div class="hist-row" style="border:none;padding:10px 0;"><div class="left"><div class="date" style="font-weight:600;">Current setting</div><div class="sess">' +
+          (office.lat != null ? (office.lat.toFixed(5) + ", " + office.lng.toFixed(5) + " · " + office.radius + "m radius") : "Not set yet") +
+        '</div></div></div>' +
+        '<button class="btn btn-primary" id="btnCaptureOffice">📍 Use My Current Location</button>' +
+        '<div class="field" style="margin-top:12px;margin-bottom:0;"><label>Allowed radius (meters)</label><input class="input input-mono" type="number" min="10" max="500" id="officeRadius" value="' + office.radius + '"></div>' +
+      '</div>' +
+      '<div class="card">' +
+        '<p class="backup-note"><b>Authorized device lock</b> — punching is blocked on any device except the one(s) you authorize here. This is a per-device setting stored on this browser only, not a hardware-level lock — it stops casual punching from a personal phone, but a technically determined person could still clear it. Tap this on the physical office phone/tablet.</p>' +
+        '<div class="hist-row" style="border:none;padding:10px 0;"><div class="left"><div class="date" style="font-weight:600;">This device</div><div class="sess">' +
+          (isDeviceAuthorized() ? "✅ Authorized for punching" : "🚫 Not authorized") +
+        '</div></div></div>' +
+        '<button class="btn ' + (isDeviceAuthorized() ? "btn-ghost" : "btn-primary") + '" id="btnToggleDeviceAuth">' + (isDeviceAuthorized() ? "Revoke authorization" : "🔓 Authorize This Device") + '</button>' +
+      '</div>';
+    document.getElementById("btnCaptureOffice").addEventListener("click", function(){
+      if(!navigator.geolocation){ toast("Geolocation not supported on this device", true); return; }
+      toast("Getting location…");
+      navigator.geolocation.getCurrentPosition(function(pos){
+        office.lat = pos.coords.latitude; office.lng = pos.coords.longitude;
+        saveData();
+        renderStaffOfficeConfig(module);
+        toast("Office location saved");
+      }, function(err){ toast("Couldn't get location: " + err.message, true); }, {enableHighAccuracy:true, timeout:10000});
+    });
+    document.getElementById("officeRadius").addEventListener("change", function(){
+      var v = parseInt(this.value, 10);
+      office.radius = (isNaN(v) || v < 10) ? 75 : Math.min(500, v);
+      this.value = office.radius;
+      saveData();
+    });
+    document.getElementById("btnToggleDeviceAuth").addEventListener("click", function(){
+      setDeviceAuthorized(!isDeviceAuthorized());
+      renderStaffOfficeConfig(module);
+      toast(isDeviceAuthorized() ? "This device is now authorized" : "Authorization revoked");
+    });
+  }
+
+  // Pulls every task assigned to this staff member, live, from every business — plus any legacy
+  // directly-assigned tasks from before this restructure. Returns references, not copies, so completing
+  // a task here mutates the same object the Business module renders — no separate sync step needed.
+  function getAssignedTasksForStaff(staffId){
+    var results = [];
+    var bizModule = data.modules.business;
+    if(bizModule && bizModule.type === "business"){
+      (bizModule.businesses || []).forEach(function(biz){
+        (biz.tasks || []).forEach(function(t){
+          if(t.assignedTo === staffId) results.push({task:t, businessName: biz.name});
+        });
+      });
+    }
+    return results;
+  }
+  function getAssignedWorkflowItemsForStaff(staffId){
+    var results = [];
+    var bizModule = data.modules.business;
+    if(bizModule && bizModule.type === "business"){
+      (bizModule.businesses || []).forEach(function(biz){
+        (biz.tabs || []).forEach(function(tab){
+          if(tab.type !== "workflow") return;
+          (tab.items || []).forEach(function(item){
+            if(item.assignedTo === staffId) results.push({item:item, tab:tab, businessName: biz.name});
+          });
+        });
+      });
+    }
+    return results;
+  }
+
+  function staffTaskCardHTML(entry){
+    var task = entry.task;
+    var isCompleted = task.status === "completed";
+    var confirming = !!staffTaskConfirm[task.id];
+    var html = '<div class="task-card"><div class="task-top">' +
+      '<button class="switch task-switch' + (isCompleted ? " on" : "") + '" data-task-id="' + task.id + '" title="' + (isCompleted ? "Mark as pending" : "Mark as complete") + '"><span class="knob"></span></button>' +
+      '<div class="task-body"><div class="task-title" style="' + (isCompleted ? "text-decoration:line-through;color:var(--text-faint);" : "") + '">' + esc(task.title) + '</div>' +
+      '<div class="task-badges">' +
+        (entry.businessName ? '<span class="badge-pill" style="color:var(--down);border-color:var(--down);">🏢 ' + esc(entry.businessName) + '</span>' : '') +
+        (isCompleted ? '<span class="badge-pill completed">✓ Completed ' + fmtDate(task.completedAt) + '</span>' : taskDeadlineBadge(task)) +
+      '</div></div>' +
+      '<button class="icon-btn staff-task-del" data-task-id="' + task.id + '" title="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>' +
+    '</div>';
+    if(confirming){
+      html += '<div class="task-confirm"><span>' + (isCompleted ? "Move this task back to pending?" : "Mark this task complete?") + '</span>' +
+        '<div class="btn-row" style="margin-top:8px;">' +
+          '<button class="btn btn-ghost btn-sm staff-task-confirm-no" data-task-id="' + task.id + '">Cancel</button>' +
+          '<button class="btn btn-primary btn-sm staff-task-confirm-yes" data-task-id="' + task.id + '">Confirm</button>' +
+        '</div></div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function renderStaffTaskList(module, staff, isAdminView){
+    var wrap = document.getElementById("staffTaskList");
+    if(!wrap) return;
+    var legacy = (staff.tasks || []).map(function(t){ return {task:t, businessName:null}; });
+    var fromBusiness = getAssignedTasksForStaff(staff.id);
+    var all = legacy.concat(fromBusiness).sort(function(a,b){ return new Date(b.task.createdAt) - new Date(a.task.createdAt); });
+    wrap.innerHTML = all.length === 0
+      ? '<div class="empty-state"><div class="big">📋</div><p>No tasks assigned yet' + (isAdminView ? '.' : ' — assigned tasks from any Business will appear here.') + '</p></div>'
+      : all.map(staffTaskCardHTML).join("");
+    var byId = {};
+    all.forEach(function(e){ byId[e.task.id] = e.task; });
+    wrap.querySelectorAll(".task-switch").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        staffTaskConfirm[btn.getAttribute("data-task-id")] = true;
+        renderStaffTaskList(module, staff, isAdminView);
+      });
+    });
+    wrap.querySelectorAll(".staff-task-confirm-no").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        staffTaskConfirm[btn.getAttribute("data-task-id")] = false;
+        renderStaffTaskList(module, staff, isAdminView);
+      });
+    });
+    wrap.querySelectorAll(".staff-task-confirm-yes").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var t = byId[btn.getAttribute("data-task-id")];
+        if(t){
+          if(t.status === "completed"){ t.status = "pending"; t.completedAt = null; }
+          else{ t.status = "completed"; t.completedAt = new Date().toISOString(); }
+          saveData(); renderHeader();
+        }
+        staffTaskConfirm[btn.getAttribute("data-task-id")] = false;
+        renderStaffTaskList(module, staff, isAdminView);
+        toast("Task updated");
+      });
+    });
+    wrap.querySelectorAll(".staff-task-del").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        if(!confirm("Delete this task? This can't be undone.")) return;
+        var tid = btn.getAttribute("data-task-id");
+        if(staff.tasks.some(function(x){ return x.id === tid; })){
+          staff.tasks = staff.tasks.filter(function(x){ return x.id !== tid; });
+        }else{
+          var bizModule = data.modules.business;
+          if(bizModule && bizModule.type === "business"){
+            (bizModule.businesses || []).forEach(function(biz){
+              biz.tasks = biz.tasks.filter(function(x){ return x.id !== tid; });
+            });
+          }
+        }
+        saveData(); renderHeader();
+        renderStaffTaskList(module, staff, isAdminView);
+        toast("Task deleted");
+      });
+    });
+  }
+
+  function staffWorkflowCardHTML(entry){
+    var item = entry.item, tab = entry.tab;
+    var todayStr = isoDateStr(new Date());
+    var dueToday = isItemDueOn(item, new Date());
+    var completion = (tab.completions || []).find(function(c){ return c.itemId === item.id && c.dueDate === todayStr; });
+    var isDone = completion && completion.status === "completed";
+    var html = '<div class="task-card"><div class="task-top">' +
+      '<div class="task-body"><div class="task-title">' + esc(item.name) + '</div>' +
+      '<div class="task-badges">' +
+        '<span class="badge-pill" style="color:var(--down);border-color:var(--down);">🏢 ' + esc(entry.businessName) + '</span>' +
+        '<span class="badge-pill">' + esc(workflowScheduleLabel(item)) + '</span>' +
+        (isDone ? '<span class="badge-pill completed">✓ Done today</span>' : (dueToday ? '<span class="badge-pill pending-red">Due today</span>' : '')) +
+      '</div></div>';
+    if(dueToday && !isDone){
+      html += '<button class="btn btn-primary btn-sm staff-wf-mark" data-item-id="' + item.id + '" data-tab-id="' + tab.id + '">Mark Done</button>';
+    }
+    html += '</div></div>';
+    return html;
+  }
+
+  function renderStaffWorkflowList(module, staff){
+    var wrap = document.getElementById("staffWorkflowList");
+    if(!wrap) return;
+    var items = getAssignedWorkflowItemsForStaff(staff.id);
+    wrap.innerHTML = items.length === 0
+      ? '<div class="empty-state"><div class="big">🗓️</div><p>No workflow items assigned yet.</p></div>'
+      : items.map(staffWorkflowCardHTML).join("");
+    wrap.querySelectorAll(".staff-wf-mark").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var itemId = btn.getAttribute("data-item-id"), tabId = btn.getAttribute("data-tab-id");
+        var tab = null;
+        var bizModule = data.modules.business;
+        if(bizModule && bizModule.type === "business"){
+          (bizModule.businesses || []).forEach(function(biz){
+            (biz.tabs || []).forEach(function(t){ if(t.id === tabId) tab = t; });
+          });
+        }
+        if(!tab) return;
+        var dateStr = isoDateStr(new Date());
+        var existing = tab.completions.find(function(c){ return c.itemId === itemId && c.dueDate === dateStr; });
+        if(existing){ existing.status = "completed"; existing.completedAt = new Date().toISOString(); }
+        else tab.completions.push({id: uid(), itemId:itemId, dueDate:dateStr, status:"completed", completedAt:new Date().toISOString()});
+        saveData();
+        renderStaffWorkflowList(module, staff);
+        toast("Marked done ✅");
+      });
+    });
+  }
+
+  function renderStaffAttendanceList(staff){
+    var wrap = document.getElementById("staffAttendanceList");
+    if(!wrap) return;
+    var records = staff.attendance.slice().sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+    if(records.length === 0){
+      wrap.innerHTML = '<div class="empty-state"><div class="big">📍</div><p>No attendance recorded yet.</p></div>';
+      return;
+    }
+    function timeLabel(iso){ return new Date(iso).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}); }
+    wrap.innerHTML = expandableListHTML(records, "staffAtt:" + staff.id, LIST_LIMIT, function(r){
+      var inBadge = r.punchInAt ? ('<span class="badge-pill ' + (r.punchInValid ? "completed" : "pending-red") + '">In ' + timeLabel(r.punchInAt) + (r.punchInValid ? "" : " (off-site)") + '</span>') : '<span class="badge-pill">No punch-in</span>';
+      var outBadge = r.punchOutAt ? ('<span class="badge-pill ' + (r.punchOutValid ? "completed" : "pending-red") + '">Out ' + timeLabel(r.punchOutAt) + (r.punchOutValid ? "" : " (off-site)") + '</span>') : '<span class="badge-pill">No punch-out</span>';
+      return '<div class="card card-tight"><div class="hist-row" style="border:none;padding:0 0 6px;"><div class="left"><div class="date" style="font-weight:600;">' + fmtDate(r.date) + '</div></div></div>' +
+        '<div style="display:flex;gap:6px;flex-wrap:wrap;">' + inBadge + outBadge + '</div></div>';
+    });
+    wireViewMoreButtons(wrap, function(){ renderStaffAttendanceList(staff); });
+  }
+
+  function renderStaffLeaveList(module, staff, isAdminView){
+    var wrap = document.getElementById("staffLeaveList");
+    if(!wrap) return;
+    var leaves = staff.leaves.slice().sort(function(a,b){ return new Date(b.requestedAt || b.date) - new Date(a.requestedAt || a.date); });
+    if(leaves.length === 0){
+      wrap.innerHTML = '<div class="empty-state"><div class="big">🌴</div><p>No leave or break requests yet.</p></div>';
+      return;
+    }
+    wrap.innerHTML = leaves.map(function(l){
+      var statusBadge = l.status === "approved" ? '<span class="badge-pill completed">✓ Approved</span>'
+        : l.status === "rejected" ? '<span class="badge-pill pending-red">✕ Rejected</span>'
+        : '<span class="badge-pill">Pending</span>';
+      var actions = (isAdminView && l.status === "pending")
+        ? ('<div class="btn-row" style="margin-top:8px;"><button class="btn btn-ghost btn-sm staff-leave-reject" data-leave-id="' + l.id + '">Reject</button><button class="btn btn-primary btn-sm staff-leave-approve" data-leave-id="' + l.id + '">Approve</button></div>')
+        : '';
+      return '<div class="card card-tight"><div class="hist-row" style="border:none;padding:0 0 6px;">' +
+        '<div class="left"><div class="date" style="font-weight:600;">' + esc(l.type) + ' — ' + fmtDate(l.date) + '</div>' + (l.reason ? '<div class="sess">' + esc(l.reason) + '</div>' : '') + '</div>' +
+        '<div class="right">' + statusBadge + '</div></div>' + actions + '</div>';
+    }).join("");
+    wrap.querySelectorAll(".staff-leave-approve").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var l = staff.leaves.find(function(x){ return x.id === btn.getAttribute("data-leave-id"); });
+        if(l){ l.status = "approved"; saveData(); }
+        renderStaffLeaveList(module, staff, isAdminView);
+        toast("Leave approved");
+      });
+    });
+    wrap.querySelectorAll(".staff-leave-reject").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var l = staff.leaves.find(function(x){ return x.id === btn.getAttribute("data-leave-id"); });
+        if(l){ l.status = "rejected"; saveData(); }
+        renderStaffLeaveList(module, staff, isAdminView);
+        toast("Leave rejected");
+      });
+    });
+  }
+
+  /* ---------- Staff-facing dashboard (rendered on Home when role = staff) ---------- */
+  function getTodayAttendanceRecord(member){
+    var todayStr = todayDateInputValue();
+    var rec = member.attendance.find(function(a){ return a.date === todayStr; });
+    if(!rec){
+      rec = {id: uid(), date:todayStr, punchInAt:null, punchInLat:null, punchInLng:null, punchInValid:null, punchOutAt:null, punchOutLat:null, punchOutLng:null, punchOutValid:null};
+      member.attendance.push(rec);
+    }
+    return rec;
+  }
+  function doPunch(module, member, type){
+    if(!isDeviceAuthorized()){
+      toast("Attendance can only be punched from the authorized office device.", true);
+      return;
+    }
+    if(!navigator.geolocation){ toast("Geolocation not supported on this device", true); return; }
+    toast("Getting your location…");
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var lat = pos.coords.latitude, lng = pos.coords.longitude;
+      var office = module.office;
+      var valid = true;
+      if(office.lat != null && office.lng != null){
+        valid = haversineMeters(lat, lng, office.lat, office.lng) <= (office.radius || 75);
+      }
+      var rec = getTodayAttendanceRecord(member);
+      if(type === "in"){ rec.punchInAt = new Date().toISOString(); rec.punchInLat = lat; rec.punchInLng = lng; rec.punchInValid = valid; }
+      else{ rec.punchOutAt = new Date().toISOString(); rec.punchOutLat = lat; rec.punchOutLng = lng; rec.punchOutValid = valid; }
+      saveData();
+      renderStaffDashboard(module, member);
+      if(!valid) toast("You are not at the office.", true);
+      else toast(type === "in" ? "Punched in ✅" : "Punched out ✅");
+    }, function(err){
+      toast("Couldn't get your location: " + err.message, true);
+    }, {enableHighAccuracy:true, timeout:10000});
+  }
+
+  function renderStaffDashboard(module, member){
+    var wrap = document.getElementById("homeModuleScreen");
+    var rec = member.attendance.find(function(a){ return a.date === todayDateInputValue(); });
+    var punchedIn = rec && rec.punchInAt;
+    var punchedOut = rec && rec.punchOutAt;
+    function timeLabel(iso){ return new Date(iso).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}); }
+
+    var html = '<div class="module-header">' +
+      '<div class="m-icon" style="background:' + hexToRgba(module.accent,.16) + ';">👤</div>' +
+      '<div><div class="m-name">' + esc(member.name) + '</div><div class="m-meta">ID: ' + esc(member.staffId || "—") + '</div></div>' +
+    '</div>';
+    html += '<div class="sheet-table-card" style="text-align:center;"><div class="section-title" style="margin-top:0;">Attendance</div>';
+    if(!isDeviceAuthorized()){
+      html += '<p class="backup-note" style="color:var(--danger);">🚫 This device isn\'t authorized for punching. Attendance can only be recorded from the designated office device.</p>';
+    }
+    if(!punchedIn){
+      html += '<button class="btn btn-primary" id="btnPunchIn" style="padding:16px;font-size:16px;"' + (isDeviceAuthorized() ? '' : ' disabled') + '>📍 Punch In</button>';
+    }else if(!punchedOut){
+      html += '<p class="backup-note">Punched in at ' + timeLabel(rec.punchInAt) + (rec.punchInValid ? "" : " ⚠️ (outside office range)") + '</p>' +
+        '<button class="btn btn-finish" id="btnPunchOut" style="padding:16px;font-size:16px;"' + (isDeviceAuthorized() ? '' : ' disabled') + '>📍 Punch Out</button>';
+    }else{
+      html += '<p class="backup-note">✅ Complete for today — In: ' + timeLabel(rec.punchInAt) + (rec.punchInValid?"":" ⚠️") + ' · Out: ' + timeLabel(rec.punchOutAt) + (rec.punchOutValid?"":" ⚠️") + '</p>';
+    }
+    html += '</div>';
+
+    html += '<div class="section-title">Today\'s Tasks</div><div id="staffTaskList"></div>';
+    html += '<div class="section-title">My Workflows</div><div id="staffWorkflowList"></div>';
+    html += '<div class="section-title">Request Leave / Break</div><div class="quickadd">' +
+      '<div class="row-2">' +
+        '<div class="field" style="margin-bottom:10px;"><label>Type</label><select class="input" id="staffLeaveType"><option value="Leave">Leave</option><option value="Break">Break</option></select></div>' +
+        '<div class="field" style="margin-bottom:10px;"><label>Date</label><input class="input" type="date" id="staffLeaveDate" value="' + todayDateInputValue() + '"></div>' +
+      '</div>' +
+      '<div class="field" style="margin-bottom:10px;"><label>Reason <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><input class="input" id="staffLeaveReason" placeholder="Optional"></div>' +
+      '<button class="btn btn-primary" id="staffLeaveSubmit">Submit Request</button>' +
+    '</div>';
+    html += '<div class="section-title">My Requests</div><div id="staffLeaveList"></div>';
+    html += '<button class="link-btn" id="btnStaffSwitchProfile" style="margin-top:16px;padding-left:0;">Not you? Switch profile</button>';
+
+    wrap.innerHTML = html;
+
+    var punchInBtn = document.getElementById("btnPunchIn");
+    if(punchInBtn) punchInBtn.addEventListener("click", function(){ doPunch(module, member, "in"); });
+    var punchOutBtn = document.getElementById("btnPunchOut");
+    if(punchOutBtn) punchOutBtn.addEventListener("click", function(){ doPunch(module, member, "out"); });
+
+    document.getElementById("staffLeaveSubmit").addEventListener("click", function(){
+      var type = document.getElementById("staffLeaveType").value;
+      var date = document.getElementById("staffLeaveDate").value || todayDateInputValue();
+      var reason = document.getElementById("staffLeaveReason").value.trim();
+      member.leaves.push({id: uid(), type:type, date:date, reason:reason, status:"pending", requestedAt:new Date().toISOString()});
+      saveData();
+      document.getElementById("staffLeaveReason").value = "";
+      renderStaffLeaveList(module, member, false);
+      toast("Request submitted");
+    });
+    document.getElementById("btnStaffSwitchProfile").addEventListener("click", function(){
+      saveStaffProfile(null);
+      renderHome();
+    });
+
+    renderStaffTaskList(module, member, false);
+    renderStaffWorkflowList(module, member);
+    renderStaffLeaveList(module, member, false);
+  }
+
+  function renderStaffGate(){
+    document.getElementById("homeDashboard").style.display = "none";
+    document.getElementById("homeModuleScreen").style.display = "block";
+    var wrap = document.getElementById("homeModuleScreen");
+    var staffModule = findStaffModuleAny();
+    var profile = loadStaffProfile();
+    var member = (profile && staffModule && profile.moduleId === staffModule.id) ? findStaffMember(staffModule, profile.staffId) : null;
+
+    if(!staffModule || (staffModule.staffMembers || []).length === 0){
+      wrap.innerHTML = '<div class="empty-state"><div class="big">👥</div><p>No staff directory has been set up yet. Ask your Admin to add you.</p></div>';
+      return;
+    }
+    if(!member){
+      wrap.innerHTML = '<div class="section-title" style="margin-top:0;">Who are you?</div><div class="tile-grid" id="staffPickGrid"></div>';
+      var grid = document.getElementById("staffPickGrid");
+      staffModule.staffMembers.forEach(function(s){
+        var tile = document.createElement("button");
+        tile.className = "tile";
+        tile.innerHTML = '<div class="t-icon">👤</div><div class="t-name">' + esc(s.name) + '</div><div class="t-meta">ID: ' + esc(s.staffId || "—") + '</div>';
+        tile.addEventListener("click", function(){
+          saveStaffProfile({moduleId: staffModule.id, staffId: s.id});
+          renderHome();
+        });
+        grid.appendChild(tile);
+      });
+      return;
+    }
+    renderStaffDashboard(staffModule, member);
   }
 
   /* =========================================================
@@ -4965,13 +5602,12 @@
       }catch(err){}
       gymDraft = null;
 
-      data = {
-        unit: incoming.unit || "kg",
-        lastExportAt: incoming.lastExportAt || null,
-        moduleOrder: incoming.moduleOrder || Object.keys(incomingModules),
-        modules: incomingModules,
-        deletedDefaults: Array.isArray(incoming.deletedDefaults) ? incoming.deletedDefaults : []
-      };
+      // Take the WHOLE backup object as-is, rather than manually copying a fixed list of known fields.
+      // A hardcoded field list silently drops anything added to `data` after this code was last touched —
+      // that's exactly what happened to role/adminPin/globalAsset/globalEmi. Taking everything wholesale
+      // means any future top-level addition to `data` is preserved automatically, with zero code changes here.
+      data = incoming;
+      if(!data.modules) data.modules = incomingModules;
       data = ensureModuleDefaults(data);
       saveData();
 
