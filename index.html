@@ -317,6 +317,32 @@
   .stockprep-table th:nth-child(3), .stockprep-table td:nth-child(3){width:24%;}
   .stockprep-table th:nth-child(4), .stockprep-table td:nth-child(4){width:24%;}
   .stockprep-table th:nth-child(5), .stockprep-table td:nth-child(5){width:6%;}
+  .statement-table{table-layout:fixed;}
+  .statement-table th:nth-child(1), .statement-table td:nth-child(1){width:18%;}
+  .statement-table th:nth-child(2), .statement-table td:nth-child(2){width:46%;}
+  .statement-table th:nth-child(3), .statement-table td:nth-child(3){width:18%;}
+  .statement-table th:nth-child(4), .statement-table td:nth-child(4){width:18%;}
+  .prep-report-card{background:var(--panel);}
+  .prep-report-line{font-family:var(--font-body);font-size:13.5px;font-weight:600;line-height:1.5;color:var(--text);}
+  .prep-report-cat{color:var(--accent);font-weight:800;}
+  .prep-report-complaint{color:var(--text);font-weight:700;}
+  .prep-report-parts{margin-top:4px;font-size:12.5px;font-weight:500;color:var(--text-dim);}
+
+  /* ---------- Paperwork Wizard ---------- */
+  .pw-wizard-header{
+    background:linear-gradient(135deg, #16a34a, #15803d);
+    color:#fff; border-radius:var(--radius); padding:18px 20px; margin-bottom:14px;
+    box-shadow:0 4px 14px rgba(22,163,74,.25);
+  }
+  .pw-wizard-vehicle{font-size:19px;font-weight:800;letter-spacing:.3px;}
+  .pw-wizard-sub{font-size:12.5px;opacity:.9;margin-top:3px;}
+  .pw-wizard-progress{font-size:12px;font-weight:700;color:var(--text-dim);letter-spacing:.3px;text-transform:uppercase;margin-bottom:10px;}
+  .pw-wizard-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;}
+  .pw-wizard-nav .btn{padding:12px 10px;font-size:13px;font-weight:700;border:none;color:#fff;}
+  .pw-nav-prev{background:#2563eb;}
+  .pw-nav-prev:disabled{opacity:.4;}
+  .pw-nav-save{background:#dc2626;}
+  .pw-nav-next{background:#16a34a;}
 
   /* ---------- EMI Management ---------- */
   .emi-reminders-sub{font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:.3px;text-transform:none;color:var(--text-faint);}
@@ -446,6 +472,18 @@
   .task-notes-wrap{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
   .task-notes-wrap label{margin-bottom:6px;}
   .task-notes-input{min-height:70px;font-size:13.5px;}
+  .task-chat-wrap{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+  .task-chat-label{font-size:11.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px;}
+  .task-chat-thread{max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:2px;}
+  .chat-bubble-row{display:flex;justify-content:flex-start;}
+  .chat-bubble-row.mine{justify-content:flex-end;}
+  .chat-bubble{max-width:78%;background:var(--panel-2);border:1px solid var(--border-strong);border-radius:14px 14px 14px 4px;padding:8px 11px;}
+  .chat-bubble.mine{background:var(--accent-soft);border-color:var(--accent);border-radius:14px 14px 4px 14px;}
+  .chat-bubble-sender{font-size:10.5px;font-weight:700;color:var(--accent);margin-bottom:2px;}
+  .chat-bubble-msg{font-size:13px;color:var(--text);line-height:1.4;word-break:break-word;}
+  .chat-bubble-time{font-size:9.5px;color:var(--text-faint);margin-top:3px;text-align:right;}
+  .task-chat-input-row{display:flex;gap:8px;margin-top:10px;}
+  .task-chat-input-row .input{flex:1;}
   .back-btn{
     background:var(--panel-2);border:1px solid var(--border-strong);width:36px;height:36px;
     border-radius:10px;display:flex;align-items:center;justify-content:center;
@@ -507,6 +545,7 @@
   .btn-danger{background:var(--danger-soft);color:var(--danger);}
   .btn-finish{background:var(--up);color:#122016;}
   .btn-sm{width:auto;padding:8px 14px;font-size:12.5px;}
+  .btn-header-action{width:auto;padding:6px 12px;font-size:11.5px;font-weight:700;letter-spacing:.2px;border-radius:8px;flex-shrink:0;}
   .btn-row{display:flex;gap:10px;margin-top:6px;}
   .btn-row .btn{flex:1;}
   .btn-row-3 .btn{font-size:12.5px;padding:12px 6px;line-height:1.25;}
@@ -524,7 +563,47 @@
 
   /* ---------- Quick add form ---------- */
   .quickadd{background:var(--panel-2);border:1px solid var(--border-strong);border-radius:var(--radius-sm);padding:14px;margin-top:12px;}
-  .quickadd .ex-name{font-weight:600;font-size:14.5px;margin-bottom:10px;}
+  .set-table{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
+  .set-table-head, .set-row{display:grid;gap:8px;align-items:center;}
+  .set-table.strength-mode .set-table-head, .set-table.strength-mode .set-row{grid-template-columns:38px 1fr 1fr 44px;}
+  .set-table.cardio-mode .set-table-head, .set-table.cardio-mode .set-row{grid-template-columns:38px 1fr 1fr 1fr 44px;}
+  .set-table-head{padding:0 2px;}
+  .set-table-head span{font-size:10px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--text-faint);}
+  .set-num{font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--text-dim);text-align:center;background:var(--panel);border-radius:9px;padding:12px 0;}
+  .set-row .input{padding:12px 8px;font-size:17px;font-weight:700;text-align:center;}
+  .set-row .set-save-btn{width:44px;height:44px;padding:0;display:flex;align-items:center;justify-content:center;border-color:var(--accent);color:var(--accent);}
+  .set-row .set-save-btn:active{background:var(--accent-soft);}
+  .set-row .set-save-btn svg{width:18px;height:18px;}
+  .set-row-saved{background:var(--panel);border:1px solid var(--up);border-radius:9px;padding:10px 10px;min-height:44px;}
+  .set-row-saved .set-num-done{grid-column:1;background:var(--up);color:#fff;font-size:15px;}
+  .set-row-saved .set-saved-summary{grid-column:2 / -2;font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--up);}
+  .set-row-saved .set-edit-btn{grid-column:-2 / -1;justify-self:end;width:36px;height:36px;}
+  .quickadd .ex-name{font-weight:700;font-size:16px;margin-bottom:10px;}
+
+  /* ---------- Today's Plan checklist ---------- */
+  .plan-checklist{margin:12px 0 18px;}
+  .plan-checklist-title{font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px;}
+  .plan-ex-card{background:var(--panel-2);border:1px solid var(--border-strong);border-radius:var(--radius-sm);padding:12px;margin-bottom:8px;}
+  .plan-ex-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+  .plan-ex-name{font-size:16px;font-weight:700;color:var(--text);}
+  .plan-set-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .plan-set-pill{min-width:72px;min-height:44px;padding:6px 12px;border-radius:10px;border:1.5px solid var(--border-strong);background:var(--panel);font-family:var(--font-mono);font-size:12.5px;font-weight:700;color:var(--text-dim);line-height:1.5;}
+  .plan-set-pill.done{background:var(--up);border-color:var(--up);color:#fff;}
+  .plan-set-edit{display:flex;align-items:center;gap:5px;background:var(--panel);border-radius:10px;padding:5px;}
+  .plan-set-edit .input{width:52px;padding:9px 4px;text-align:center;font-size:15px;font-weight:700;}
+  .plan-edit-confirm{width:38px;height:38px;background:var(--up);color:#fff;border-color:var(--up);}
+
+  /* ---------- Plan editor: per-set breakdown ---------- */
+  .plan-item-card{background:var(--panel-2);border:1px solid var(--border-strong);border-radius:var(--radius-sm);padding:12px;margin-bottom:10px;}
+  .plan-item-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .plan-item-name{font-size:15px;font-weight:700;color:var(--text);}
+  .plan-item-sets{display:flex;flex-direction:column;gap:6px;}
+  .plan-set-edit-head, .plan-set-edit-row{display:grid;grid-template-columns:28px 1fr 1fr;gap:8px;align-items:center;}
+  .plan-set-edit-head span{font-size:10px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--text-faint);}
+  .plan-set-edit-row .set-num{font-family:var(--font-mono);font-size:12.5px;font-weight:700;color:var(--text-dim);text-align:center;}
+  .plan-set-edit-row .input{padding:9px 6px;font-size:14px;font-weight:700;text-align:center;}
+  .plan-browse-tab.selected{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);}
+  .plan-cart-ex{background:var(--panel);}
 
   /* ---------- Quick actions (body weight / rest day) ---------- */
   .quick-actions-row{display:flex;gap:10px;margin-bottom:16px;}
@@ -804,6 +883,29 @@
     .app{ padding:0 56px 56px; }
     .header{ padding:26px 56px 18px; }
   }
+
+  /* ---------- Login Gate ---------- */
+  .login-gate{
+    position:fixed; inset:0; z-index:500;
+    background:var(--bg); display:flex; align-items:center; justify-content:center;
+    padding:24px;
+  }
+  .login-card{
+    width:100%; max-width:380px; background:var(--panel); border:1px solid var(--border-strong);
+    border-radius:var(--radius); padding:32px 26px; box-shadow:0 20px 60px rgba(0,0,0,.35);
+  }
+  .login-brand{font-family:var(--font-display);font-weight:800;font-size:16px;letter-spacing:1.5px;color:var(--accent);text-align:center;margin-bottom:6px;}
+  .login-title{font-size:14px;color:var(--text-dim);text-align:center;margin-bottom:22px;}
+  .login-role-tabs{display:flex;gap:8px;margin-bottom:20px;background:var(--panel-2);border-radius:10px;padding:4px;}
+  .login-role-btn{flex:1;padding:10px;border-radius:8px;border:none;background:transparent;color:var(--text-dim);font-weight:700;font-size:13px;}
+  .login-role-btn.active{background:var(--accent);color:#fff;}
+  .login-error{color:var(--danger);font-size:12.5px;margin-top:8px;text-align:center;min-height:16px;}
+  .login-staff-tile{
+    display:flex; align-items:center; gap:12px; width:100%; padding:12px 14px; margin-bottom:8px;
+    background:var(--panel-2); border:1px solid var(--border-strong); border-radius:10px;
+    font-weight:700; font-size:14px; color:var(--text); text-align:left;
+  }
+  .login-staff-tile:active{background:var(--accent-soft);border-color:var(--accent);}
 </style>
 <script>
 (function(){
@@ -817,6 +919,29 @@
 </head>
 <body>
 
+<div id="loginGate" class="login-gate" style="display:none;">
+  <div class="login-card">
+    <div class="login-brand">⬤ IRON LOG</div>
+    <div class="login-title">Sign in to continue</div>
+    <div class="login-role-tabs">
+      <button class="login-role-btn active" id="loginTabAdmin" data-role="admin">Admin</button>
+      <button class="login-role-btn" id="loginTabStaff" data-role="staff">Staff</button>
+    </div>
+    <div id="loginAdminPane">
+      <div class="field" style="margin-bottom:10px;"><label>Admin Email</label><input class="input" type="email" id="loginAdminEmail" autocomplete="username" placeholder="admin@yourcompany.com"></div>
+      <div class="field" style="margin-bottom:14px;"><label>Password</label><input class="input" type="password" id="loginAdminPassword" autocomplete="current-password" placeholder="Firebase password"></div>
+      <button class="btn btn-primary" id="btnLoginAdmin" style="width:100%;">Sign In as Admin</button>
+      <div id="loginAdminError" class="login-error"></div>
+    </div>
+    <div id="loginStaffPane" style="display:none;">
+      <div class="field" style="margin-bottom:10px;"><label>Staff Email</label><input class="input" type="email" id="loginStaffEmail" autocomplete="username" placeholder="staff@yourcompany.com"></div>
+      <div class="field" style="margin-bottom:14px;"><label>Password</label><input class="input" type="password" id="loginStaffPassword" autocomplete="current-password" placeholder="Firebase password"></div>
+      <button class="btn btn-primary" id="btnLoginStaff" style="width:100%;">Sign In as Staff</button>
+      <div id="loginStaffError" class="login-error"></div>
+    </div>
+  </div>
+</div>
+
 <div class="app">
   <div class="header">
     <div class="brand">
@@ -828,6 +953,7 @@
     </div>
     <div class="header-right">
       <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Dark/Light theme"><span id="themeToggleIcon">🌙</span></button>
+      <button class="theme-toggle-btn" id="btnLogOut" title="Log out">🚪</button>
       <div class="session-badge">
         <div class="num" id="headerTotalCount">0</div>
         <div class="lbl">Total Logged</div>
@@ -888,16 +1014,18 @@
     <div class="biz-subtabs" id="summarySubtabs">
       <button class="biz-subtab-btn active" data-summarytab="asset">📈 Asset Valuation</button>
       <button class="biz-subtab-btn" data-summarytab="emi">🏦 EMI Management</button>
+      <button class="biz-subtab-btn" data-summarytab="driver">🚚 Driver Pickup</button>
     </div>
     <div id="summaryAssetPanel"><div id="summaryAssetInner"></div></div>
     <div id="summaryEmiPanel" style="display:none;"><div id="summaryEmiInner"></div></div>
+    <div id="summaryDriverPanel" style="display:none;"><div id="summaryDriverInner"></div></div>
   </div>
 
   <!-- ===================== BACKUP TAB ===================== -->
   <div class="panel" id="panel-backup">
     <div class="section-title" style="margin-top:0;">Access</div>
     <div class="card">
-      <p class="backup-note">Iron Log runs entirely on this device, so this is a soft access switch — not real account security. Anyone with access to the app or its browser storage could bypass it. Use it to keep day-to-day staff use focused, not to protect sensitive data from a determined user.</p>
+      <p class="backup-note">Iron Log now uses Firebase Authentication and Firestore synchronization. Admin/Staff access is determined by the signed-in Firebase user profile. The local Admin PIN below is kept only as a legacy convenience and is not used as the cloud security boundary.</p>
       <div id="roleStatusWrap" style="margin-top:12px;"></div>
     </div>
     <div class="card">
@@ -911,7 +1039,7 @@
     <div class="section-title">Back up your data</div>
     <div class="banner" id="backupBanner" style="display:none;"></div>
     <div class="card">
-      <p class="backup-note">Everything you log — gym sessions, business entries, family events, and more — is saved on this device only. Export a backup regularly so a lost or broken phone never costs you your history.</p>
+      <p class="backup-note">Your data is synchronized with Firebase in real time and also cached locally on this device. Export a JSON backup periodically as an additional recovery copy.</p>
       <button class="btn btn-primary" id="btnExport" style="margin-top:12px;">Export backup (.json)</button>
       <button class="btn btn-ghost" id="btnCopyBackup" style="margin-top:10px;">Copy backup as text</button>
       <div class="last-backup" id="lastBackupText"></div>
@@ -971,9 +1099,44 @@
   <div class="modal-card" id="modalCard"></div>
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
 (function(){
   "use strict";
+
+  // ---------- Firebase ----------
+  const firebaseConfig = {
+    apiKey: "AIzaSyAPnKoqqwd0I_8mwGbkLvTFwji8GwOoCzU",
+    authDomain: "iron-log-77971.firebaseapp.com",
+    projectId: "iron-log-77971",
+    storageBucket: "iron-log-77971.firebasestorage.app",
+    messagingSenderId: "473032385244",
+    appId: "1:473032385244:web:75f6c594543c3c55ba4a19",
+    measurementId: "G-4WEV2M2XGB"
+  };
+  const firebaseApp = initializeApp(firebaseConfig);
+  const auth = getAuth(firebaseApp);
+  const db = getFirestore(firebaseApp);
+
+  const APP_STATE_REF = doc(db, "ironLogState", "main");
+  const SYNC_META_REF = doc(db, "ironLogMeta", "sync");
+  const TASKS_COL = collection(db, "ironLogTasks");
+  const PAPERWORK_COL = collection(db, "ironLogPaperwork");
+  const GYM_PLANS_COL = collection(db, "ironLogGymPlans");
+
+  var firebaseUser = null;
+  var firebaseProfile = null;
+  var cloudReady = false;
+  var cloudApplying = false;
+  var cloudWriteTimer = null;
+  var cloudUnsubs = [];
+  var knownTaskDocs = new Map();
+  var knownPaperworkDocs = new Map();
+  var knownGymPlanDocs = new Map();
+  var authBooted = false;
 
   var STORAGE_KEY = "ironLogData_v2";
   var STORAGE_KEY_V1 = "ironLogData_v1";
@@ -1000,10 +1163,10 @@
       id:"gym", name:"Gym / Fitness", icon:"🏋️", accent:"#4f46e5", type:"gym", isDefault:true,
       nextSessionNumber:1,
       categories:[
-        {id:"push", name:"Push Day", exercises:["Bench Press","Overhead Press","Incline Dumbbell Press","Tricep Pushdown","Lateral Raise"], isDefault:true},
-        {id:"pull", name:"Pull Day", exercises:["Deadlift","Barbell Row","Lat Pulldown","Bicep Curl","Face Pull"], isDefault:true},
-        {id:"legs", name:"Leg Day", exercises:["Squat","Leg Press","Romanian Deadlift","Leg Curl","Calf Raise"], isDefault:true},
-        {id:"forearm", name:"Forearm", exercises:["Wrist Curl","Reverse Wrist Curl","Farmer's Carry","Dead Hang","Grip Squeeze"], isDefault:true}
+        {id:"push", name:"Push Day", exercises:["Bench Press","Overhead Press","Incline Dumbbell Press","Tricep Pushdown","Lateral Raise"], isDefault:true, presetPlan:[]},
+        {id:"pull", name:"Pull Day", exercises:["Deadlift","Barbell Row","Lat Pulldown","Bicep Curl","Face Pull"], isDefault:true, presetPlan:[]},
+        {id:"legs", name:"Leg Day", exercises:["Squat","Leg Press","Romanian Deadlift","Leg Curl","Calf Raise"], isDefault:true, presetPlan:[]},
+        {id:"forearm", name:"Forearm", exercises:["Wrist Curl","Reverse Wrist Curl","Farmer's Carry","Dead Hang","Grip Squeeze"], isDefault:true, presetPlan:[]}
       ],
       equipmentTypes: EQUIPMENT_OPTIONS.slice(),
       sessions:[],
@@ -1075,14 +1238,43 @@
     {key:"vehicleNumber", label:"Vehicle Number", headers:["vehicle number","vehicle no","vehicle no.","reg number","registration number","vehicle num"]},
     {key:"segment", label:"Segment", headers:["segment"]}
   ];
-  var MAINTENANCE_CATEGORIES = ["Mechanical", "Bodywork / Painting", "Fitness Renewal"];
-  var PAPERWORK_TYPES = ["RC Transfer", "Insurance", "Other Legal / Admin"];
+  var DEFAULT_MAINTENANCE_CATALOG = {
+    "Mechanical": ["Oil Change", "Tyre Replacement", "Brake Change", "Battery Replacement", "AC Servicing"],
+    "Bodywork / Painting": ["Dent Removal", "Full Repaint", "Bumper Repair", "Scratch Touch-up"],
+    "Fitness Renewal": ["RTO Fitness Test", "Emission Test", "Fitness Certificate Renewal"]
+  };
+  var DEFAULT_SPARE_PARTS_CATALOG = {
+    "Mechanical": ["Engine Oil", "Oil Filter", "Brake Pads", "Brake Fluid", "Tyres", "Battery", "Spark Plugs", "Air Filter"],
+    "Bodywork / Painting": ["Primer", "Paint", "Clear Coat", "Bumper", "Body Filler"],
+    "Fitness Renewal": ["Fitness Certificate", "Pollution Certificate"]
+  };
+  var DEFAULT_PAPERWORK_CATALOG = ["RC Transfer", "Insurance", "Fitness Pending", "Tax Pending", "Permit Surrender", "Other Legal / Admin"];
   var PREP_STATUS_OPTIONS = ["Pending", "In Progress", "Done"];
+  // Fixed, non-manageable stages for the Staff paperwork wizard — replaces the old freeform category system.
+  var PAPERWORK_STAGES = [
+    {key:"insurance", label:"Insurance", hasDeadEnd:true},
+    {key:"challanBlacklist", label:"Challan BlackList", hasDeadEnd:false},
+    {key:"taxUpdation", label:"Tax Updation", hasDeadEnd:false},
+    {key:"fitness", label:"Fitness", hasDeadEnd:false},
+    {key:"permitSurrender", label:"Permit Surrender", hasDeadEnd:false},
+    {key:"nocTto", label:"NOC-TTO", hasDeadEnd:false}
+  ];
+  var PAPERWORK_SUBSTATUS_OPTIONS = ["Pending", "In Process", "Completed"];
+  function freshPaperworkStages(){
+    var obj = {};
+    PAPERWORK_STAGES.forEach(function(s){ obj[s.key] = {subStatus:"Pending", toggle:false, deadEndDate:null, savedAt:null}; });
+    return obj;
+  }
   function freshStockPrepTab(name){
-    return {id: uid(), name: name || "Stock Prep Report", type:"stockprep", vehicles: []};
+    return {
+      id: uid(), name: name || "Stock Prep Report", type:"stockprep", vehicles: [],
+      maintenanceCatalog: JSON.parse(JSON.stringify(DEFAULT_MAINTENANCE_CATALOG)),
+      sparePartsCatalog: JSON.parse(JSON.stringify(DEFAULT_SPARE_PARTS_CATALOG)),
+      paperworkCatalog: DEFAULT_PAPERWORK_CATALOG.slice()
+    };
   }
   function freshPrepVehicle(vehicleNumber, segment){
-    return {id: uid(), vehicleNumber: vehicleNumber || "", segment: segment || "", maintenance: [], paperwork: []};
+    return {id: uid(), vehicleNumber: vehicleNumber || "", segment: segment || "", maintenance: [], paperwork: [], paperworkAssignedTo: null, paperworkStages: freshPaperworkStages()};
   }
   var WEEKDAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   var WORKFLOW_LOOKBACK_DAYS = 90;
@@ -1345,11 +1537,98 @@
       role: "admin",
       adminPin: "",
       globalAsset: {assets:[], liabilities:[]},
-      globalEmi: {loans:[]}
+      globalEmi: {loans:[]},
+      driverPickup: {drivers:[], yards:[], pickups:[], advances:[]}
     };
   }
 
   function isStaff(){ return data.role === "staff"; }
+
+  // ---------- Login gate (persists across reloads, cleared only by explicit Log Out) ----------
+  var LOGIN_STATE_KEY = "ironLogLoggedInAs";
+  function getLoginState(){
+    try{ return localStorage.getItem(LOGIN_STATE_KEY); }catch(e){ return null; } // null | "admin" | "staff"
+  }
+  function setLoginState(val){
+    try{ if(val) localStorage.setItem(LOGIN_STATE_KEY, val); else localStorage.removeItem(LOGIN_STATE_KEY); }catch(e){}
+  }
+  function showLoginGate(){
+    document.getElementById("loginGate").style.display = "flex";
+    document.querySelector(".app").style.display = "none";
+  }
+  function hideLoginGate(){
+    document.getElementById("loginGate").style.display = "none";
+    document.querySelector(".app").style.display = "";
+  }
+  function showLoginError(role, msg){
+    var el = document.getElementById(role === "admin" ? "loginAdminError" : "loginStaffError");
+    if(el) el.textContent = msg || "";
+  }
+  function friendlyAuthError(err){
+    var code = (err && err.code) || "";
+    if(code.indexOf("invalid-credential") !== -1 || code.indexOf("wrong-password") !== -1 || code.indexOf("user-not-found") !== -1) return "Incorrect email or password";
+    if(code.indexOf("too-many-requests") !== -1) return "Too many attempts. Try again later.";
+    if(code.indexOf("network") !== -1) return "Network error. Check your internet connection.";
+    return (err && err.message) ? err.message.replace(/^Firebase:\s*/i, "") : "Unable to sign in";
+  }
+  async function fetchFirebaseProfile(user){
+    var snap = await getDoc(doc(db, "users", user.uid));
+    if(!snap.exists()) throw new Error("No Iron Log role profile exists for this Firebase user.");
+    var profile = snap.data() || {};
+    if(profile.active === false) throw new Error("This account is disabled.");
+    if(profile.role !== "admin" && profile.role !== "staff") throw new Error("Invalid account role.");
+    if(profile.role === "staff" && !profile.staffId) throw new Error("Staff profile is missing staffId.");
+    return profile;
+  }
+  async function doFirebaseLogin(role){
+    var emailEl = document.getElementById(role === "admin" ? "loginAdminEmail" : "loginStaffEmail");
+    var passEl = document.getElementById(role === "admin" ? "loginAdminPassword" : "loginStaffPassword");
+    var email = emailEl ? emailEl.value.trim() : "";
+    var password = passEl ? passEl.value : "";
+    showLoginError(role, "");
+    if(!email || !password){ showLoginError(role, "Enter email and password"); return; }
+    try{
+      var cred = await signInWithEmailAndPassword(auth, email, password);
+      var p = await fetchFirebaseProfile(cred.user);
+      if(p.role !== role){
+        await signOut(auth);
+        showLoginError(role, "This account is registered as " + p.role + ", not " + role + ".");
+      }
+    }catch(err){
+      showLoginError(role, friendlyAuthError(err));
+    }
+  }
+  function completeLogin(){
+    hideLoginGate();
+    runAppInit();
+  }
+  function wireLoginGate(){
+    document.getElementById("loginTabAdmin").addEventListener("click", function(){
+      document.getElementById("loginTabAdmin").classList.add("active");
+      document.getElementById("loginTabStaff").classList.remove("active");
+      document.getElementById("loginAdminPane").style.display = "block";
+      document.getElementById("loginStaffPane").style.display = "none";
+    });
+    document.getElementById("loginTabStaff").addEventListener("click", function(){
+      document.getElementById("loginTabStaff").classList.add("active");
+      document.getElementById("loginTabAdmin").classList.remove("active");
+      document.getElementById("loginStaffPane").style.display = "block";
+      document.getElementById("loginAdminPane").style.display = "none";
+    });
+    document.getElementById("btnLoginAdmin").addEventListener("click", function(){ doFirebaseLogin("admin"); });
+    document.getElementById("btnLoginStaff").addEventListener("click", function(){ doFirebaseLogin("staff"); });
+    ["loginAdminPassword","loginStaffPassword"].forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.addEventListener("keydown", function(e){ if(e.key === "Enter") doFirebaseLogin(id.indexOf("Admin") !== -1 ? "admin" : "staff"); });
+    });
+    document.getElementById("btnLogOut").addEventListener("click", async function(){
+      if(!confirm("Log out?")) return;
+      stopCloudSync();
+      saveStaffProfile(null);
+      setLoginState(null);
+      try{ await signOut(auth); }catch(e){}
+    });
+  }
 
   // ---------- state ----------
   var data = loadData();
@@ -1357,9 +1636,16 @@
   var gymDraft = loadDraft();
   var gymViewMode = "categories"; // "categories" | "draft" — always start on the category grid
   var pendingExerciseName = null;
+  var activeSetRows = null; // [{saved:bool, entryId:string|null}], reset whenever a new exercise is picked
   var gymManageOpen = false;
+  var gymPlanEditCatId = null; // category id whose plan editor is open, transient
+  var planInlineEdit = null; // {planId, setNum} currently being inline-edited during a session, transient
   var showBodyWeightForm = false;
   var showRestDayForm = false;
+  var showPlanPicker = false;
+  var planPickerCatId = null;
+  var planBrowseCatId = null; // category tab currently being browsed for exercises to cart, transient
+  var planCartingExercise = null; // exercise name currently being cart-prompted, transient
   var restTimerDuration = 90; // seconds
   var restTimerRemaining = 90;
   var restTimerRunning = false;
@@ -1413,14 +1699,14 @@
       if(rawV1){
         var oldData = JSON.parse(rawV1);
         if(oldData && Array.isArray(oldData.categories) && Array.isArray(oldData.sessions)){
-          var migrated = migrateFromV1(oldData);
+          var migrated = ensureModuleDefaults(migrateFromV1(oldData));
           persist(migrated);
           return migrated;
         }
       }
-      return freshData();
+      return ensureModuleDefaults(freshData());
     }catch(e){
-      return freshData();
+      return ensureModuleDefaults(freshData());
     }
   }
   function migrateFromV1(oldData){
@@ -1441,6 +1727,39 @@
     if(!Array.isArray(d.globalAsset.liabilities)) d.globalAsset.liabilities = [];
     if(!d.globalEmi) d.globalEmi = {loans:[]};
     if(!Array.isArray(d.globalEmi.loans)) d.globalEmi.loans = [];
+    if(!d.driverPickup) d.driverPickup = {drivers:[], yards:[], pickups:[], advances:[]};
+    if(!Array.isArray(d.driverPickup.drivers)) d.driverPickup.drivers = [];
+    if(!Array.isArray(d.driverPickup.yards)) d.driverPickup.yards = [];
+    if(!Array.isArray(d.driverPickup.pickups)) d.driverPickup.pickups = [];
+    if(!Array.isArray(d.driverPickup.advances)) d.driverPickup.advances = [];
+    d.driverPickup.drivers.forEach(function(dr){ if(!dr.id) dr.id = uid(); if(typeof dr.name === "undefined") dr.name = ""; });
+    d.driverPickup.yards.forEach(function(y){
+      if(!y.id) y.id = uid();
+      if(typeof y.name === "undefined") y.name = "";
+      if(!Array.isArray(y.rates)) y.rates = [];
+      y.rates.forEach(function(r){ if(!r.id) r.id = uid(); if(typeof r.category === "undefined") r.category = ""; if(typeof r.amount === "undefined") r.amount = ""; });
+    });
+    d.driverPickup.pickups.forEach(function(p){
+      if(!p.id) p.id = uid();
+      if(typeof p.driverId === "undefined") p.driverId = null;
+      if(typeof p.vehicleNumber === "undefined") p.vehicleNumber = "";
+      if(typeof p.vehicleLabel === "undefined") p.vehicleLabel = "";
+      if(typeof p.yardId === "undefined") p.yardId = null;
+      if(typeof p.category === "undefined") p.category = "";
+      if(typeof p.amount === "undefined") p.amount = "";
+      if(!Array.isArray(p.payments)) p.payments = [];
+      if(typeof p.closed === "undefined") p.closed = false;
+      if(!p.createdAt) p.createdAt = new Date().toISOString();
+      p.payments.forEach(function(pay){ if(!pay.id) pay.id = uid(); if(typeof pay.amount === "undefined") pay.amount = ""; if(typeof pay.notes === "undefined") pay.notes = ""; if(!pay.date) pay.date = todayDateInputValue(); if(!pay.timestamp) pay.timestamp = new Date().toISOString(); });
+    });
+    d.driverPickup.advances.forEach(function(a){
+      if(!a.id) a.id = uid();
+      if(typeof a.driverId === "undefined") a.driverId = null;
+      if(typeof a.amount === "undefined") a.amount = "";
+      if(typeof a.notes === "undefined") a.notes = "";
+      if(!a.date) a.date = todayDateInputValue();
+      if(!a.timestamp) a.timestamp = new Date().toISOString();
+    });
     // One-time upgrade: older versions had Business as a generic log-type module.
     // Convert it into a proper multi-business module without losing anything already logged.
     if(d.modules.business && d.modules.business.type === "log"){
@@ -1497,6 +1816,25 @@
       if(!m.accent) m.accent = ACCENT_PALETTE[0];
       if(m.type === "gym"){
         if(!Array.isArray(m.categories)) m.categories = [];
+        m.categories.forEach(function(c){
+          if(!Array.isArray(c.presetPlan)) c.presetPlan = [];
+          c.presetPlan.forEach(function(p){
+            if(!p.id) p.id = uid();
+            if(typeof p.exercise === "undefined") p.exercise = "";
+            if(!Array.isArray(p.setTargets)){
+              var count = p.targetSets || 3;
+              var w = typeof p.targetWeight === "number" ? p.targetWeight : 0;
+              var r = typeof p.targetReps === "number" ? p.targetReps : 0;
+              p.setTargets = [];
+              for(var si = 0; si < count; si++) p.setTargets.push({weight:w, reps:r});
+            }
+            delete p.targetWeight; delete p.targetReps; delete p.targetSets;
+            p.setTargets.forEach(function(st){
+              if(typeof st.weight !== "number") st.weight = 0;
+              if(typeof st.reps !== "number") st.reps = 0;
+            });
+          });
+        });
         if(!Array.isArray(m.sessions)) m.sessions = [];
         if(!m.nextSessionNumber) m.nextSessionNumber = 1;
         if(!Array.isArray(m.equipmentTypes) || m.equipmentTypes.length === 0) m.equipmentTypes = EQUIPMENT_OPTIONS.slice();
@@ -1531,6 +1869,7 @@
             if(typeof t.createdBy === "undefined") t.createdBy = "admin";
             if(typeof t.extensionRequest === "undefined") t.extensionRequest = null;
             if(typeof t.isNew === "undefined") t.isNew = false;
+            if(!Array.isArray(t.chat)) t.chat = [];
           });
           if(!Array.isArray(b.frequencyOptions) || b.frequencyOptions.length === 0) b.frequencyOptions = DEFAULT_FREQUENCY_OPTIONS.slice();
           migrateBusinessTabs(b);
@@ -1583,25 +1922,35 @@
               });
             }else if(tab.type === "stockprep"){
               if(!Array.isArray(tab.vehicles)) tab.vehicles = [];
+              if(!tab.maintenanceCatalog || typeof tab.maintenanceCatalog !== "object") tab.maintenanceCatalog = JSON.parse(JSON.stringify(DEFAULT_MAINTENANCE_CATALOG));
+              if(!tab.sparePartsCatalog || typeof tab.sparePartsCatalog !== "object") tab.sparePartsCatalog = JSON.parse(JSON.stringify(DEFAULT_SPARE_PARTS_CATALOG));
+              if(!Array.isArray(tab.paperworkCatalog) || tab.paperworkCatalog.length === 0) tab.paperworkCatalog = DEFAULT_PAPERWORK_CATALOG.slice();
+              Object.keys(tab.maintenanceCatalog).forEach(function(cat){ if(!Array.isArray(tab.maintenanceCatalog[cat])) tab.maintenanceCatalog[cat] = []; });
+              Object.keys(tab.sparePartsCatalog).forEach(function(cat){ if(!Array.isArray(tab.sparePartsCatalog[cat])) tab.sparePartsCatalog[cat] = []; });
               tab.vehicles.forEach(function(v){
                 if(!v.id) v.id = uid();
                 if(typeof v.vehicleNumber === "undefined") v.vehicleNumber = "";
                 if(typeof v.segment === "undefined") v.segment = "";
                 if(!Array.isArray(v.maintenance)) v.maintenance = [];
                 if(!Array.isArray(v.paperwork)) v.paperwork = [];
+                if(typeof v.paperworkAssignedTo === "undefined") v.paperworkAssignedTo = null;
+                if(!v.paperworkStages || typeof v.paperworkStages !== "object") v.paperworkStages = freshPaperworkStages();
+                PAPERWORK_STAGES.forEach(function(s){
+                  if(!v.paperworkStages[s.key]) v.paperworkStages[s.key] = {subStatus:"Pending", toggle:false, deadEndDate:null, savedAt:null};
+                });
                 v.maintenance.forEach(function(item){
                   if(!item.id) item.id = uid();
-                  if(!item.category) item.category = MAINTENANCE_CATEGORIES[0];
-                  if(typeof item.description === "undefined") item.description = "";
-                  if(typeof item.assignedTo === "undefined") item.assignedTo = null;
+                  if(!item.category){ item.category = Object.keys(tab.maintenanceCatalog)[0] || "General"; }
+                  if(typeof item.complaint === "undefined") item.complaint = item.description || "";
+                  if(!Array.isArray(item.spareParts)) item.spareParts = [];
                   if(!item.status) item.status = "Pending";
                   if(!item.createdAt) item.createdAt = new Date().toISOString();
                 });
                 v.paperwork.forEach(function(item){
                   if(!item.id) item.id = uid();
-                  if(!item.docType) item.docType = PAPERWORK_TYPES[0];
-                  if(typeof item.description === "undefined") item.description = "";
-                  if(!item.status) item.status = "Pending";
+                  if(!item.category) item.category = item.docType || (tab.paperworkCatalog[0] || "General");
+                  if(typeof item.notes === "undefined") item.notes = item.description || "";
+                  if(typeof item.done === "undefined") item.done = (item.status === "Done");
                   if(!item.createdAt) item.createdAt = new Date().toISOString();
                 });
               });
@@ -1628,6 +1977,7 @@
           if(typeof t.createdBy === "undefined") t.createdBy = null;
           if(typeof t.extensionRequest === "undefined") t.extensionRequest = null;
           if(typeof t.isNew === "undefined") t.isNew = false;
+          if(!Array.isArray(t.chat)) t.chat = [];
         }
         m.tasks.forEach(normalizeStaffTask);
         m.staffMembers.forEach(function(s){
@@ -1667,7 +2017,22 @@
     try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
     catch(e){ toast("Couldn't save — storage may be full", true); }
   }
-  function saveData(){ persist(data); }
+  function cloudSafeData(){
+    var clone = JSON.parse(JSON.stringify(data));
+    // Authentication/authorization is per Firebase user, never shared through the app-state document.
+    delete clone.role;
+    delete clone.adminPin;
+    return clone;
+  }
+  function scheduleCloudSave(){
+    if(!cloudReady || !firebaseUser || cloudApplying) return;
+    clearTimeout(cloudWriteTimer);
+    cloudWriteTimer = setTimeout(function(){ syncLocalChangesToFirebase(); }, 180);
+  }
+  function saveData(){
+    persist(data);
+    scheduleCloudSave();
+  }
 
   function loadDraft(){
     try{
@@ -1680,6 +2045,271 @@
       if(gymDraft) localStorage.setItem(DRAFT_KEY, JSON.stringify(gymDraft));
       else localStorage.removeItem(DRAFT_KEY);
     }catch(e){}
+    if(cloudReady && firebaseUser && !cloudApplying){
+      var ref = doc(db, "ironLogGymDrafts", firebaseUser.uid);
+      if(gymDraft){
+        setDoc(ref, {payload:gymDraft, updatedAt:serverTimestamp()}, {merge:true}).catch(function(err){ console.error("Draft sync failed", err); });
+      }else{
+        deleteDoc(ref).catch(function(err){ console.error("Draft delete failed", err); });
+      }
+    }
+  }
+
+
+  // ---------- Firebase real-time synchronization ----------
+  function isFirebaseAdmin(){ return !!firebaseProfile && firebaseProfile.role === "admin"; }
+  function currentFirebaseStaffId(){ return firebaseProfile && firebaseProfile.role === "staff" ? firebaseProfile.staffId : null; }
+
+  function flattenTaskDocs(){
+    var out = new Map();
+    var bizModule = data.modules && data.modules.business;
+    if(bizModule && bizModule.type === "business"){
+      (bizModule.businesses || []).forEach(function(b){
+        (b.tasks || []).forEach(function(t){
+          out.set(t.id, Object.assign({}, JSON.parse(JSON.stringify(t)), {locationType:"business", businessId:b.id, locationKey:"business:"+b.id}));
+        });
+      });
+    }
+    var staffModule = findStaffModuleAny();
+    if(staffModule){
+      (staffModule.tasks || []).forEach(function(t){
+        out.set(t.id, Object.assign({}, JSON.parse(JSON.stringify(t)), {locationType:"staffGeneral", locationKey:"staffGeneral"}));
+      });
+      (staffModule.staffMembers || []).forEach(function(m){
+        (m.tasks || []).forEach(function(t){
+          out.set(t.id, Object.assign({}, JSON.parse(JSON.stringify(t)), {locationType:"staffMember", staffMemberId:m.id, locationKey:"staffMember:"+m.id}));
+        });
+      });
+    }
+    return out;
+  }
+
+  function mergeTaskDocsIntoData(taskDocs){
+    if(!taskDocs || taskDocs.size === 0) return;
+    var bizModule = data.modules && data.modules.business;
+    if(bizModule && bizModule.type === "business") (bizModule.businesses || []).forEach(function(b){ b.tasks = []; });
+    var staffModule = findStaffModuleAny();
+    if(staffModule){
+      staffModule.tasks = [];
+      (staffModule.staffMembers || []).forEach(function(m){ m.tasks = []; });
+    }
+    taskDocs.forEach(function(raw){
+      var t = JSON.parse(JSON.stringify(raw));
+      delete t.locationType; delete t.businessId; delete t.staffMemberId; delete t.locationKey; delete t.updatedAt; delete t.updatedBy;
+      if(raw.locationType === "business" && bizModule){
+        var b = (bizModule.businesses || []).find(function(x){ return x.id === raw.businessId; });
+        if(b) b.tasks.push(t);
+      }else if(raw.locationType === "staffGeneral" && staffModule){
+        staffModule.tasks.push(t);
+      }else if(raw.locationType === "staffMember" && staffModule){
+        var m = findStaffMember(staffModule, raw.staffMemberId);
+        if(m) m.tasks.push(t);
+      }
+    });
+  }
+
+  function flattenPaperworkDocs(){
+    var out = new Map();
+    var bizModule = data.modules && data.modules.business;
+    if(!bizModule || bizModule.type !== "business") return out;
+    (bizModule.businesses || []).forEach(function(b){
+      (b.tabs || []).forEach(function(tab){
+        if(tab.type !== "stockprep") return;
+        (tab.vehicles || []).forEach(function(v){
+          out.set(v.id, {
+            vehicleId:v.id, businessId:b.id, tabId:tab.id, vehicleNumber:v.vehicleNumber || "",
+            paperworkStages:JSON.parse(JSON.stringify(v.paperworkStages || freshPaperworkStages())),
+            paperwork:JSON.parse(JSON.stringify(v.paperwork || [])),
+            paperworkAssignedTo:typeof v.paperworkAssignedTo === "undefined" ? null : v.paperworkAssignedTo
+          });
+        });
+      });
+    });
+    return out;
+  }
+
+  function mergePaperworkDocsIntoData(docs){
+    if(!docs) return;
+    var bizModule = data.modules && data.modules.business;
+    if(!bizModule || bizModule.type !== "business") return;
+    docs.forEach(function(pw){
+      var b = (bizModule.businesses || []).find(function(x){ return x.id === pw.businessId; });
+      if(!b) return;
+      var tab = (b.tabs || []).find(function(x){ return x.id === pw.tabId && x.type === "stockprep"; });
+      if(!tab) return;
+      var v = (tab.vehicles || []).find(function(x){ return x.id === pw.vehicleId; });
+      if(!v) return;
+      if(pw.paperworkStages) v.paperworkStages = JSON.parse(JSON.stringify(pw.paperworkStages));
+      if(Array.isArray(pw.paperwork)) v.paperwork = JSON.parse(JSON.stringify(pw.paperwork));
+      if(typeof pw.paperworkAssignedTo !== "undefined") v.paperworkAssignedTo = pw.paperworkAssignedTo;
+    });
+  }
+
+  function flattenGymPlanDocs(){
+    var out = new Map();
+    var gym = data.modules && data.modules.gym;
+    if(!gym || gym.type !== "gym") return out;
+    (gym.categories || []).forEach(function(c){
+      out.set(c.id, {categoryId:c.id, categoryName:c.name, presetPlan:JSON.parse(JSON.stringify(c.presetPlan || []))});
+    });
+    return out;
+  }
+  function mergeGymPlanDocsIntoData(docs){
+    if(!docs) return;
+    var gym = data.modules && data.modules.gym;
+    if(!gym || gym.type !== "gym") return;
+    docs.forEach(function(gp){
+      var cat = (gym.categories || []).find(function(c){ return c.id === gp.categoryId; });
+      if(cat && Array.isArray(gp.presetPlan)) cat.presetPlan = JSON.parse(JSON.stringify(gp.presetPlan));
+    });
+  }
+
+  function applyKnownDomainOverlays(){
+    mergeTaskDocsIntoData(knownTaskDocs);
+    mergePaperworkDocsIntoData(knownPaperworkDocs);
+    mergeGymPlanDocsIntoData(knownGymPlanDocs);
+  }
+
+  function rerenderAfterRemote(){
+    try{
+      renderHeader();
+      syncRoleUI();
+      if(activeTab === "home") renderHome();
+      else if(activeTab === "progress" && !isStaff()) renderProgress();
+      else if(activeTab === "tasksHub" && !isStaff()) renderTasksHub();
+      else if(activeTab === "summary" && !isStaff()) renderSummary();
+      if(activeTab === "backup") renderBackup();
+    }catch(err){ console.error("Remote render failed", err); }
+  }
+
+  async function writeDomainCollections(){
+    if(!firebaseUser) return;
+    var tasks = flattenTaskDocs();
+    var staffId = currentFirebaseStaffId();
+    var writes = [];
+    tasks.forEach(function(t, id){
+      var canWrite = isFirebaseAdmin() || (staffId && (t.createdBy === staffId || t.assignedTo === staffId));
+      if(canWrite) writes.push(setDoc(doc(db,"ironLogTasks",id), Object.assign({}, t, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true}));
+    });
+    knownTaskDocs.forEach(function(remote, id){
+      if(tasks.has(id)) return;
+      var canDelete = isFirebaseAdmin() || (staffId && (remote.createdBy === staffId || remote.assignedTo === staffId));
+      if(canDelete) writes.push(deleteDoc(doc(db,"ironLogTasks",id)));
+    });
+
+    var paperwork = flattenPaperworkDocs();
+    paperwork.forEach(function(pw, id){
+      writes.push(setDoc(doc(db,"ironLogPaperwork",id), Object.assign({}, pw, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true}));
+    });
+
+    if(isFirebaseAdmin()){
+      var plans = flattenGymPlanDocs();
+      plans.forEach(function(gp,id){ writes.push(setDoc(doc(db,"ironLogGymPlans",id), Object.assign({}, gp, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true})); });
+      knownGymPlanDocs.forEach(function(remote,id){ if(!plans.has(id)) writes.push(deleteDoc(doc(db,"ironLogGymPlans",id))); });
+    }
+    await Promise.allSettled(writes);
+  }
+
+  async function syncLocalChangesToFirebase(){
+    if(!cloudReady || !firebaseUser || cloudApplying) return;
+    try{
+      if(isFirebaseAdmin()){
+        await setDoc(APP_STATE_REF, {payload:cloudSafeData(), updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}, {merge:true});
+      }
+      await writeDomainCollections();
+    }catch(err){
+      console.error("Firebase sync failed", err);
+      toast("Cloud sync failed — local copy kept", true);
+    }
+  }
+
+  async function ensureInitialMigration(){
+    if(!isFirebaseAdmin()) return;
+    var meta = await getDoc(SYNC_META_REF);
+    if(meta.exists() && meta.data().domainsMigrated) return;
+    await setDoc(APP_STATE_REF, {payload:cloudSafeData(), updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}, {merge:true});
+    await writeDomainCollections();
+    await setDoc(SYNC_META_REF, {domainsMigrated:true, migratedAt:serverTimestamp(), migratedBy:firebaseUser.uid}, {merge:true});
+  }
+
+  function stopCloudSync(){
+    cloudReady = false;
+    cloudApplying = false;
+    clearTimeout(cloudWriteTimer);
+    cloudUnsubs.forEach(function(fn){ try{ fn(); }catch(e){} });
+    cloudUnsubs = [];
+    knownTaskDocs = new Map(); knownPaperworkDocs = new Map(); knownGymPlanDocs = new Map();
+  }
+
+  async function startCloudSync(){
+    stopCloudSync();
+    if(!firebaseUser) return;
+    var localRole = data.role;
+    var localPin = data.adminPin;
+
+    var baseSnap = await getDoc(APP_STATE_REF);
+    if(baseSnap.exists() && baseSnap.data().payload){
+      cloudApplying = true;
+      data = ensureModuleDefaults(baseSnap.data().payload);
+      data.role = firebaseProfile.role;
+      data.adminPin = localPin || "";
+      persist(data);
+      cloudApplying = false;
+    }else if(isFirebaseAdmin()){
+      await setDoc(APP_STATE_REF, {payload:cloudSafeData(), updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid});
+    }
+
+    // First-time migration of the existing nested local data into granular real-time collections.
+    await ensureInitialMigration();
+
+    cloudUnsubs.push(onSnapshot(APP_STATE_REF, function(snap){
+      if(!snap.exists() || !snap.data().payload) return;
+      cloudApplying = true;
+      var role = firebaseProfile ? firebaseProfile.role : localRole;
+      var pin = data.adminPin || localPin || "";
+      data = ensureModuleDefaults(snap.data().payload);
+      data.role = role;
+      data.adminPin = pin;
+      applyKnownDomainOverlays();
+      persist(data);
+      cloudApplying = false;
+      rerenderAfterRemote();
+    }, function(err){ console.error("App-state listener", err); }));
+
+    cloudUnsubs.push(onSnapshot(TASKS_COL, function(snap){
+      var map = new Map();
+      snap.forEach(function(d){ map.set(d.id, Object.assign({id:d.id}, d.data())); });
+      knownTaskDocs = map;
+      cloudApplying = true; mergeTaskDocsIntoData(map); persist(data); cloudApplying = false;
+      rerenderAfterRemote();
+    }, function(err){ console.error("Tasks listener", err); }));
+
+    cloudUnsubs.push(onSnapshot(PAPERWORK_COL, function(snap){
+      var map = new Map();
+      snap.forEach(function(d){ map.set(d.id, d.data()); });
+      knownPaperworkDocs = map;
+      cloudApplying = true; mergePaperworkDocsIntoData(map); persist(data); cloudApplying = false;
+      rerenderAfterRemote();
+    }, function(err){ console.error("Paperwork listener", err); }));
+
+    cloudUnsubs.push(onSnapshot(GYM_PLANS_COL, function(snap){
+      var map = new Map();
+      snap.forEach(function(d){ map.set(d.id, d.data()); });
+      knownGymPlanDocs = map;
+      cloudApplying = true; mergeGymPlanDocsIntoData(map); persist(data); cloudApplying = false;
+      rerenderAfterRemote();
+    }, function(err){ console.error("Gym-plan listener", err); }));
+
+    var draftRef = doc(db, "ironLogGymDrafts", firebaseUser.uid);
+    cloudUnsubs.push(onSnapshot(draftRef, function(snap){
+      cloudApplying = true;
+      gymDraft = snap.exists() && snap.data().payload ? snap.data().payload : null;
+      try{ if(gymDraft) localStorage.setItem(DRAFT_KEY, JSON.stringify(gymDraft)); else localStorage.removeItem(DRAFT_KEY); }catch(e){}
+      cloudApplying = false;
+      if(activeTab === "home" && homeView === "gym") rerenderAfterRemote();
+    }, function(err){ console.error("Gym-draft listener", err); }));
+
+    cloudReady = true;
   }
 
   // ---------- helpers ----------
@@ -1869,6 +2499,7 @@
   function renderSummary(){
     renderSummaryAssetPanel();
     renderSummaryEmiPanel();
+    renderSummaryDriverPanel();
     wireSummaryTabs();
   }
 
@@ -1881,7 +2512,86 @@
         });
         document.getElementById("summaryAssetPanel").style.display = target === "asset" ? "block" : "none";
         document.getElementById("summaryEmiPanel").style.display = target === "emi" ? "block" : "none";
+        document.getElementById("summaryDriverPanel").style.display = target === "driver" ? "block" : "none";
       };
+    });
+  }
+
+  // Every vehicle across every Stock Prep tab, in every business — used by the Staff-facing
+  // "Assigned Vehicle Paperwork" tab, which shows ALL vehicles (no per-vehicle assignment gate).
+  function getAllPrepVehiclesFlat(){
+    var results = [];
+    var bizModule = data.modules.business;
+    if(bizModule && bizModule.type === "business"){
+      (bizModule.businesses || []).forEach(function(biz){
+        (biz.tabs || []).forEach(function(tab){
+          if(tab.type !== "stockprep") return;
+          (tab.vehicles || []).forEach(function(v){
+            results.push({business:biz, tab:tab, vehicle:v});
+          });
+        });
+      });
+    }
+    return results;
+  }
+
+  function getAllPrepItemsForHub(){
+    var results = [];
+    var bizModule = data.modules.business;
+    if(bizModule && bizModule.type === "business"){
+      (bizModule.businesses || []).forEach(function(biz){
+        (biz.tabs || []).forEach(function(tab){
+          if(tab.type !== "stockprep") return;
+          (tab.vehicles || []).forEach(function(v){
+            (v.maintenance || []).forEach(function(item){ results.push({item:item, kind:"maintenance", vehicle:v, businessName:biz.name}); });
+            (v.paperwork || []).forEach(function(item){ results.push({item:item, kind:"paperwork", vehicle:v, businessName:biz.name}); });
+          });
+        });
+      });
+    }
+    return results;
+  }
+  function isPrepItemDone(entry){
+    return entry.kind === "paperwork" ? !!entry.item.done : entry.item.status === "Done";
+  }
+  function prepHubCardHTML(entry){
+    var done = isPrepItemDone(entry);
+    var reportLine = entry.kind === "maintenance" ? maintenanceReportLine(entry.item) : paperworkReportLine(entry.item);
+    return '<div class="card card-tight prep-report-card' + (!done ? " pending-task-card" : "") + '">' +
+      '<div class="hist-row" style="border:none;padding:0;">' +
+        '<div class="left"><div class="prep-report-line" style="font-size:12px;">' + esc(reportLine) + '</div>' +
+          '<div class="sess" style="margin-top:5px;">' + esc(entry.businessName) + ' · ' + esc(entry.vehicle.vehicleNumber) + ' · ' + (entry.kind === "maintenance" ? "Maintenance" : "Paperwork") + '</div></div>' +
+        '<div class="right">' +
+          (entry.kind === "paperwork"
+            ? '<input type="checkbox" class="hub-prep-done" data-hub-item-id="' + entry.item.id + '" ' + (done ? "checked" : "") + ' style="width:18px;height:18px;">'
+            : '<span class="badge-pill' + (done ? " completed" : " pending-red") + '">' + esc(entry.item.status) + '</span>') +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  function renderPrepItemsHubSection(){
+    var all = getAllPrepItemsForHub();
+    var incomplete = all.filter(function(e){ return !isPrepItemDone(e); });
+    var completed = all.filter(isPrepItemDone);
+    var html = '<div class="section-title">🔧 Vehicle Prep Items</div>';
+    html += '<div class="section-title" style="margin-top:0;color:var(--danger);">Incomplete</div>';
+    html += incomplete.length === 0
+      ? '<div class="empty-state"><div class="big">✅</div><p>Nothing incomplete.</p></div>'
+      : incomplete.map(prepHubCardHTML).join("");
+    html += '<div class="section-title" style="color:var(--up);">Completed</div>';
+    html += completed.length === 0
+      ? '<div class="empty-state"><div class="big">📋</div><p>Nothing completed yet.</p></div>'
+      : completed.map(prepHubCardHTML).join("");
+    return html;
+  }
+  function wirePrepHubSection(wrap){
+    wrap.querySelectorAll(".hub-prep-done").forEach(function(cb){
+      cb.addEventListener("change", function(){
+        var itemId = cb.getAttribute("data-hub-item-id");
+        var entry = getAllPrepItemsForHub().find(function(e){ return e.item.id === itemId; });
+        if(entry){ entry.item.done = cb.checked; saveData(); }
+        renderTasksHub();
+      });
     });
   }
 
@@ -1905,9 +2615,11 @@
     html += showing.length === 0
       ? '<div class="empty-state"><div class="big">🗂️</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "Nothing completed yet." : "No general tasks right now.") + '</p></div>'
       : showing.map(function(e){ return staffTaskCardHTML(e, true, null); }).join("");
+    html += renderPrepItemsHubSection();
     wrap.innerHTML = html;
     wirePendingCompletedTabs(wrap, filterKey, renderTasksHub);
     wireStaffTaskCardEvents(wrap, staffModule, null, true, byId, renderTasksHub);
+    wirePrepHubSection(wrap);
   }
 
   function renderHeader(){
@@ -2136,11 +2848,12 @@
   var showAddBusinessForm = false;
   var editingSegmentName = null;
   var selectedNewBizIcon = ICON_OPTIONS[0];
-  var bizCompletedOpen = false;
 
   function findBusiness(module, id){ return (module.businesses || []).find(function(b){ return b.id === id; }); }
   function pendingTasks(business){ return (business.tasks || []).filter(function(t){ return t.status !== "completed"; }); }
   function completedTasks(business){ return (business.tasks || []).filter(function(t){ return t.status === "completed"; }); }
+  function bizIncomingTasks(business){ return (business.tasks || []).filter(function(t){ return t.createdBy && t.createdBy !== "admin"; }); }
+  function bizOutgoingTasks(business){ return (business.tasks || []).filter(function(t){ return !t.createdBy || t.createdBy === "admin"; }); }
   function isOverdue(task){
     if(!task.deadline || task.status === "completed") return false;
     var today = new Date(); today.setHours(0,0,0,0);
@@ -2348,7 +3061,7 @@
   function renderBizTasksPanel(module, business){
     var panel = document.getElementById("bizTasksPanel");
     var staffOptions = staffAssignOptions();
-    var vehicleNumbers = getVehicleNumbersForBusiness(business);
+    var vehicleOptions = getVehicleOptionsForBusiness(business);
     var formOpen = !!bizTaskFormOpen[business.id];
     panel.innerHTML =
         '<div class="sheet-table-header" style="margin-bottom:' + (formOpen ? "10px" : "16px") + ';"><span class="section-title" style="margin:0;">Tasks</span>' +
@@ -2363,17 +3076,17 @@
               staffOptions.map(function(s){ return '<option value="' + s.id + '">' + esc(s.name) + '</option>'; }).join("") +
             '</select></div>' +
           '</div>' +
-          (vehicleNumbers.length > 0 ? '<div class="field" style="margin-bottom:10px;"><label>Vehicle Number <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><select class="input" id="taskVehicleInput">' +
+          (vehicleOptions.length > 0 ? '<div class="field" style="margin-bottom:10px;"><label>Vehicle Number <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><select class="input" id="taskVehicleInput">' +
             '<option value="">— None —</option>' +
-            vehicleNumbers.map(function(v){ return '<option value="' + esc(v) + '">' + esc(v) + '</option>'; }).join("") +
+            vehicleOptions.map(function(v){ return '<option value="' + esc(v.vehicleNumber) + '">' + esc(v.vehicleNumber) + ' [' + esc(v.sourceLabel) + ']</option>'; }).join("") +
           '</select></div>' : '') +
           '<div class="field" style="margin-bottom:10px;"><label>Notes <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><textarea class="input task-notes-input" id="taskNotesInput" rows="2" placeholder="Add details, reminders, links…"></textarea></div>' +
           '<button class="btn btn-primary" id="taskAddBtn" style="width:100%;">Add Task</button>' +
         '</div>' : '') +
-        '<div class="section-title"' + (formOpen ? '' : ' style="margin-top:0;"') + '>Pending Tasks</div>' +
-        '<div id="bizPendingList"></div>' +
-        '<button class="link-btn" id="btnToggleBizCompleted" style="padding-left:0;margin-top:6px;">' + (bizCompletedOpen ? "Hide completed history" : "Show completed history") + '</button>' +
-        '<div id="bizCompletedWrap"></div>' +
+        '<div class="section-title" style="margin-top:0;">📥 Incoming Tasks</div>' +
+        '<div id="bizIncomingList"></div>' +
+        '<div class="section-title">📤 Outgoing Tasks</div>' +
+        '<div id="bizOutgoingList"></div>' +
         (isStaff() ? '' :
           '<div class="section-title">Manage</div>' +
           '<button class="link-btn" id="btnToggleBizManage" style="padding-left:0;">' + (bizManageOpen ? "Hide business settings" : "Manage this business") + '</button>' +
@@ -2392,7 +3105,7 @@
         var vehicleInput = document.getElementById("taskVehicleInput");
         var vehicleNumber = vehicleInput ? (vehicleInput.value || null) : null;
         if(!title){ toast("Enter a task", true); return; }
-        business.tasks.push({id: uid(), title: title, deadline: deadline, status: "pending", createdAt: new Date().toISOString(), completedAt: null, notes: noteText, assignedTo: assignedTo, createdBy: "admin", extensionRequest: null, isNew: !!assignedTo, vehicleNumber: vehicleNumber});
+        business.tasks.push({id: uid(), title: title, deadline: deadline, status: "pending", createdAt: new Date().toISOString(), completedAt: null, notes: noteText, assignedTo: assignedTo, createdBy: "admin", extensionRequest: null, isNew: !!assignedTo, vehicleNumber: vehicleNumber, chat: []});
         saveData();
         renderHeader();
         bizTaskFormOpen[business.id] = false;
@@ -2400,19 +3113,14 @@
         var assignedName = assignedTo ? (staffOptions.find(function(s){ return s.id === assignedTo; }) || {}).name : null;
         toast(assignedName ? (title + " assigned to " + assignedName) : (title + " added 📌"));
       });
-      document.getElementById("btnToggleBizCompleted").addEventListener("click", function(){
-        bizCompletedOpen = !bizCompletedOpen;
-        renderBizCompletedSection(module, business);
-        document.getElementById("btnToggleBizCompleted").textContent = bizCompletedOpen ? "Hide completed history" : "Show completed history";
-      });
       var mgmtBtn = document.getElementById("btnToggleBizManage");
       if(mgmtBtn) mgmtBtn.addEventListener("click", function(){
         bizManageOpen = !bizManageOpen;
         renderBizManagePanel(module, business);
         document.getElementById("btnToggleBizManage").textContent = bizManageOpen ? "Hide business settings" : "Manage this business";
       });
-      renderBizPendingList(module, business);
-      renderBizCompletedSection(module, business);
+      renderBizIncomingList(module, business);
+      renderBizOutgoingList(module, business);
       if(!isStaff()) renderBizManagePanel(module, business);
   }
 
@@ -2487,6 +3195,65 @@
     return member ? member.name : "Unknown";
   }
 
+  // Task chat: restricted to Admin plus whoever created or is assigned the task. Persisted permanently
+  // on the task object itself, so it survives completion, reopening, or being routed between arrays.
+  function canViewTaskChat(task, isAdminView, viewerStaffId){
+    return !!isAdminView || (!!viewerStaffId && (task.assignedTo === viewerStaffId || task.createdBy === viewerStaffId));
+  }
+  function fmtChatTime(iso){
+    var d = new Date(iso);
+    var now = new Date();
+    var sameDay = d.toDateString() === now.toDateString();
+    var timeStr = d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+    return sameDay ? timeStr : (fmtDate(iso) + " " + timeStr);
+  }
+  function taskChatSectionHTML(task, viewerId){
+    var chat = task.chat || [];
+    return '<div class="task-chat-wrap">' +
+      '<div class="task-chat-label">💬 Task Chat</div>' +
+      '<div class="task-chat-thread" id="taskChatThread_' + task.id + '">' +
+        (chat.length === 0 ? '<p class="backup-note" style="margin:6px 0;">No messages yet — say something below.</p>' :
+          chat.map(function(m){
+            var mine = m.senderId === viewerId;
+            return '<div class="chat-bubble-row' + (mine ? " mine" : "") + '">' +
+              '<div class="chat-bubble' + (mine ? " mine" : "") + '">' +
+                (mine ? '' : '<div class="chat-bubble-sender">' + esc(m.senderName) + '</div>') +
+                '<div class="chat-bubble-msg">' + esc(m.message) + '</div>' +
+                '<div class="chat-bubble-time">' + fmtChatTime(m.timestamp) + '</div>' +
+              '</div>' +
+            '</div>';
+          }).join("")) +
+      '</div>' +
+      '<div class="task-chat-input-row">' +
+        '<input class="input task-chat-input" data-task-id="' + task.id + '" placeholder="Message…">' +
+        '<button class="btn btn-primary btn-sm task-chat-send" data-task-id="' + task.id + '">Send</button>' +
+      '</div>' +
+    '</div>';
+  }
+  // getTaskFn(taskId) must return the live task object (from whichever array it actually lives in).
+  function wireTaskChat(container, getTaskFn, viewerId, viewerName, rerenderFn){
+    function send(taskId){
+      var input = container.querySelector('.task-chat-input[data-task-id="' + taskId + '"]');
+      if(!input) return;
+      var msg = input.value.trim();
+      if(!msg) return;
+      var task = getTaskFn(taskId);
+      if(!task) return;
+      if(!Array.isArray(task.chat)) task.chat = [];
+      task.chat.push({id: uid(), senderId: viewerId, senderName: viewerName, message: msg, timestamp: new Date().toISOString()});
+      saveData();
+      rerenderFn();
+    }
+    container.querySelectorAll(".task-chat-send").forEach(function(btn){
+      btn.addEventListener("click", function(){ send(btn.getAttribute("data-task-id")); });
+    });
+    container.querySelectorAll(".task-chat-input").forEach(function(input){
+      input.addEventListener("keydown", function(e){
+        if(e.key === "Enter"){ e.preventDefault(); send(input.getAttribute("data-task-id")); }
+      });
+    });
+  }
+
   function vehicleBadgeHTML(task){
     if(!task.vehicleNumber) return '';
     return '<span class="badge-pill badge-neutral">🚚 ' + esc(task.vehicleNumber) + '</span>';
@@ -2496,6 +3263,7 @@
     var state = getTaskState(task.id);
     var isCompleted = task.status === "completed";
     var titleStyle = isCompleted ? "text-decoration:line-through;color:var(--text-faint);" : "";
+    var chatCount = (task.chat || []).length;
     var html = '<div class="task-card" data-tid="' + task.id + '">';
     html += '<div class="task-topline"><span class="task-people-line">By ' + esc(taskCreatorName(task)) + ' → To ' + esc(taskAssigneeName(task)) + '</span></div>';
     html += '<div class="task-top">';
@@ -2505,6 +3273,7 @@
     html += '<div class="task-badges">' + (isCompleted
       ? '<span class="badge-pill completed">✓ Completed ' + fmtDate(task.completedAt) + '</span>'
       : taskDeadlineBadge(task)) + vehicleBadgeHTML(task) +
+      '<span class="badge-pill badge-neutral task-chat-badge" data-tid="' + task.id + '">💬' + (chatCount > 0 ? (" " + chatCount) : "") + '</span>' +
       (task.extensionRequest ? ('<span class="badge-pill" style="' + (task.extensionRequest.status === "approved" ? "color:var(--down);border-color:var(--down);" : task.extensionRequest.status === "rejected" ? "color:var(--danger);border-color:var(--danger);" : "") + '">📅 Extension: ' + esc(task.extensionRequest.status) + '</span>') : '') +
       '</div>';
     html += '</div>';
@@ -2537,12 +3306,14 @@
     }
     if(state.expanded && !state.editing){
       html += '<div class="task-notes-wrap"><label>Notes</label><textarea class="input task-notes-input" data-tid="' + task.id + '" placeholder="Add details, reminders, links…">' + esc(task.notes || "") + '</textarea></div>';
+      html += taskChatSectionHTML(task, "admin");
     }
     html += '</div>';
     return html;
   }
 
   function wireTaskRows(wrap, module, business, rerenderFn){
+    wireTaskChat(wrap, function(taskId){ return business.tasks.find(function(t){ return t.id === taskId; }); }, "admin", ADMIN_DISPLAY_NAME, rerenderFn);
     wrap.querySelectorAll(".task-ext-approve").forEach(function(btn){
       btn.addEventListener("click", function(){
         var id = btn.getAttribute("data-tid");
@@ -2626,6 +3397,15 @@
         rerenderFn();
       });
     });
+    wrap.querySelectorAll(".task-chat-badge").forEach(function(badge){
+      badge.addEventListener("click", function(e){
+        e.stopPropagation();
+        var st = getTaskState(badge.getAttribute("data-tid"));
+        st.expanded = true;
+        st.editing = false;
+        rerenderFn();
+      });
+    });
     wrap.querySelectorAll(".task-notes-input").forEach(function(ta){
       ta.addEventListener("click", function(e){ e.stopPropagation(); });
       ta.addEventListener("blur", function(){
@@ -2650,41 +3430,36 @@
     });
   }
 
-  function rerenderBizTaskLists(module, business){
-    renderBizPendingList(module, business);
-    renderBizCompletedSection(module, business);
-  }
-
-  function renderBizPendingList(module, business){
-    var wrap = document.getElementById("bizPendingList");
-    var tasks = pendingTasks(business).sort(function(a,b){
-      if(!a.deadline && !b.deadline) return new Date(b.createdAt) - new Date(a.createdAt);
-      if(!a.deadline) return 1;
-      if(!b.deadline) return -1;
-      return new Date(a.deadline) - new Date(b.deadline);
-    });
-    if(tasks.length === 0){
-      wrap.innerHTML = '<div class="empty-state"><div class="big">📌</div><p>No pending tasks. Add one above to get started.</p></div>';
-      return;
-    }
-    wrap.innerHTML = tasks.map(taskRowHTML).join("");
-    wireTaskRows(wrap, module, business, function(){ rerenderBizTaskLists(module, business); });
-  }
-
-  function renderBizCompletedSection(module, business){
-    var wrap = document.getElementById("bizCompletedWrap");
-    if(!bizCompletedOpen){ wrap.innerHTML = ""; return; }
-    var tasks = completedTasks(business).sort(function(a,b){ return new Date(b.completedAt) - new Date(a.completedAt); });
-    var html = '<div class="section-title" style="margin-top:14px;">Completed History</div>';
-    if(tasks.length === 0){
-      html += '<div class="empty-state"><div class="big">✅</div><p>Nothing completed yet — finished tasks will show up here.</p></div>';
-      wrap.innerHTML = html;
-      return;
-    }
-    html += expandableListHTML(tasks, "bizCompleted:" + business.id, LIST_LIMIT, taskRowHTML);
+  function renderBizIncomingList(module, business){
+    var wrap = document.getElementById("bizIncomingList");
+    var all = bizIncomingTasks(business);
+    var filterKey = "bizIncoming:" + business.id;
+    var pending = all.filter(function(t){ return t.status !== "completed"; });
+    var completed = all.filter(function(t){ return t.status === "completed"; });
+    var showing = getStaffListFilter(filterKey) === "completed" ? completed : pending;
+    var html = pendingCompletedTabsHTML(filterKey, pending.length, completed.length);
+    html += showing.length === 0
+      ? '<div class="empty-state"><div class="big">📥</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "Nothing completed yet." : "No incoming tasks from staff yet.") + '</p></div>'
+      : showing.map(taskRowHTML).join("");
     wrap.innerHTML = html;
-    wireTaskRows(wrap, module, business, function(){ rerenderBizTaskLists(module, business); });
-    wireViewMoreButtons(wrap, function(){ renderBizCompletedSection(module, business); });
+    wirePendingCompletedTabs(wrap, filterKey, function(){ renderBizIncomingList(module, business); });
+    wireTaskRows(wrap, module, business, function(){ renderBizIncomingList(module, business); });
+  }
+
+  function renderBizOutgoingList(module, business){
+    var wrap = document.getElementById("bizOutgoingList");
+    var all = bizOutgoingTasks(business);
+    var filterKey = "bizOutgoing:" + business.id;
+    var pending = all.filter(function(t){ return t.status !== "completed"; });
+    var completed = all.filter(function(t){ return t.status === "completed"; });
+    var showing = getStaffListFilter(filterKey) === "completed" ? completed : pending;
+    var html = pendingCompletedTabsHTML(filterKey, pending.length, completed.length);
+    html += showing.length === 0
+      ? '<div class="empty-state"><div class="big">📤</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "Nothing completed yet." : "No tasks yet — add one above to get started.") + '</p></div>'
+      : showing.map(taskRowHTML).join("");
+    wrap.innerHTML = html;
+    wirePendingCompletedTabs(wrap, filterKey, function(){ renderBizOutgoingList(module, business); });
+    wireTaskRows(wrap, module, business, function(){ renderBizOutgoingList(module, business); });
   }
 
   function renderBizManagePanel(module, business){
@@ -3782,6 +4557,461 @@
   }
 
   /* =========================================================
+     DRIVER MANAGEMENT & VEHICLE PICKUP (global, lives in Summary)
+     ========================================================= */
+  var driverMgmtOpen = false;
+  var yardMgmtOpen = false;
+  var driverManageOpen = false;
+  var yardRateManageId = null;
+  var newPickupFormOpen = false;
+  var pickupPaymentFormOpen = {}; // pickupId -> bool, transient
+  var newAdvanceFormOpen = false;
+
+  function pickupTotalPaid(pickup){
+    return pickup.payments.reduce(function(sum, p){ return sum + numOrZero(p.amount); }, 0);
+  }
+  function pickupBalance(pickup){
+    return numOrZero(pickup.amount) - pickupTotalPaid(pickup);
+  }
+  function driverName(driverId){
+    var d = data.driverPickup.drivers.find(function(x){ return x.id === driverId; });
+    return d ? d.name : "Unknown driver";
+  }
+  function yardName(yardId){
+    var y = data.driverPickup.yards.find(function(x){ return x.id === yardId; });
+    return y ? y.name : "Unknown yard";
+  }
+  // Global per-driver ledger — replaces per-pickup closing. Advances count toward "paid" since they
+  // reduce what the driver is still owed overall, even though they aren't tied to a specific vehicle.
+  function driverTotals(driverId){
+    var pickups = data.driverPickup.pickups.filter(function(p){ return p.driverId === driverId; });
+    var advances = data.driverPickup.advances.filter(function(a){ return a.driverId === driverId; });
+    var generated = pickups.reduce(function(sum, p){ return sum + numOrZero(p.amount); }, 0);
+    var paidOnPickups = pickups.reduce(function(sum, p){ return sum + pickupTotalPaid(p); }, 0);
+    var paidAdvances = advances.reduce(function(sum, a){ return sum + numOrZero(a.amount); }, 0);
+    var paid = paidOnPickups + paidAdvances;
+    return {generated:generated, paid:paid, outstanding: generated - paid};
+  }
+  function driverLedgerListHTML(){
+    var dp = data.driverPickup;
+    if(dp.drivers.length === 0) return '<div class="empty-state"><div class="big">🧑‍✈️</div><p>No drivers yet — add one in Manage.</p></div>';
+    return dp.drivers.map(function(d){
+      var t = driverTotals(d.id);
+      return '<div class="card card-tight">' +
+        '<div class="hist-row" style="border:none;padding:0 0 8px;">' +
+          '<div class="left"><div class="date" style="font-weight:600;">' + esc(d.name) + '</div></div>' +
+          '<button class="link-btn driver-statement-btn" data-driver-id="' + d.id + '" style="padding:0;">View Statement</button>' +
+        '</div>' +
+        '<div class="biz-stats-grid" style="grid-template-columns:repeat(3,1fr);">' +
+          '<div class="biz-stat-cell"><div class="bsc-label">Generated</div><div class="bsc-value">₹' + fmtMoney(t.generated) + '</div></div>' +
+          '<div class="biz-stat-cell"><div class="bsc-label">Paid</div><div class="bsc-value" style="color:var(--up);">₹' + fmtMoney(t.paid) + '</div></div>' +
+          '<div class="biz-stat-cell"><div class="bsc-label">Outstanding</div><div class="bsc-value" style="color:' + (t.outstanding > 0 ? "var(--danger)" : "var(--up)") + ';">₹' + fmtMoney(t.outstanding) + '</div></div>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+  function driverStatementRows(driverId, fromDate, toDate){
+    var pickups = data.driverPickup.pickups.filter(function(p){ return p.driverId === driverId; });
+    var advances = data.driverPickup.advances.filter(function(a){ return a.driverId === driverId; });
+    function inRange(dateStr){
+      var d = (dateStr || "").slice(0, 10);
+      if(fromDate && d < fromDate) return false;
+      if(toDate && d > toDate) return false;
+      return true;
+    }
+    var rows = [];
+    pickups.forEach(function(p){
+      if(inRange(p.createdAt)){
+        rows.push({date: p.createdAt, label: "Pickup — " + p.vehicleNumber + " (" + p.category + ")", generated: numOrZero(p.amount), paid: 0});
+      }
+      p.payments.forEach(function(pay){
+        if(inRange(pay.timestamp)){
+          rows.push({date: pay.timestamp, label: "Payment — " + p.vehicleNumber + (pay.notes ? (" (" + pay.notes + ")") : ""), generated: 0, paid: numOrZero(pay.amount)});
+        }
+      });
+    });
+    advances.forEach(function(a){
+      if(inRange(a.timestamp)){
+        rows.push({date: a.timestamp, label: "Direct advance" + (a.notes ? (" — " + a.notes) : ""), generated: 0, paid: numOrZero(a.amount)});
+      }
+    });
+    return rows.sort(function(a, b){ return new Date(a.date) - new Date(b.date); });
+  }
+  function renderDriverStatementBody(driverId, fromDate, toDate){
+    var driver = data.driverPickup.drivers.find(function(d){ return d.id === driverId; });
+    var rows = driverStatementRows(driverId, fromDate, toDate);
+    var totalGenerated = rows.reduce(function(s, r){ return s + r.generated; }, 0);
+    var totalPaid = rows.reduce(function(s, r){ return s + r.paid; }, 0);
+    var html = '<div class="modal-header"><h3 class="modal-title">Statement — ' + esc(driver ? driver.name : "Driver") + '</h3><button class="modal-close-btn" id="modalCloseBtn">✕</button></div>';
+    html += '<div class="modal-body">';
+    html += '<div class="row-2" style="margin-bottom:14px;">' +
+      '<div class="field" style="margin-bottom:0;"><label>From</label><input class="input" type="date" id="stmtFrom" value="' + (fromDate || "") + '"></div>' +
+      '<div class="field" style="margin-bottom:0;"><label>To</label><input class="input" type="date" id="stmtTo" value="' + (toDate || "") + '"></div>' +
+    '</div>';
+    html += '<button class="btn btn-primary btn-sm" id="btnStmtFilter" style="width:100%;margin-bottom:14px;">Filter</button>';
+    if(rows.length === 0){
+      html += '<div class="empty-state"><div class="big">📄</div><p>No transactions in this range.</p></div>';
+    }else{
+      html += '<div class="sheet-scroll"><table class="sheet-table statement-table"><thead><tr><th>Date</th><th>Transaction</th><th>Generated</th><th>Paid</th></tr></thead><tbody>' +
+        rows.map(function(r){
+          return '<tr><td>' + fmtDate(r.date) + '</td><td>' + esc(r.label) + '</td>' +
+            '<td>' + (r.generated ? ("₹" + fmtMoney(r.generated)) : "—") + '</td>' +
+            '<td>' + (r.paid ? ("₹" + fmtMoney(r.paid)) : "—") + '</td></tr>';
+        }).join("") +
+      '</tbody></table></div>';
+    }
+    html += '<div class="biz-stats-grid" style="grid-template-columns:repeat(3,1fr);margin-top:14px;">' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Generated</div><div class="bsc-value">₹' + fmtMoney(totalGenerated) + '</div></div>' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Paid</div><div class="bsc-value" style="color:var(--up);">₹' + fmtMoney(totalPaid) + '</div></div>' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Balance</div><div class="bsc-value" style="color:' + ((totalGenerated - totalPaid) > 0 ? "var(--danger)" : "var(--up)") + ';">₹' + fmtMoney(totalGenerated - totalPaid) + '</div></div>' +
+    '</div>';
+    html += '</div>';
+    return html;
+  }
+  function openDriverStatementModal(driverId){
+    showModal(renderDriverStatementBody(driverId, "", ""));
+    wireDriverStatementModal(driverId);
+  }
+  function wireDriverStatementModal(driverId){
+    var btn = document.getElementById("btnStmtFilter");
+    if(btn) btn.addEventListener("click", function(){
+      var from = document.getElementById("stmtFrom").value;
+      var to = document.getElementById("stmtTo").value;
+      showModal(renderDriverStatementBody(driverId, from, to));
+      wireDriverStatementModal(driverId);
+    });
+  }
+
+  function renderSummaryDriverPanel(){
+    var wrap = document.getElementById("summaryDriverInner");
+    if(!wrap) return;
+    var dp = data.driverPickup;
+
+    var html = '<div class="sheet-table-card">';
+    html += '<div class="section-title" style="margin-top:0;">Driver Ledger</div>';
+    html += '<p class="backup-note">Global running balance per driver — generated across all vehicle pickups, total paid (including direct advances), and what\'s still outstanding.</p>';
+    html += driverLedgerListHTML();
+    html += '</div>';
+
+    html += '<div class="sheet-table-card">' +
+      '<div class="sheet-table-header"><span class="sheet-table-title">Vehicle Pickups</span>' +
+        '<button class="btn btn-primary btn-header-action" id="btnToggleNewPickup">' + (newPickupFormOpen ? "Close" : "+ Pickup") + '</button></div>' +
+      '<div id="newPickupFormWrap"></div>' +
+      (dp.pickups.length === 0 ? '<div class="empty-state"><div class="big">🚚</div><p>No pickups recorded yet.</p></div>' :
+        dp.pickups.slice().sort(function(a,b){ return new Date(b.createdAt) - new Date(a.createdAt); }).map(pickupCardHTML).join("")) +
+    '</div>';
+
+    html += '<div class="sheet-table-card">' +
+      '<div class="sheet-table-header"><span class="sheet-table-title">Direct Advances</span>' +
+        '<button class="btn btn-primary btn-header-action" id="btnToggleNewAdvance">' + (newAdvanceFormOpen ? "Close" : "+ Advance") + '</button></div>' +
+      '<div id="newAdvanceFormWrap"></div>' +
+      (dp.advances.length === 0 ? '<div class="empty-state"><div class="big">💵</div><p>No advances recorded.</p></div>' :
+        dp.advances.slice().sort(function(a,b){ return new Date(b.timestamp) - new Date(a.timestamp); }).map(advanceCardHTML).join("")) +
+    '</div>';
+
+    html += '<div class="sheet-table-card">' +
+      '<div class="sheet-table-header"><span class="sheet-table-title">⚙️ Manage</span>' +
+        '<button class="btn btn-ghost btn-sm" id="btnToggleDriverManage">' + (driverManageOpen ? "Close" : "Drivers & Yards") + '</button></div>' +
+      '<div id="driverManageWrap"></div>' +
+    '</div>';
+
+    wrap.innerHTML = html;
+
+    document.getElementById("btnToggleNewPickup").addEventListener("click", function(){ newPickupFormOpen = !newPickupFormOpen; renderSummaryDriverPanel(); });
+    document.getElementById("btnToggleNewAdvance").addEventListener("click", function(){ newAdvanceFormOpen = !newAdvanceFormOpen; renderSummaryDriverPanel(); });
+    document.getElementById("btnToggleDriverManage").addEventListener("click", function(){ driverManageOpen = !driverManageOpen; renderSummaryDriverPanel(); });
+
+    wrap.querySelectorAll(".driver-statement-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){ openDriverStatementModal(btn.getAttribute("data-driver-id")); });
+    });
+
+    if(newPickupFormOpen) renderNewPickupForm();
+    if(newAdvanceFormOpen) renderNewAdvanceForm();
+    if(driverManageOpen){
+      var mgrWrap = document.getElementById("driverManageWrap");
+      mgrWrap.innerHTML = '<div class="section-title" style="margin-top:0;">Drivers</div><div id="driverMgmtWrap"></div>' +
+        '<div class="section-title">Yards &amp; Pricing</div><div id="yardMgmtWrap"></div>';
+      driverMgmtOpen = true; yardMgmtOpen = true;
+      renderDriverMgmt();
+      renderYardMgmt();
+    }
+
+    wirePickupCards();
+    wireAdvanceCards();
+  }
+
+  function renderDriverMgmt(){
+    var wrap = document.getElementById("driverMgmtWrap");
+    if(!wrap) return;
+    if(!driverMgmtOpen){ wrap.innerHTML = ""; return; }
+    var dp = data.driverPickup;
+    var html = '<div class="chip-row">' + (dp.drivers.length === 0 ? '<p class="backup-note" style="margin:0;">None yet.</p>' :
+      dp.drivers.map(function(d){ return '<span class="chip">' + esc(d.name) + ' <span class="x drv-del" data-id="' + d.id + '">✕</span></span>'; }).join("")) + '</div>';
+    html += '<div class="add-exercise-row" style="margin-top:8px;"><input class="input" id="newDriverName" placeholder="Driver name"><button class="btn btn-primary btn-sm" id="btnAddDriver">Add</button></div>';
+    wrap.innerHTML = html;
+    document.getElementById("btnAddDriver").addEventListener("click", function(){
+      var name = document.getElementById("newDriverName").value.trim();
+      if(!name){ toast("Enter a driver name", true); return; }
+      dp.drivers.push({id: uid(), name:name});
+      saveData();
+      renderDriverMgmt();
+      toast(name + " added");
+    });
+    wrap.querySelectorAll(".drv-del").forEach(function(x){
+      x.addEventListener("click", function(){
+        if(!confirm("Delete this driver? This can't be undone.")) return;
+        dp.drivers = dp.drivers.filter(function(d){ return d.id !== x.getAttribute("data-id"); });
+        saveData();
+        renderDriverMgmt();
+      });
+    });
+  }
+
+  function renderYardMgmt(){
+    var wrap = document.getElementById("yardMgmtWrap");
+    if(!wrap) return;
+    if(!yardMgmtOpen){ wrap.innerHTML = ""; return; }
+    var dp = data.driverPickup;
+    var html = '<div class="manage-item"><label>Yards</label>';
+    html += dp.yards.length === 0 ? '<p class="backup-note">None yet.</p>' : dp.yards.map(function(y){
+      return '<div class="field-toggle-row"><div><div class="ftlabel">' + esc(y.name) + '</div><div class="fthint">' + y.rates.length + ' rate' + (y.rates.length === 1 ? "" : "s") + ' set</div></div>' +
+        '<button class="link-btn yard-manage-rates" data-id="' + y.id + '" style="padding:0;margin-right:10px;">Rates</button>' +
+        '<button class="icon-btn yard-del" data-id="' + y.id + '" title="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>';
+    }).join("");
+    html += '<div class="add-exercise-row" style="margin-top:10px;"><input class="input" id="newYardName" placeholder="Yard name (e.g. Malappuram)"><button class="btn btn-primary btn-sm" id="btnAddYard">Add Yard</button></div></div>';
+
+    var yard = yardRateManageId ? dp.yards.find(function(y){ return y.id === yardRateManageId; }) : null;
+    if(yard){
+      html += '<div class="manage-item" style="margin-top:14px;"><label>Rates for ' + esc(yard.name) + '</label>';
+      html += yard.rates.length === 0 ? '<p class="backup-note">No rates yet.</p>' : yard.rates.map(function(r){
+        return '<div class="field-toggle-row"><div><div class="ftlabel">' + esc(r.category) + '</div><div class="fthint">₹' + esc(r.amount) + '</div></div>' +
+          '<button class="icon-btn rate-del" data-yard-id="' + yard.id + '" data-rate-id="' + r.id + '" title="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>';
+      }).join("");
+      html += '<div class="row-2" style="margin-top:8px;"><input class="input" id="newRateCategory" placeholder="e.g. 2-Wheeler CNG"><input class="input input-mono" id="newRateAmount" placeholder="Amount" inputmode="decimal"></div>';
+      html += '<button class="btn btn-primary btn-sm" id="btnAddRate" style="margin-top:8px;">Add Rate</button></div>';
+    }
+    wrap.innerHTML = html;
+
+    document.getElementById("btnAddYard").addEventListener("click", function(){
+      var name = document.getElementById("newYardName").value.trim();
+      if(!name){ toast("Enter a yard name", true); return; }
+      var newYard = {id: uid(), name:name, rates:[]};
+      dp.yards.push(newYard);
+      yardRateManageId = newYard.id;
+      saveData();
+      renderYardMgmt();
+      toast(name + " added");
+    });
+    wrap.querySelectorAll(".yard-del").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        if(!confirm("Delete this yard and its rates? This can't be undone.")) return;
+        var yid = btn.getAttribute("data-id");
+        dp.yards = dp.yards.filter(function(y){ return y.id !== yid; });
+        if(yardRateManageId === yid) yardRateManageId = null;
+        saveData();
+        renderYardMgmt();
+      });
+    });
+    wrap.querySelectorAll(".yard-manage-rates").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var yid = btn.getAttribute("data-id");
+        yardRateManageId = yardRateManageId === yid ? null : yid;
+        renderYardMgmt();
+      });
+    });
+    var addRateBtn = document.getElementById("btnAddRate");
+    if(addRateBtn) addRateBtn.addEventListener("click", function(){
+      var cat = document.getElementById("newRateCategory").value.trim();
+      var amt = document.getElementById("newRateAmount").value.trim();
+      if(!cat || !amt){ toast("Enter both category and amount", true); return; }
+      var y = dp.yards.find(function(y){ return y.id === yardRateManageId; });
+      if(y){ y.rates.push({id: uid(), category:cat, amount:amt}); saveData(); renderYardMgmt(); toast("Rate added"); }
+    });
+    wrap.querySelectorAll(".rate-del").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var y = dp.yards.find(function(y){ return y.id === btn.getAttribute("data-yard-id"); });
+        if(y){ y.rates = y.rates.filter(function(r){ return r.id !== btn.getAttribute("data-rate-id"); }); saveData(); renderYardMgmt(); }
+      });
+    });
+  }
+
+  function renderNewPickupForm(){
+    var wrap = document.getElementById("newPickupFormWrap");
+    if(!wrap) return;
+    if(!newPickupFormOpen){ wrap.innerHTML = ""; return; }
+    var dp = data.driverPickup;
+    var vehicles = getCombinedVehicleOptions();
+    wrap.innerHTML = '<div class="quickadd">' +
+      '<div class="field" style="margin-bottom:10px;"><label>Driver</label><select class="input" id="pickupDriverSelect">' +
+        (dp.drivers.length === 0 ? '<option value="">No drivers yet — add one in Manage</option>' : dp.drivers.map(function(d){ return '<option value="' + d.id + '">' + esc(d.name) + '</option>'; }).join("")) +
+      '</select></div>' +
+      '<div class="field" style="margin-bottom:10px;"><label>Vehicle</label><select class="input" id="pickupVehicleSelect">' +
+        (vehicles.length === 0 ? '<option value="">No vehicles in Stock or Stock Prep yet</option>' : vehicles.map(function(v){ return '<option value="' + esc(v.vehicleNumber) + '" data-label="' + esc(v.label) + '">' + esc(v.vehicleNumber) + ' — ' + esc(v.label) + '</option>'; }).join("")) +
+      '</select></div>' +
+      '<div class="field" style="margin-bottom:10px;"><label>Yard</label><select class="input" id="pickupYardSelect">' +
+        (dp.yards.length === 0 ? '<option value="">No yards yet — add one in Manage</option>' : dp.yards.map(function(y){ return '<option value="' + y.id + '">' + esc(y.name) + '</option>'; }).join("")) +
+      '</select></div>' +
+      '<div class="field" style="margin-bottom:6px;"><label>Category</label><select class="input" id="pickupCategorySelect"><option value="">— Select a yard first —</option></select></div>' +
+      '<p class="backup-note" id="pickupRateInfo" style="margin:0 0 10px;">Yard rate: —</p>' +
+      '<div class="field" style="margin-bottom:10px;"><label>Amount Paid Now <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><input class="input input-mono" type="text" inputmode="decimal" id="pickupAmountPaidInput" placeholder="e.g. 1000"></div>' +
+      '<button class="btn btn-primary" id="btnCreatePickup" style="width:100%;">Create Pickup</button>' +
+    '</div>';
+
+    function refreshCategoryOptions(){
+      var yardId = document.getElementById("pickupYardSelect").value;
+      var yard = dp.yards.find(function(y){ return y.id === yardId; });
+      var catSelect = document.getElementById("pickupCategorySelect");
+      if(!yard || yard.rates.length === 0){
+        catSelect.innerHTML = '<option value="">No rates set for this yard</option>';
+        document.getElementById("pickupRateInfo").textContent = "Yard rate: —";
+        return;
+      }
+      catSelect.innerHTML = yard.rates.map(function(r){ return '<option value="' + r.id + '">' + esc(r.category) + '</option>'; }).join("");
+      updateRateInfo();
+    }
+    function updateRateInfo(){
+      var yardId = document.getElementById("pickupYardSelect").value;
+      var yard = dp.yards.find(function(y){ return y.id === yardId; });
+      var rateId = document.getElementById("pickupCategorySelect").value;
+      var rate = yard ? yard.rates.find(function(r){ return r.id === rateId; }) : null;
+      document.getElementById("pickupRateInfo").textContent = rate ? ("Yard rate (for reference — balance is tracked against this): ₹" + rate.amount) : "Yard rate: —";
+    }
+    document.getElementById("pickupYardSelect").addEventListener("change", refreshCategoryOptions);
+    document.getElementById("pickupCategorySelect").addEventListener("change", updateRateInfo);
+    refreshCategoryOptions();
+
+    document.getElementById("btnCreatePickup").addEventListener("click", function(){
+      var driverId = document.getElementById("pickupDriverSelect").value;
+      var vehicleSelect = document.getElementById("pickupVehicleSelect");
+      var vehicleNumber = vehicleSelect.value;
+      var vehicleLabel = vehicleSelect.selectedOptions.length ? (vehicleSelect.selectedOptions[0].getAttribute("data-label") || "") : "";
+      var yardId = document.getElementById("pickupYardSelect").value;
+      var yard = dp.yards.find(function(y){ return y.id === yardId; });
+      var rateId = document.getElementById("pickupCategorySelect").value;
+      var rate = yard ? yard.rates.find(function(r){ return r.id === rateId; }) : null;
+      var amountPaidNow = document.getElementById("pickupAmountPaidInput").value.trim();
+      if(!driverId){ toast("Select a driver", true); return; }
+      if(!vehicleNumber){ toast("Select a vehicle", true); return; }
+      if(!yardId || !rate){ toast("Select a yard and category with a rate set", true); return; }
+      var newPickup = {
+        id: uid(), driverId:driverId, vehicleNumber:vehicleNumber, vehicleLabel:vehicleLabel,
+        yardId:yardId, category: rate.category, amount: rate.amount, payments:[], closed:false, createdAt:new Date().toISOString()
+      };
+      if(amountPaidNow){
+        newPickup.payments.push({id: uid(), amount: amountPaidNow, notes:"", date: todayDateInputValue(), timestamp:new Date().toISOString()});
+      }
+      dp.pickups.push(newPickup);
+      saveData();
+      newPickupFormOpen = false;
+      renderSummaryDriverPanel();
+      toast("Pickup created");
+    });
+  }
+
+  function pickupCardHTML(pickup){
+    var paid = pickupTotalPaid(pickup);
+    var balance = pickupBalance(pickup);
+    var payOpen = !!pickupPaymentFormOpen[pickup.id];
+    var html = '<div class="card card-tight">' +
+      '<div class="hist-row" style="border:none;padding:0 0 6px;">' +
+        '<div class="left"><div class="date" style="font-weight:600;">' + esc(pickup.vehicleNumber) + (pickup.vehicleLabel ? (' — ' + esc(pickup.vehicleLabel)) : '') + '</div>' +
+        '<div class="sess">' + esc(driverName(pickup.driverId)) + ' · ' + esc(yardName(pickup.yardId)) + ' · ' + esc(pickup.category) + '</div></div>' +
+        '<div class="right">' + (balance <= 0 ? '<span class="badge-pill completed">Settled</span>' : '<span class="badge-pill pending-red">Balance ₹' + fmtMoney(balance) + '</span>') + '</div>' +
+      '</div>';
+    html += '<div class="biz-stats-grid" style="grid-template-columns:repeat(3,1fr);margin:8px 0;">' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Rate</div><div class="bsc-value">₹' + fmtMoney(numOrZero(pickup.amount)) + '</div></div>' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Paid</div><div class="bsc-value" style="color:var(--up);">₹' + fmtMoney(paid) + '</div></div>' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Balance</div><div class="bsc-value" style="color:' + (balance > 0 ? "var(--danger)" : "var(--up)") + ';">₹' + fmtMoney(balance) + '</div></div>' +
+    '</div>';
+    html += '<button class="btn btn-ghost btn-sm pickup-toggle-pay" data-pickup-id="' + pickup.id + '" style="width:100%;">' + (payOpen ? "Close" : "+ Payment") + '</button>';
+    html += '<div id="pickupPayFormWrap_' + pickup.id + '"></div>';
+    if(pickup.payments.length > 0){
+      html += '<div style="margin-top:8px;">' + pickup.payments.slice().reverse().map(function(pay){
+        return '<div class="sess" style="padding:3px 0;">₹' + esc(pay.amount) + ' on ' + fmtDate(pay.date) + (pay.notes ? (' — ' + esc(pay.notes)) : '') + '</div>';
+      }).join("") + '</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function renderPickupPayForm(pickup){
+    var wrap = document.getElementById("pickupPayFormWrap_" + pickup.id);
+    if(!wrap) return;
+    wrap.innerHTML = '<div class="quickadd" style="margin-top:8px;">' +
+      '<div class="row-2"><input class="input input-mono" id="payAmount_' + pickup.id + '" placeholder="Amount" inputmode="decimal"><input class="input" type="date" id="payDate_' + pickup.id + '" value="' + todayDateInputValue() + '"></div>' +
+      '<input class="input" id="payNotes_' + pickup.id + '" placeholder="Notes (optional)" style="margin-top:8px;">' +
+      '<button class="btn btn-primary btn-sm" id="btnSavePay_' + pickup.id + '" style="width:100%;margin-top:8px;">Record Payment</button>' +
+    '</div>';
+    document.getElementById("btnSavePay_" + pickup.id).addEventListener("click", function(){
+      var amt = document.getElementById("payAmount_" + pickup.id).value.trim();
+      if(!amt){ toast("Enter an amount", true); return; }
+      pickup.payments.push({id: uid(), amount:amt, notes: document.getElementById("payNotes_" + pickup.id).value.trim(), date: document.getElementById("payDate_" + pickup.id).value || todayDateInputValue(), timestamp:new Date().toISOString()});
+      saveData();
+      pickupPaymentFormOpen[pickup.id] = false;
+      renderSummaryDriverPanel();
+      toast("Payment recorded");
+    });
+  }
+
+  function wirePickupCards(){
+    var wrap = document.getElementById("summaryDriverInner");
+    wrap.querySelectorAll(".pickup-toggle-pay").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-pickup-id");
+        pickupPaymentFormOpen[id] = !pickupPaymentFormOpen[id];
+        renderSummaryDriverPanel();
+      });
+    });
+    data.driverPickup.pickups.forEach(function(p){
+      if(pickupPaymentFormOpen[p.id]) renderPickupPayForm(p);
+    });
+  }
+
+  function renderNewAdvanceForm(){
+    var wrap = document.getElementById("newAdvanceFormWrap");
+    if(!wrap) return;
+    var dp = data.driverPickup;
+    wrap.innerHTML = '<div class="quickadd">' +
+      '<div class="field" style="margin-bottom:10px;"><label>Driver</label><select class="input" id="advDriverSelect">' +
+        (dp.drivers.length === 0 ? '<option value="">No drivers yet</option>' : dp.drivers.map(function(d){ return '<option value="' + d.id + '">' + esc(d.name) + '</option>'; }).join("")) +
+      '</select></div>' +
+      '<div class="row-2"><div class="field" style="margin-bottom:10px;"><label>Amount</label><input class="input input-mono" id="advAmount" inputmode="decimal"></div>' +
+      '<div class="field" style="margin-bottom:10px;"><label>Date</label><input class="input" type="date" id="advDate" value="' + todayDateInputValue() + '"></div></div>' +
+      '<div class="field" style="margin-bottom:10px;"><label>Notes</label><input class="input" id="advNotes" placeholder="Optional"></div>' +
+      '<button class="btn btn-primary" id="btnSaveAdvance" style="width:100%;">Record Advance</button>' +
+    '</div>';
+    document.getElementById("btnSaveAdvance").addEventListener("click", function(){
+      var driverId = document.getElementById("advDriverSelect").value;
+      var amt = document.getElementById("advAmount").value.trim();
+      if(!driverId){ toast("Select a driver", true); return; }
+      if(!amt){ toast("Enter an amount", true); return; }
+      dp.advances.push({id: uid(), driverId:driverId, amount:amt, notes: document.getElementById("advNotes").value.trim(), date: document.getElementById("advDate").value || todayDateInputValue(), timestamp:new Date().toISOString()});
+      saveData();
+      newAdvanceFormOpen = false;
+      renderSummaryDriverPanel();
+      toast("Advance recorded");
+    });
+  }
+  function advanceCardHTML(adv){
+    return '<div class="card card-tight"><div class="hist-row" style="border:none;padding:0;">' +
+      '<div class="left"><div class="date" style="font-weight:600;">₹' + esc(adv.amount) + ' to ' + esc(driverName(adv.driverId)) + '</div>' +
+      '<div class="sess">' + fmtDate(adv.date) + (adv.notes ? (' — ' + esc(adv.notes)) : '') + '</div></div>' +
+      '<button class="icon-btn adv-del" data-id="' + adv.id + '" title="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>' +
+    '</div></div>';
+  }
+  function wireAdvanceCards(){
+    var wrap = document.getElementById("summaryDriverInner");
+    wrap.querySelectorAll(".adv-del").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        if(!confirm("Delete this advance record? This can't be undone.")) return;
+        data.driverPickup.advances = data.driverPickup.advances.filter(function(a){ return a.id !== btn.getAttribute("data-id"); });
+        saveData();
+        renderSummaryDriverPanel();
+      });
+    });
+  }
+
+  /* =========================================================
      STAFF MODULE (Admin-managed directory, tasks, geofenced attendance, leave)
      ========================================================= */
   var staffView = "directory"; // "directory" | a staffMember.id
@@ -3848,7 +5078,7 @@
         '<div class="section-title" style="margin-top:0;">📥 Incoming Tasks</div>' +
         '<div id="staffTaskList"></div>' +
         '<div class="sheet-table-header" style="margin:16px 0 0;"><span class="section-title" style="margin:0;">📤 Outgoing Tasks (created by ' + esc(staff.name) + ')</span>' +
-          '<button class="btn btn-primary btn-sm" id="btnOpenNewTaskModal">+ New Task</button></div>' +
+          '<button class="btn btn-primary btn-header-action" id="btnOpenNewTaskModal">+ Task</button></div>' +
         '<div id="staffOutgoingList"></div>' +
         '<div class="section-title">Assigned Workflows</div>' +
         '<div id="staffWorkflowList"></div>' +
@@ -4132,6 +5362,9 @@
     // this view only still handles peer tasks (staff-to-staff), since those have no Business home.
     var canReviewExtension = task.extensionRequest && task.extensionRequest.status === "pending" &&
       viewerStaffId && task.createdBy === viewerStaffId;
+    var canChat = canViewTaskChat(task, isAdminView, viewerStaffId);
+    var chatViewerId = isAdminView ? "admin" : viewerStaffId;
+    var chatCount = (task.chat || []).length;
 
     var html = '<div class="task-card' + (!isCompleted ? " pending-task-card" : "") + '">';
     html += '<div class="task-topline"><span class="task-people-line">By ' + esc(taskCreatorName(task)) + ' → To ' + esc(taskAssigneeName(task)) + '</span>' + companyBadgeHTML(entry) + '</div>';
@@ -4143,6 +5376,7 @@
         (entry.isPeer ? '<span class="badge-pill badge-neutral">👤 Peer task</span>' : '') +
         (isCompleted ? '<span class="badge-pill completed">✓ Completed ' + fmtDate(task.completedAt) + '</span>' : taskDeadlineBadge(task)) +
         vehicleBadgeHTML(task) +
+        (canChat ? ('<span class="badge-pill badge-neutral task-chat-badge" data-task-id="' + task.id + '">💬' + (chatCount > 0 ? (" " + chatCount) : "") + '</span>') : '') +
         // Deliberately NOT reusing the green .completed badge style here — an approved extension only
         // updates the deadline, the task itself stays Pending, and the badge must never visually imply otherwise.
         (task.extensionRequest ? ('<span class="badge-pill" style="' + (task.extensionRequest.status === "approved" ? "color:var(--down);border-color:var(--down);" : task.extensionRequest.status === "rejected" ? "color:var(--danger);border-color:var(--danger);" : "") + '">📅 Extension: ' + esc(task.extensionRequest.status) + '</span>') : '') +
@@ -4152,6 +5386,7 @@
 
     if(notesOpen){
       html += '<div style="margin-top:8px;"><textarea class="input staff-task-notes" data-task-id="' + task.id + '" rows="2" placeholder="Add a note…">' + esc(task.notes || "") + '</textarea></div>';
+      if(canChat) html += taskChatSectionHTML(task, chatViewerId);
     }
     if(confirming){
       html += '<div class="task-confirm"><span>' + (isCompleted ? "Move this task back to pending?" : "Mark this task complete?") + '</span>' +
@@ -4205,10 +5440,20 @@
   }
 
   function wireStaffTaskCardEvents(wrap, module, staff, isAdminView, byId, rerender){
+    var chatViewerId = isAdminView ? "admin" : (staff ? staff.id : null);
+    var chatViewerName = isAdminView ? ADMIN_DISPLAY_NAME : (staff ? staff.name : "You");
+    wireTaskChat(wrap, function(taskId){ return byId[taskId]; }, chatViewerId, chatViewerName, rerender);
     wrap.querySelectorAll("[data-notes-toggle]").forEach(function(el){
       el.addEventListener("click", function(){
         var id = el.getAttribute("data-notes-toggle");
         staffTaskNotesOpen[id] = !staffTaskNotesOpen[id];
+        rerender();
+      });
+    });
+    wrap.querySelectorAll(".task-chat-badge").forEach(function(badge){
+      badge.addEventListener("click", function(e){
+        e.stopPropagation();
+        staffTaskNotesOpen[badge.getAttribute("data-task-id")] = true;
         rerender();
       });
     });
@@ -4363,6 +5608,156 @@
     });
   }
 
+  var staffPaperworkView = null; // null = vehicle list, or {business, tab, vehicle} when drilled in
+
+  function isVehiclePaperworkComplete(vehicle){
+    var stages = vehicle.paperworkStages || {};
+    var enabled = PAPERWORK_STAGES.filter(function(s){ return stages[s.key] && stages[s.key].toggle; });
+    if(enabled.length === 0) return false;
+    return enabled.every(function(s){ return stages[s.key].subStatus === "Completed"; });
+  }
+  function paperworkStageProgressLabel(vehicle){
+    var stages = vehicle.paperworkStages || {};
+    var enabled = PAPERWORK_STAGES.filter(function(s){ return stages[s.key] && stages[s.key].toggle; });
+    var done = enabled.filter(function(s){ return stages[s.key].subStatus === "Completed"; }).length;
+    if(enabled.length === 0) return '<span class="badge-pill badge-neutral">Not started</span>';
+    return '<span class="badge-pill' + (done === enabled.length ? " completed" : "") + '">' + done + ' / ' + enabled.length + ' stages</span>';
+  }
+
+  function renderStaffDashPaperworkTab(module, member){
+    var wrap = document.getElementById("staffDashPaperworkPanel");
+    if(!wrap) return;
+    if(staffPaperworkView){
+      renderStaffPaperworkVehicleDetail(module, member, staffPaperworkView);
+      return;
+    }
+    var allVehicles = getAllPrepVehiclesFlat();
+    var html = '<div class="section-title" style="margin-top:0;">Assigned Vehicle Paperwork</div>' +
+      '<p class="backup-note">Every vehicle uploaded in Stock Prep, across every business. Tap one to view and manage its paperwork.</p>';
+    if(allVehicles.length === 0){
+      html += '<div class="empty-state"><div class="big">📄</div><p>No vehicles in Stock Prep yet.</p></div>';
+    }else{
+      var filterKey = "staffPwVehicles";
+      var incomplete = allVehicles.filter(function(e){ return !isVehiclePaperworkComplete(e.vehicle); });
+      var completeList = allVehicles.filter(function(e){ return isVehiclePaperworkComplete(e.vehicle); });
+      var showing = getStaffListFilter(filterKey) === "completed" ? completeList : incomplete;
+      html += pendingCompletedTabsHTML(filterKey, incomplete.length, completeList.length);
+      html += showing.length === 0
+        ? '<div class="empty-state"><div class="big">' + (getStaffListFilter(filterKey) === "completed" ? "📄" : "✅") + '</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "No vehicles fully completed yet." : "Nothing incomplete right now.") + '</p></div>'
+        : showing.map(function(entry){
+            return '<div class="card card-tight staff-pw-open" data-vehicle-id="' + entry.vehicle.id + '">' +
+              '<div class="hist-row" style="border:none;padding:0;">' +
+                '<div class="left"><div class="date" style="font-weight:600;">' + esc(entry.vehicle.vehicleNumber || "—") + '</div>' +
+                  '<div class="sess">' + esc(entry.business.name) + (entry.vehicle.segment ? (' · ' + esc(entry.vehicle.segment)) : '') + '</div></div>' +
+                '<div class="right">' + paperworkStageProgressLabel(entry.vehicle) + '</div>' +
+              '</div>' +
+              '<button class="btn btn-primary btn-sm" style="width:100%;margin-top:10px;">Proceed →</button>' +
+            '</div>';
+          }).join("");
+      wrap.innerHTML = html;
+      wirePendingCompletedTabs(wrap, filterKey, function(){ renderStaffDashPaperworkTab(module, member); });
+      wrap.querySelectorAll(".staff-pw-open").forEach(function(card){
+        card.addEventListener("click", function(){
+          var vid = card.getAttribute("data-vehicle-id");
+          var entry = allVehicles.find(function(e){ return e.vehicle.id === vid; });
+          if(entry){ staffPaperworkView = entry; renderStaffDashPaperworkTab(module, member); }
+        });
+      });
+      return;
+    }
+    wrap.innerHTML = html;
+  }
+
+  var staffPaperworkWizardStage = {}; // vehicleId -> stage index (0-based), transient
+
+  function renderStaffPaperworkVehicleDetail(module, member, entry){
+    var wrap = document.getElementById("staffDashPaperworkPanel");
+    var vehicle = entry.vehicle;
+    if(!vehicle.paperworkStages) vehicle.paperworkStages = freshPaperworkStages();
+    var stageIdx = staffPaperworkWizardStage[vehicle.id] || 0;
+    var stageDef = PAPERWORK_STAGES[stageIdx];
+    var stageData = vehicle.paperworkStages[stageDef.key];
+
+    var html = '<button class="link-btn" id="btnBackToPwList" style="padding-left:0;margin-bottom:10px;">← Back to vehicle list</button>';
+    html += '<div class="pw-wizard-header">' +
+      '<div class="pw-wizard-vehicle">' + esc(vehicle.vehicleNumber || "Vehicle") + '</div>' +
+      '<div class="pw-wizard-sub">' + esc(entry.business.name) + (vehicle.segment ? (' · ' + esc(vehicle.segment)) : '') + '</div>' +
+    '</div>';
+    html += '<div class="pw-wizard-progress">Stage ' + (stageIdx + 1) + ' of ' + PAPERWORK_STAGES.length + ': ' + esc(stageDef.label) + '</div>';
+
+    html += '<div class="sheet-table-card">';
+    html += '<div class="section-title" style="margin-top:0;">' + esc(stageDef.label) + '</div>';
+    html += '<div class="field" style="margin-bottom:14px;"><label>Status</label><div class="chip-row">' +
+      PAPERWORK_SUBSTATUS_OPTIONS.map(function(opt){
+        return '<label class="chip' + (stageData.subStatus === opt ? " selected" : "") + '" style="cursor:pointer;"><input type="radio" name="pwSubStatus" value="' + esc(opt) + '" ' + (stageData.subStatus === opt ? "checked" : "") + ' style="margin-right:5px;">' + esc(opt) + '</label>';
+      }).join("") +
+    '</div></div>';
+    html += '<div class="field" style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">' +
+      '<label style="margin:0;">Applicable to this vehicle</label>' +
+      '<button class="switch' + (stageData.toggle ? " on" : "") + '" id="pwStageToggle"><span class="knob"></span></button>' +
+    '</div>';
+    if(stageDef.hasDeadEnd){
+      html += '<div class="field" style="margin-bottom:0;"><label>Dead End Date <span style="text-transform:none;letter-spacing:0;">(name change deadline)</span></label><input class="input" type="date" id="pwDeadEndDate" value="' + (stageData.deadEndDate || "") + '"></div>';
+    }
+    html += '</div>';
+
+    html += '<div class="pw-wizard-nav">' +
+      '<button class="btn pw-nav-prev" id="pwBtnPrev"' + (stageIdx === 0 ? " disabled" : "") + '>← Previous</button>' +
+      '<button class="btn pw-nav-save" id="pwBtnSave">Save</button>' +
+      '<button class="btn pw-nav-next" id="pwBtnNext">' + (stageIdx === PAPERWORK_STAGES.length - 1 ? "Finish →" : "Next →") + '</button>' +
+    '</div>';
+
+    wrap.innerHTML = html;
+
+    function readForm(){
+      var checked = wrap.querySelector('input[name="pwSubStatus"]:checked');
+      if(checked) stageData.subStatus = checked.value;
+      if(stageDef.hasDeadEnd){
+        var d = document.getElementById("pwDeadEndDate");
+        if(d) stageData.deadEndDate = d.value || null;
+      }
+    }
+    function saveStage(){
+      readForm();
+      stageData.savedAt = new Date().toISOString();
+      saveData();
+    }
+
+    document.getElementById("btnBackToPwList").addEventListener("click", function(){
+      staffPaperworkView = null;
+      renderStaffDashPaperworkTab(module, member);
+    });
+    document.getElementById("pwStageToggle").addEventListener("click", function(){
+      stageData.toggle = !stageData.toggle;
+      saveData();
+      renderStaffPaperworkVehicleDetail(module, member, entry);
+    });
+    document.getElementById("pwBtnSave").addEventListener("click", function(){
+      saveStage();
+      toast("Saved");
+      renderStaffPaperworkVehicleDetail(module, member, entry);
+    });
+    document.getElementById("pwBtnNext").addEventListener("click", function(){
+      saveStage();
+      if(stageIdx < PAPERWORK_STAGES.length - 1){
+        staffPaperworkWizardStage[vehicle.id] = stageIdx + 1;
+        renderStaffPaperworkVehicleDetail(module, member, entry);
+      }else{
+        toast("Paperwork wizard complete for this vehicle");
+        staffPaperworkView = null;
+        staffPaperworkWizardStage[vehicle.id] = 0;
+        renderStaffDashPaperworkTab(module, member);
+      }
+    });
+    document.getElementById("pwBtnPrev").addEventListener("click", function(){
+      saveStage();
+      if(stageIdx > 0){
+        staffPaperworkWizardStage[vehicle.id] = stageIdx - 1;
+        renderStaffPaperworkVehicleDetail(module, member, entry);
+      }
+    });
+  }
+
   /* ---------- Outgoing (peer-created) tasks + New Task modal ---------- */
   function renderStaffOutgoingList(module, staff){
     var wrap = document.getElementById("staffOutgoingList");
@@ -4422,10 +5817,10 @@
       var vehicleSelect = document.getElementById("newPeerTaskVehicle");
       var companyId = companySelect ? companySelect.value : "";
       var biz = allowedBusinesses.find(function(b){ return b.id === companyId; });
-      var vehicles = biz ? getVehicleNumbersForBusiness(biz) : [];
-      vehicleSelect.innerHTML = vehicles.length === 0
-        ? '<option value="">' + (biz ? "No vehicles in this company's Stock Report" : "— Select a company first —") + '</option>'
-        : '<option value="">— None —</option>' + vehicles.map(function(v){ return '<option value="' + esc(v) + '">' + esc(v) + '</option>'; }).join("");
+      var vehicleOpts = biz ? getVehicleOptionsForBusiness(biz) : [];
+      vehicleSelect.innerHTML = vehicleOpts.length === 0
+        ? '<option value="">' + (biz ? "No vehicles in this company's Stock or Stock Prep" : "— Select a company first —") + '</option>'
+        : '<option value="">— None —</option>' + vehicleOpts.map(function(v){ return '<option value="' + esc(v.vehicleNumber) + '">' + esc(v.vehicleNumber) + ' [' + esc(v.sourceLabel) + ']</option>'; }).join("");
     }
     var companySelectEl = document.getElementById("newPeerTaskCompany");
     if(companySelectEl) companySelectEl.addEventListener("change", refreshVehicleOptions);
@@ -4441,7 +5836,7 @@
       var vehicleInput = document.getElementById("newPeerTaskVehicle");
       var vehicleNumber = vehicleInput ? (vehicleInput.value || null) : null;
       if(!title){ toast("Enter a task", true); return; }
-      var newTask = {id: uid(), title:title, deadline:date, status:"pending", createdAt:new Date().toISOString(), completedAt:null, notes:noteText, assignedTo:assignTo, createdBy:creatorId, extensionRequest:null, isNew:true, vehicleNumber:vehicleNumber, companyId:null};
+      var newTask = {id: uid(), title:title, deadline:date, status:"pending", createdAt:new Date().toISOString(), completedAt:null, notes:noteText, assignedTo:assignTo, createdBy:creatorId, extensionRequest:null, isNew:true, vehicleNumber:vehicleNumber, companyId:null, chat:[]};
 
       // Route by business tag: a tagged company means this task belongs to that Business's own Tasks tab,
       // not the general staff task pool — it lives there just like any task Admin created from inside that business.
@@ -4835,9 +6230,11 @@
     html += '<div class="biz-subtabs" id="staffDashTabs">' +
       '<button class="biz-subtab-btn' + (staffDashboardTab === "attendance" ? " active" : "") + '" data-dashtab="attendance">📍 Attendance</button>' +
       '<button class="biz-subtab-btn' + (staffDashboardTab === "work" ? " active" : "") + '" data-dashtab="work">✅ Work</button>' +
+      '<button class="biz-subtab-btn' + (staffDashboardTab === "paperwork" ? " active" : "") + '" data-dashtab="paperwork">📄 Assigned Vehicle Paperwork</button>' +
     '</div>';
     html += '<div id="staffDashAttendancePanel" style="display:' + (staffDashboardTab === "attendance" ? "block" : "none") + ';"></div>';
     html += '<div id="staffDashWorkPanel" style="display:' + (staffDashboardTab === "work" ? "block" : "none") + ';"></div>';
+    html += '<div id="staffDashPaperworkPanel" style="display:' + (staffDashboardTab === "paperwork" ? "block" : "none") + ';"></div>';
     html += '<button class="link-btn" id="btnStaffSwitchProfile" style="margin-top:16px;padding-left:0;">Not you? Switch profile</button>';
 
     wrap.innerHTML = html;
@@ -4845,6 +6242,7 @@
     wrap.querySelectorAll("#staffDashTabs .biz-subtab-btn").forEach(function(btn){
       btn.addEventListener("click", function(){
         staffDashboardTab = btn.getAttribute("data-dashtab");
+        staffPaperworkView = null;
         renderStaffDashboard(module, member);
       });
     });
@@ -4854,7 +6252,8 @@
     });
 
     if(staffDashboardTab === "attendance") renderStaffDashAttendanceTab(module, member);
-    else renderStaffDashWorkTab(module, member);
+    else if(staffDashboardTab === "work") renderStaffDashWorkTab(module, member);
+    else renderStaffDashPaperworkTab(module, member);
   }
 
   function renderStaffDashAttendanceTab(module, member){
@@ -4934,7 +6333,7 @@
     wrap.innerHTML =
       '<div class="section-title" style="margin-top:0;">📥 Incoming Tasks</div><div id="staffTaskList"></div>' +
       '<div class="sheet-table-header" style="margin:16px 0 0;"><span class="section-title" style="margin:0;">📤 Outgoing Tasks</span>' +
-        '<button class="btn btn-primary btn-sm" id="btnOpenNewTaskModal">+ New Task</button></div>' +
+        '<button class="btn btn-primary btn-header-action" id="btnOpenNewTaskModal">+ Task</button></div>' +
       '<div id="staffOutgoingList"></div>' +
       '<div class="section-title">My Workflows</div><div id="staffWorkflowList"></div>';
 
@@ -4981,6 +6380,37 @@
   var stockEditMode = {}; // tabId -> bool, transient
 
   function normalizeVehicleNumber(v){ return (v || "").toString().trim().toLowerCase(); }
+
+  // Combines Stock Report (Vehicle Number + Model) and Stock Prep Report (Vehicle Number + Segment) into
+  // one deduplicated list per vehicle, with Model/Segment merged into a single label (no duplicate text).
+  function getCombinedVehicleOptions(){
+    var map = {};
+    var bizModule = data.modules.business;
+    if(bizModule && bizModule.type === "business"){
+      (bizModule.businesses || []).forEach(function(biz){
+        (biz.tabs || []).forEach(function(tab){
+          if(tab.type === "stock"){
+            (tab.rows || []).forEach(function(r){
+              if(!r.vehicleNumber) return;
+              var key = normalizeVehicleNumber(r.vehicleNumber);
+              if(!map[key]) map[key] = {vehicleNumber: r.vehicleNumber, labels: []};
+              if(r.vehicleModel && map[key].labels.indexOf(r.vehicleModel) === -1) map[key].labels.push(r.vehicleModel);
+            });
+          }else if(tab.type === "stockprep"){
+            (tab.vehicles || []).forEach(function(v){
+              if(!v.vehicleNumber) return;
+              var key2 = normalizeVehicleNumber(v.vehicleNumber);
+              if(!map[key2]) map[key2] = {vehicleNumber: v.vehicleNumber, labels: []};
+              if(v.segment && map[key2].labels.indexOf(v.segment) === -1) map[key2].labels.push(v.segment);
+            });
+          }
+        });
+      });
+    }
+    return Object.keys(map).map(function(k){
+      return {vehicleNumber: map[k].vehicleNumber, label: map[k].labels.join(" / ") || "—"};
+    }).sort(function(a,b){ return a.vehicleNumber.localeCompare(b.vehicleNumber); });
+  }
 
   function mapExcelRowToStockFields(row){
     var normalizedRow = {};
@@ -5119,8 +6549,11 @@
   /* ---------- Stock Prep Report (vehicle reconditioning tracker) ---------- */
   var stockPrepView = {}; // tabId -> "list" | vehicleId, transient
   var stockPrepEditMode = {}; // tabId -> bool, transient
+  var stockPrepManageOpen = {}; // tabId -> bool, transient
+  var stockPrepManageCategory = {}; // tabId -> currently selected category for complaint/parts management, transient
   var prepMaintFormOpen = {}; // vehicleId -> bool, transient
   var prepPaperFormOpen = {}; // vehicleId -> bool, transient
+  var prepMaintFormState = {category: null}; // transient, remembers the last-picked category while the form is open
 
   function mapExcelRowToPrepFields(row){
     var normalizedRow = {};
@@ -5169,9 +6602,17 @@
     reader.readAsArrayBuffer(file);
   }
 
-  function prepStatusBadgeHTML(items){
+  function maintenanceReportLine(item){
+    var parts = (item.spareParts && item.spareParts.length) ? item.spareParts.join(", ") : "None";
+    return item.category + " - " + item.complaint + " -> Required Spare Parts: " + parts;
+  }
+  function paperworkReportLine(item){
+    return item.category + (item.notes ? (" - " + item.notes) : "");
+  }
+
+  function prepStatusBadgeHTML(items, kind){
     if(items.length === 0) return '<span class="badge-pill badge-neutral">None yet</span>';
-    var done = items.filter(function(i){ return i.status === "Done"; }).length;
+    var done = items.filter(function(i){ return kind === "paperwork" ? !!i.done : i.status === "Done"; }).length;
     var allDone = done === items.length;
     return '<span class="badge-pill' + (allDone ? " completed" : "") + '">' + done + ' / ' + items.length + ' done</span>';
   }
@@ -5188,17 +6629,139 @@
     }
   }
 
+  function renderStockPrepManagePanel(module, business, tab){
+    var wrap = document.getElementById("stockPrepManageWrap");
+    if(!wrap) return;
+    if(!stockPrepManageOpen[tab.id]){ wrap.innerHTML = ""; return; }
+    var cats = Object.keys(tab.maintenanceCatalog);
+    var selectedCat = stockPrepManageCategory[tab.id] && cats.indexOf(stockPrepManageCategory[tab.id]) !== -1 ? stockPrepManageCategory[tab.id] : (cats[0] || null);
+    var complaints = selectedCat ? (tab.maintenanceCatalog[selectedCat] || []) : [];
+    var parts = selectedCat ? (tab.sparePartsCatalog[selectedCat] || []) : [];
+
+    var html = '<div class="sheet-table-card">';
+    html += '<div class="section-title" style="margin-top:0;">Maintenance Categories</div>';
+    html += '<div class="chip-row">' + (cats.length === 0 ? '<p class="backup-note" style="margin:0;">None yet.</p>' :
+      cats.map(function(c){ return '<span class="chip">' + esc(c) + ' <span class="x mgr-del-cat" data-cat="' + esc(c) + '">✕</span></span>'; }).join("")) + '</div>';
+    html += '<div class="add-exercise-row" style="margin-top:8px;"><input class="input" id="mgrNewCat" placeholder="Add new category"><button class="btn btn-ghost btn-sm" id="btnMgrAddCat">Add</button></div>';
+    html += '</div>';
+
+    html += '<div class="sheet-table-card">';
+    html += '<div class="section-title" style="margin-top:0;">Complaints / Services &amp; Spare Parts</div>';
+    if(cats.length === 0){
+      html += '<p class="backup-note">Add a Maintenance Category above first.</p>';
+    }else{
+      html += '<div class="field" style="margin-bottom:14px;"><label>Category</label><select class="input" id="mgrCatSelect">' +
+        cats.map(function(c){ return '<option value="' + esc(c) + '"' + (c === selectedCat ? " selected" : "") + '>' + esc(c) + '</option>'; }).join("") + '</select></div>';
+      html += '<div class="manage-item"><label>Complaints / Services</label><div class="chip-row">' +
+        (complaints.length === 0 ? '<p class="backup-note" style="margin:0;">None yet.</p>' : complaints.map(function(c){ return '<span class="chip">' + esc(c) + ' <span class="x mgr-del-complaint" data-val="' + esc(c) + '">✕</span></span>'; }).join("")) + '</div>' +
+        '<div class="add-exercise-row" style="margin-top:6px;"><input class="input" id="mgrNewComplaint" placeholder="Add complaint / service"><button class="btn btn-ghost btn-sm" id="btnMgrAddComplaint">Add</button></div></div>';
+      html += '<div class="manage-item" style="margin-top:14px;"><label>Spare Parts</label><div class="chip-row">' +
+        (parts.length === 0 ? '<p class="backup-note" style="margin:0;">None yet.</p>' : parts.map(function(p){ return '<span class="chip">' + esc(p) + ' <span class="x mgr-del-part" data-val="' + esc(p) + '">✕</span></span>'; }).join("")) + '</div>' +
+        '<div class="add-exercise-row" style="margin-top:6px;"><input class="input" id="mgrNewPart" placeholder="Add spare part"><button class="btn btn-ghost btn-sm" id="btnMgrAddPart">Add</button></div></div>';
+    }
+    html += '</div>';
+
+    html += '<div class="sheet-table-card">';
+    html += '<div class="section-title" style="margin-top:0;">Paperwork Categories</div>';
+    html += '<div class="chip-row">' + tab.paperworkCatalog.map(function(c){ return '<span class="chip">' + esc(c) + ' <span class="x mgr-del-paper-cat" data-val="' + esc(c) + '">✕</span></span>'; }).join("") + '</div>';
+    html += '<div class="add-exercise-row" style="margin-top:8px;"><input class="input" id="mgrNewPaperCat" placeholder="Add paperwork category"><button class="btn btn-ghost btn-sm" id="btnMgrAddPaperCat">Add</button></div>';
+    html += '</div>';
+
+    wrap.innerHTML = html;
+
+    document.getElementById("btnMgrAddCat").addEventListener("click", function(){
+      var name = document.getElementById("mgrNewCat").value.trim();
+      if(!name){ toast("Enter a category name", true); return; }
+      if(!tab.maintenanceCatalog[name]) tab.maintenanceCatalog[name] = [];
+      if(!tab.sparePartsCatalog[name]) tab.sparePartsCatalog[name] = [];
+      stockPrepManageCategory[tab.id] = name;
+      saveData();
+      renderStockPrepManagePanel(module, business, tab);
+      toast(name + " category added");
+    });
+    wrap.querySelectorAll(".mgr-del-cat").forEach(function(x){
+      x.addEventListener("click", function(){
+        var cat = x.getAttribute("data-cat");
+        if(cats.length <= 1){ toast("Keep at least one category", true); return; }
+        if(!confirm('Delete category "' + cat + '"? Its complaints and spare parts lists will be removed too.')) return;
+        delete tab.maintenanceCatalog[cat];
+        delete tab.sparePartsCatalog[cat];
+        if(stockPrepManageCategory[tab.id] === cat) stockPrepManageCategory[tab.id] = null;
+        saveData();
+        renderStockPrepManagePanel(module, business, tab);
+        toast("Category deleted");
+      });
+    });
+    var catSelectEl = document.getElementById("mgrCatSelect");
+    if(catSelectEl) catSelectEl.addEventListener("change", function(){
+      stockPrepManageCategory[tab.id] = this.value;
+      renderStockPrepManagePanel(module, business, tab);
+    });
+    var addComplaintBtn = document.getElementById("btnMgrAddComplaint");
+    if(addComplaintBtn) addComplaintBtn.addEventListener("click", function(){
+      var name = document.getElementById("mgrNewComplaint").value.trim();
+      if(!name){ toast("Enter a complaint / service", true); return; }
+      if(tab.maintenanceCatalog[selectedCat].indexOf(name) === -1) tab.maintenanceCatalog[selectedCat].push(name);
+      saveData();
+      renderStockPrepManagePanel(module, business, tab);
+      toast(name + " added");
+    });
+    wrap.querySelectorAll(".mgr-del-complaint").forEach(function(x){
+      x.addEventListener("click", function(){
+        tab.maintenanceCatalog[selectedCat] = tab.maintenanceCatalog[selectedCat].filter(function(c){ return c !== x.getAttribute("data-val"); });
+        saveData();
+        renderStockPrepManagePanel(module, business, tab);
+      });
+    });
+    var addPartBtn = document.getElementById("btnMgrAddPart");
+    if(addPartBtn) addPartBtn.addEventListener("click", function(){
+      var name = document.getElementById("mgrNewPart").value.trim();
+      if(!name){ toast("Enter a spare part name", true); return; }
+      if(!tab.sparePartsCatalog[selectedCat]) tab.sparePartsCatalog[selectedCat] = [];
+      if(tab.sparePartsCatalog[selectedCat].indexOf(name) === -1) tab.sparePartsCatalog[selectedCat].push(name);
+      saveData();
+      renderStockPrepManagePanel(module, business, tab);
+      toast(name + " added");
+    });
+    wrap.querySelectorAll(".mgr-del-part").forEach(function(x){
+      x.addEventListener("click", function(){
+        tab.sparePartsCatalog[selectedCat] = (tab.sparePartsCatalog[selectedCat] || []).filter(function(p){ return p !== x.getAttribute("data-val"); });
+        saveData();
+        renderStockPrepManagePanel(module, business, tab);
+      });
+    });
+    document.getElementById("btnMgrAddPaperCat").addEventListener("click", function(){
+      var name = document.getElementById("mgrNewPaperCat").value.trim();
+      if(!name){ toast("Enter a category name", true); return; }
+      if(tab.paperworkCatalog.indexOf(name) === -1) tab.paperworkCatalog.push(name);
+      saveData();
+      renderStockPrepManagePanel(module, business, tab);
+      toast(name + " added");
+    });
+    wrap.querySelectorAll(".mgr-del-paper-cat").forEach(function(x){
+      x.addEventListener("click", function(){
+        if(tab.paperworkCatalog.length <= 1){ toast("Keep at least one category", true); return; }
+        tab.paperworkCatalog = tab.paperworkCatalog.filter(function(c){ return c !== x.getAttribute("data-val"); });
+        saveData();
+        renderStockPrepManagePanel(module, business, tab);
+      });
+    });
+  }
+
   function renderStockPrepList(module, business, tab){
     var panel = document.getElementById("bizTabInner");
     var editMode = !!stockPrepEditMode[tab.id];
+    var manageOpen = !!stockPrepManageOpen[tab.id];
 
     var html = '<div class="sheet-table-card">';
     html += '<div class="sheet-table-header"><span class="sheet-table-title">Stock Prep Report</span>' +
       '<button class="btn btn-ghost btn-sm sheet-edit-table-btn' + (editMode ? " active" : "") + '" id="btnToggleStockPrepEdit">' + (editMode ? "🔓 Editing" : "✏️ Edit Table") + '</button></div>';
     html += '<div class="btn-row" style="margin-bottom:12px;">' +
       '<button class="btn btn-primary btn-sm" id="btnUploadPrepExcel">📤 Upload Excel</button>' +
+      '<button class="btn btn-ghost btn-sm' + (manageOpen ? " active" : "") + '" id="btnToggleStockPrepManage">⚙️ Manage Categories</button>' +
       '<input type="file" id="stockPrepExcelInput" accept=".xlsx,.xls,.csv" style="display:none;">' +
     '</div>';
+    html += '<div id="stockPrepManageWrap"></div>';
     html += '<p class="backup-note" style="margin-bottom:10px;">Only Vehicle Number and Segment are read from the file, matched by column header regardless of position — other columns are ignored. Duplicate vehicle numbers are skipped automatically.</p>';
 
     if(tab.vehicles.length === 0){
@@ -5219,8 +6782,8 @@
         html += '<td>' + (editMode
           ? '<input class="sheet-cell-input prep-input" data-field="segment" data-vehicle-id="' + v.id + '" value="' + esc(v.segment) + '">'
           : '<span class="sheet-cell-locked">' + (esc(v.segment) || "—") + '</span>') + '</td>';
-        html += '<td>' + prepStatusBadgeHTML(v.maintenance) + '</td>';
-        html += '<td>' + prepStatusBadgeHTML(v.paperwork) + '</td>';
+        html += '<td>' + prepStatusBadgeHTML(v.maintenance, "maintenance") + '</td>';
+        html += '<td>' + prepStatusBadgeHTML(v.paperwork, "paperwork") + '</td>';
         if(editMode) html += '<td><button class="sheet-mini-btn prep-del-vehicle" data-vehicle-id="' + v.id + '" title="Delete">✕</button></td>';
         html += '</tr>';
       });
@@ -5237,6 +6800,11 @@
       stockPrepEditMode[tab.id] = !stockPrepEditMode[tab.id];
       renderStockPrepList(module, business, tab);
     });
+    document.getElementById("btnToggleStockPrepManage").addEventListener("click", function(){
+      stockPrepManageOpen[tab.id] = !manageOpen;
+      renderStockPrepList(module, business, tab);
+    });
+    renderStockPrepManagePanel(module, business, tab);
     document.getElementById("btnUploadPrepExcel").addEventListener("click", function(){
       document.getElementById("stockPrepExcelInput").click();
     });
@@ -5281,34 +6849,44 @@
     });
   }
 
-  function prepItemRowHTML(item, kind){
-    var label = kind === "maintenance" ? item.category : item.docType;
-    var assignedStaff = null;
-    if(kind === "maintenance" && item.assignedTo){
-      var staffModule = findStaffModuleAny();
-      assignedStaff = staffModule ? findStaffMember(staffModule, item.assignedTo) : null;
-    }
+  function prepItemRowHTML(item, kind, useConfirmForDone){
     var statusClass = item.status === "Done" ? "completed" : (item.status === "In Progress" ? "" : "pending-red");
-    return '<div class="card card-tight" data-item-id="' + item.id + '">' +
-      '<div class="hist-row" style="border:none;padding:0 0 6px;">' +
-        '<div class="left"><div class="date" style="font-weight:600;">' + esc(label) + '</div>' +
-          (item.description ? '<div class="sess">' + esc(item.description) + '</div>' : '') +
-          (assignedStaff ? '<div class="sess">👤 ' + esc(assignedStaff.name) + '</div>' : '') +
-        '</div>' +
+    return '<div class="card card-tight prep-report-card" data-item-id="' + item.id + '">' +
+      '<div class="prep-report-line">' +
+        '<span class="prep-report-cat">' + esc(item.category) + '</span> - <span class="prep-report-complaint">' + esc(item.complaint) + '</span>' +
+        '<div class="prep-report-parts">→ Required Spare Parts: <b>' + (item.spareParts && item.spareParts.length ? esc(item.spareParts.join(", ")) : "None") + '</b></div>' +
+      '</div>' +
+      '<div class="hist-row" style="border:none;padding:8px 0 0;">' +
+        '<div class="left"></div>' +
         '<div class="right"><span class="badge-pill ' + statusClass + '">' + esc(item.status) + '</span></div>' +
       '</div>' +
-      '<select class="input prep-item-status" data-item-id="' + item.id + '" data-kind="' + kind + '" style="margin-top:6px;">' +
+      '<select class="input prep-item-status" data-item-id="' + item.id + '" style="margin-top:6px;">' +
         PREP_STATUS_OPTIONS.map(function(s){ return '<option value="' + s + '"' + (s === item.status ? " selected" : "") + '>' + s + '</option>'; }).join("") +
       '</select>' +
-      '<button class="link-btn prep-item-del" data-item-id="' + item.id + '" data-kind="' + kind + '" style="padding-left:0;margin-top:4px;color:var(--danger);">Remove</button>' +
+      '<div style="text-align:right;margin-top:6px;"><button class="icon-btn prep-item-del" data-item-id="' + item.id + '" data-kind="maintenance" title="Remove"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>' +
     '</div>';
+  }
+
+  function paperworkSummaryTableHTML(vehicle){
+    var stages = vehicle.paperworkStages || {};
+    var rows = PAPERWORK_STAGES.map(function(s){
+      var d = stages[s.key] || {subStatus:"Pending", toggle:false, deadEndDate:null};
+      var statusBadge = !d.toggle ? '<span class="badge-pill badge-neutral">N/A</span>' :
+        (d.subStatus === "Completed" ? '<span class="badge-pill completed">Completed</span>' :
+         d.subStatus === "In Process" ? '<span class="badge-pill">In Process</span>' :
+         '<span class="badge-pill pending-red">Pending</span>');
+      return '<tr><td>' + esc(s.label) + '</td><td>' + statusBadge + '</td><td>' + (d.toggle ? "Yes" : "No") + '</td>' +
+        '<td>' + (s.hasDeadEnd && d.deadEndDate ? fmtDate(d.deadEndDate) : "—") + '</td>' +
+      '</tr>';
+    }).join("");
+    return '<div class="sheet-scroll"><table class="sheet-table paperwork-summary-table"><thead><tr>' +
+      '<th class="sheet-col-head">Stage</th><th class="sheet-col-head">Status</th><th class="sheet-col-head">Applicable</th><th class="sheet-col-head">Dead End</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table></div>';
   }
 
   function renderStockPrepVehicleDetail(module, business, tab, vehicle){
     var panel = document.getElementById("bizTabInner");
     var maintOpen = !!prepMaintFormOpen[vehicle.id];
-    var paperOpen = !!prepPaperFormOpen[vehicle.id];
-    var staffOptions = staffAssignOptions();
 
     var html = '<div class="biz-tab-header" style="margin-bottom:16px;">' +
       '<button class="back-btn" id="btnBackToPrepList"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>' +
@@ -5325,12 +6903,9 @@
     html += '</div>';
 
     html += '<div class="sheet-table-card">';
-    html += '<div class="sheet-table-header" style="margin-bottom:10px;"><span class="sheet-table-title">📄 Paperwork</span>' +
-      '<button class="btn btn-primary btn-sm" id="btnTogglePaperForm">' + (paperOpen ? "Close" : "+ Add Item") + '</button></div>';
-    html += '<div id="prepPaperFormWrap"></div>';
-    html += vehicle.paperwork.length === 0
-      ? '<div class="empty-state"><div class="big">📄</div><p>No paperwork items yet.</p></div>'
-      : vehicle.paperwork.map(function(item){ return prepItemRowHTML(item, "paperwork"); }).join("");
+    html += '<div class="sheet-table-header" style="margin-bottom:10px;"><span class="sheet-table-title">📄 Paperwork Progress</span>' + paperworkStageProgressLabel(vehicle) + '</div>';
+    html += '<p class="backup-note">Read-only — updated live by staff from their Assigned Vehicle Paperwork wizard.</p>';
+    html += paperworkSummaryTableHTML(vehicle);
     html += '</div>';
 
     panel.innerHTML = html;
@@ -5343,63 +6918,12 @@
       prepMaintFormOpen[vehicle.id] = !maintOpen;
       renderStockPrepVehicleDetail(module, business, tab, vehicle);
     });
-    document.getElementById("btnTogglePaperForm").addEventListener("click", function(){
-      prepPaperFormOpen[vehicle.id] = !paperOpen;
-      renderStockPrepVehicleDetail(module, business, tab, vehicle);
-    });
 
-    if(maintOpen){
-      var mWrap = document.getElementById("prepMaintFormWrap");
-      mWrap.innerHTML = '<div class="quickadd">' +
-        '<div class="field" style="margin-bottom:10px;"><label>Category</label><select class="input" id="newMaintCategory">' +
-          MAINTENANCE_CATEGORIES.map(function(c){ return '<option value="' + c + '">' + c + '</option>'; }).join("") +
-        '</select></div>' +
-        '<div class="field" style="margin-bottom:10px;"><label>Description</label><input class="input" id="newMaintDesc" placeholder="e.g. Front bumper dent, AC servicing…"></div>' +
-        '<div class="field" style="margin-bottom:10px;"><label>Assign To <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><select class="input" id="newMaintAssign">' +
-          '<option value="">— Unassigned —</option>' +
-          staffOptions.map(function(s){ return '<option value="' + s.id + '">' + esc(s.name) + '</option>'; }).join("") +
-        '</select></div>' +
-        '<button class="btn btn-primary" id="btnCreateMaintItem" style="width:100%;">Add Maintenance Item</button>' +
-      '</div>';
-      document.getElementById("btnCreateMaintItem").addEventListener("click", function(){
-        var desc = document.getElementById("newMaintDesc").value.trim();
-        vehicle.maintenance.push({
-          id: uid(), category: document.getElementById("newMaintCategory").value, description: desc,
-          assignedTo: document.getElementById("newMaintAssign").value || null, status:"Pending", createdAt:new Date().toISOString()
-        });
-        saveData();
-        prepMaintFormOpen[vehicle.id] = false;
-        renderStockPrepVehicleDetail(module, business, tab, vehicle);
-        toast("Maintenance item added");
-      });
-    }
-    if(paperOpen){
-      var pWrap = document.getElementById("prepPaperFormWrap");
-      pWrap.innerHTML = '<div class="quickadd">' +
-        '<div class="field" style="margin-bottom:10px;"><label>Document Type</label><select class="input" id="newPaperType">' +
-          PAPERWORK_TYPES.map(function(t){ return '<option value="' + t + '">' + t + '</option>'; }).join("") +
-        '</select></div>' +
-        '<div class="field" style="margin-bottom:10px;"><label>Description <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><input class="input" id="newPaperDesc" placeholder="Any specific notes…"></div>' +
-        '<button class="btn btn-primary" id="btnCreatePaperItem" style="width:100%;">Add Paperwork Item</button>' +
-      '</div>';
-      document.getElementById("btnCreatePaperItem").addEventListener("click", function(){
-        var desc = document.getElementById("newPaperDesc").value.trim();
-        vehicle.paperwork.push({
-          id: uid(), docType: document.getElementById("newPaperType").value, description: desc,
-          status:"Pending", createdAt:new Date().toISOString()
-        });
-        saveData();
-        prepPaperFormOpen[vehicle.id] = false;
-        renderStockPrepVehicleDetail(module, business, tab, vehicle);
-        toast("Paperwork item added");
-      });
-    }
+    if(maintOpen) renderMaintAddForm(module, business, tab, vehicle);
 
     panel.querySelectorAll(".prep-item-status").forEach(function(sel){
       sel.addEventListener("change", function(){
-        var kind = sel.getAttribute("data-kind");
-        var list = kind === "maintenance" ? vehicle.maintenance : vehicle.paperwork;
-        var item = list.find(function(i){ return i.id === sel.getAttribute("data-item-id"); });
+        var item = vehicle.maintenance.find(function(i){ return i.id === sel.getAttribute("data-item-id"); });
         if(item){ item.status = sel.value; saveData(); }
         renderStockPrepVehicleDetail(module, business, tab, vehicle);
       });
@@ -5407,41 +6931,86 @@
     panel.querySelectorAll(".prep-item-del").forEach(function(btn){
       btn.addEventListener("click", function(){
         if(!confirm("Remove this item? This can't be undone.")) return;
-        var kind = btn.getAttribute("data-kind");
-        if(kind === "maintenance") vehicle.maintenance = vehicle.maintenance.filter(function(i){ return i.id !== btn.getAttribute("data-item-id"); });
-        else vehicle.paperwork = vehicle.paperwork.filter(function(i){ return i.id !== btn.getAttribute("data-item-id"); });
+        vehicle.maintenance = vehicle.maintenance.filter(function(i){ return i.id !== btn.getAttribute("data-item-id"); });
         saveData();
         renderStockPrepVehicleDetail(module, business, tab, vehicle);
       });
     });
   }
 
+  /* ---------- Maintenance: Category -> Complaint -> Spare Parts structured picker ---------- */
+  function renderMaintAddForm(module, business, tab, vehicle){
+    var wrap = document.getElementById("prepMaintFormWrap");
+    var cats = Object.keys(tab.maintenanceCatalog);
+    if(cats.length === 0){
+      wrap.innerHTML = '<p class="backup-note">No maintenance categories set up yet — go to <b>⚙️ Manage Categories</b> to add one before creating items.</p>';
+      return;
+    }
+    var selectedCat = prepMaintFormState.category && cats.indexOf(prepMaintFormState.category) !== -1 ? prepMaintFormState.category : cats[0];
+    var complaints = tab.maintenanceCatalog[selectedCat] || [];
+    var parts = tab.sparePartsCatalog[selectedCat] || [];
+
+    wrap.innerHTML =
+      '<div class="quickadd">' +
+        '<div class="field" style="margin-bottom:10px;"><label>a) Category</label>' +
+          '<select class="input" id="maintCatSelect">' + cats.map(function(c){ return '<option value="' + esc(c) + '"' + (c === selectedCat ? " selected" : "") + '>' + esc(c) + '</option>'; }).join("") + '</select>' +
+        '</div>' +
+        '<div class="field" style="margin-bottom:10px;"><label>b) Complaint / Service</label>' +
+          '<select class="input" id="maintComplaintSelect">' +
+            (complaints.length === 0 ? '<option value="">None set up for this category yet</option>' : complaints.map(function(c){ return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join("")) +
+          '</select>' +
+        '</div>' +
+        '<div class="field" style="margin-bottom:10px;"><label>c) Required Spare Parts <span style="text-transform:none;letter-spacing:0;">(select any / all)</span></label>' +
+          '<div class="chip-row" id="maintPartsChecklist">' +
+            (parts.length === 0 ? '<p class="backup-note" style="margin:0;">None set up for this category yet.</p>' :
+              parts.map(function(p){ return '<label class="chip" style="cursor:pointer;"><input type="checkbox" class="maint-part-check" value="' + esc(p) + '" style="margin-right:5px;">' + esc(p) + '</label>'; }).join("")) +
+          '</div>' +
+        '</div>' +
+        '<p class="backup-note">Need a new category, complaint, or spare part? Add it in <b>⚙️ Manage Categories</b> first.</p>' +
+        '<button class="btn btn-primary" id="btnCreateMaintItem" style="width:100%;">Add Maintenance Item</button>' +
+      '</div>';
+
+    document.getElementById("maintCatSelect").addEventListener("change", function(){
+      prepMaintFormState.category = this.value;
+      renderMaintAddForm(module, business, tab, vehicle);
+    });
+    document.getElementById("btnCreateMaintItem").addEventListener("click", function(){
+      var complaint = document.getElementById("maintComplaintSelect").value;
+      if(!complaint){ toast("Add a complaint / service for this category in Manage Categories first", true); return; }
+      var selectedParts = Array.from(document.querySelectorAll(".maint-part-check:checked")).map(function(cb){ return cb.value; });
+      vehicle.maintenance.push({id: uid(), category: selectedCat, complaint: complaint, spareParts: selectedParts, status:"Pending", createdAt:new Date().toISOString()});
+      saveData();
+      prepMaintFormOpen[vehicle.id] = false;
+      renderStockPrepVehicleDetail(module, business, tab, vehicle);
+      toast("Maintenance item added");
+    });
+  }
+
   // Every unique Vehicle Number across every Stock Report tab, in any business — used to populate the
   // Vehicle Number dropdown on task creation.
-  function getAllVehicleNumbers(){
-    var nums = [];
-    var bizModule = data.modules.business;
-    if(bizModule && bizModule.type === "business"){
-      (bizModule.businesses || []).forEach(function(biz){
-        (biz.tabs || []).forEach(function(tab){
-          if(tab.type !== "stock") return;
-          (tab.rows || []).forEach(function(r){
-            if(r.vehicleNumber && nums.indexOf(r.vehicleNumber) === -1) nums.push(r.vehicleNumber);
-          });
-        });
-      });
-    }
-    return nums.sort();
-  }
-  function getVehicleNumbersForBusiness(business){
-    var nums = [];
+  // Combines Stock Report and Stock Prep Report vehicle numbers for one business, deduplicated,
+  // each tagged with which report(s) it came from — for task-creation Vehicle Number dropdowns.
+  function getVehicleOptionsForBusiness(business){
+    var map = {};
     (business.tabs || []).forEach(function(tab){
-      if(tab.type !== "stock") return;
-      (tab.rows || []).forEach(function(r){
-        if(r.vehicleNumber && nums.indexOf(r.vehicleNumber) === -1) nums.push(r.vehicleNumber);
-      });
+      if(tab.type === "stock"){
+        (tab.rows || []).forEach(function(r){
+          if(!r.vehicleNumber) return;
+          var key = normalizeVehicleNumber(r.vehicleNumber);
+          if(!map[key]) map[key] = {vehicleNumber: r.vehicleNumber, sources: []};
+          if(map[key].sources.indexOf("Stock") === -1) map[key].sources.push("Stock");
+        });
+      }else if(tab.type === "stockprep"){
+        (tab.vehicles || []).forEach(function(v){
+          if(!v.vehicleNumber) return;
+          var key2 = normalizeVehicleNumber(v.vehicleNumber);
+          if(!map[key2]) map[key2] = {vehicleNumber: v.vehicleNumber, sources: []};
+          if(map[key2].sources.indexOf("Stock Prep") === -1) map[key2].sources.push("Stock Prep");
+        });
+      }
     });
-    return nums.sort();
+    return Object.keys(map).map(function(k){ return {vehicleNumber: map[k].vehicleNumber, sourceLabel: map[k].sources.join(" + ")}; })
+      .sort(function(a,b){ return a.vehicleNumber.localeCompare(b.vehicleNumber); });
   }
 
   /* =========================================================
@@ -5455,14 +7024,17 @@
         '<div class="quick-actions-row">' +
           '<button class="qa-pill" id="btnLogBodyWeight">⚖️ Log Body Weight</button>' +
           '<button class="qa-pill" id="btnMarkRestDay">😴 Mark Rest Day</button>' +
+          '<button class="qa-pill" id="btnPlanWorkout">📋 Plan Workout</button>' +
         '</div>' +
         '<div id="bodyWeightFormWrap"></div>' +
         '<div id="restDayFormWrap"></div>' +
+        '<div id="planPickerWrap"></div>' +
         '<div class="section-title" style="margin-top:0;">Pick your battle 💪</div>' +
         '<div class="tile-grid" id="gymCatChips"></div>' +
       '</div>' +
       '<div id="gymDraftArea" style="display:none;">' +
         '<div class="active-cat"><div class="name">Today: <span id="draftCatName"></span></div><button class="link-btn" id="btnChangeCat">Change category</button></div>' +
+        '<div id="planChecklistWrap"></div>' +
         '<div class="section-title" style="margin-top:6px;">Add an exercise</div>' +
         '<div class="chip-row" id="exercisePickerChips"></div>' +
         '<div id="quickAddWrap"></div>' +
@@ -5475,9 +7047,8 @@
           '<div class="chip-row" id="rtPresets"></div>' +
           '<div class="btn-row"><button class="btn btn-ghost btn-sm" id="rtReset">Reset</button><button class="btn btn-primary btn-sm" id="rtStartPause">Start</button></div>' +
         '</div>' +
-        '<div class="btn-row btn-row-3" style="margin-top:14px;">' +
+        '<div class="btn-row" style="margin-top:14px;">' +
           '<button class="btn btn-ghost" id="btnCancelSession">Cancel Session</button>' +
-          '<button class="btn btn-primary" id="btnSaveExercise">Save / Add to Session</button>' +
           '<button class="btn btn-finish" id="btnFinishSession">Finish Session</button>' +
         '</div>' +
       '</div>' +
@@ -5501,6 +7072,15 @@
       renderRestDayForm(module);
       renderBodyWeightForm(module);
     });
+    document.getElementById("btnPlanWorkout").addEventListener("click", function(){
+      showPlanPicker = !showPlanPicker;
+      showBodyWeightForm = false;
+      showRestDayForm = false;
+      renderBodyWeightForm(module);
+      renderRestDayForm(module);
+      renderPlanPicker(module);
+    });
+    renderPlanPicker(module);
     renderBodyWeightForm(module);
     renderRestDayForm(module);
     renderGymManagePanel(module);
@@ -5509,6 +7089,35 @@
     wireDraftControls(module);
     wireRestTimer(module);
     applyGymViewMode(module);
+  }
+
+  function renderPlanPicker(module){
+    var wrap = document.getElementById("planPickerWrap");
+    if(!wrap) return;
+    if(!showPlanPicker){ wrap.innerHTML = ""; return; }
+    var html = '<div class="quickadd">' +
+      '<label style="display:block;margin-bottom:8px;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--text-faint);">Choose a workout to plan</label>' +
+      '<div class="chip-row">' +
+        module.categories.map(function(c){ return '<span class="chip plan-picker-chip' + (planPickerCatId === c.id ? " selected" : "") + '" data-catid="' + c.id + '">' + esc(c.name) + '</span>'; }).join("") +
+      '</div>' +
+      '<div id="planPickerEditorWrap" style="margin-top:12px;"></div>' +
+    '</div>';
+    wrap.innerHTML = html;
+    wrap.querySelectorAll(".plan-picker-chip").forEach(function(chip){
+      chip.addEventListener("click", function(){
+        var catId = chip.getAttribute("data-catid");
+        planPickerCatId = (planPickerCatId === catId) ? null : catId;
+        renderPlanPicker(module);
+      });
+    });
+    if(planPickerCatId){
+      var cat = module.categories.find(function(c){ return c.id === planPickerCatId; });
+      if(cat){
+        var editorWrap = document.getElementById("planPickerEditorWrap");
+        editorWrap.innerHTML = '<div id="quickPlanWrap_' + cat.id + '"></div>';
+        renderCatPlanEditor(module, cat, "quickPlanWrap_" + cat.id, function(){ renderPlanPicker(module); });
+      }
+    }
   }
 
   function applyGymViewMode(module){
@@ -5744,6 +7353,7 @@
     if(!gymDraft){ gymDraft = {categoryId: cat.id, categoryName: cat.name, entries: [], notes: ""}; }
     saveDraft();
     pendingExerciseName = null;
+    activeSetRows = null;
     gymViewMode = "draft";
     applyGymViewMode(module);
   }
@@ -5760,6 +7370,7 @@
       chip.textContent = exName;
       chip.addEventListener("click", function(){
         pendingExerciseName = (pendingExerciseName === exName) ? null : exName;
+        activeSetRows = null;
         renderGymDraftArea(module);
       });
       exWrap.appendChild(chip);
@@ -5769,12 +7380,104 @@
     customChip.textContent = "+ Custom exercise";
     customChip.addEventListener("click", function(){
       pendingExerciseName = (pendingExerciseName === "__custom__") ? null : "__custom__";
+      activeSetRows = null;
       renderGymDraftArea(module);
     });
     exWrap.appendChild(customChip);
 
     renderGymQuickAdd(module);
     renderGymDraftEntries(module);
+    renderPlanChecklist(module, cat);
+  }
+
+  function renderPlanChecklist(module, cat){
+    var wrap = document.getElementById("planChecklistWrap");
+    if(!wrap) return;
+    if(!cat || !cat.presetPlan || cat.presetPlan.length === 0){ wrap.innerHTML = ""; return; }
+    var html = '<div class="plan-checklist"><div class="plan-checklist-title">Today\'s Plan</div>';
+    cat.presetPlan.forEach(function(plan){ html += planExerciseCardHTML(plan); });
+    html += '</div>';
+    wrap.innerHTML = html;
+    wirePlanChecklist(module, cat);
+  }
+
+  function planExerciseCardHTML(plan){
+    var loggedForEx = gymDraft.entries.filter(function(e){ return e.planId === plan.id; });
+    var html = '<div class="plan-ex-card">' +
+      '<div class="plan-ex-head"><span class="plan-ex-name">' + esc(plan.exercise) + '</span></div>' +
+      '<div class="plan-set-row">';
+    plan.setTargets.forEach(function(target, i0){
+      var i = i0 + 1;
+      var doneEntry = loggedForEx.find(function(e){ return e.setNumber === i; });
+      var isEditing = planInlineEdit && planInlineEdit.planId === plan.id && planInlineEdit.setNum === i;
+      if(isEditing){
+        html += '<span class="plan-set-edit">' +
+          '<input class="input input-mono plan-edit-w" value="' + (doneEntry ? doneEntry.weight : target.weight) + '">' +
+          '<input class="input input-mono plan-edit-r" value="' + (doneEntry ? doneEntry.reps : target.reps) + '">' +
+          '<button class="icon-btn plan-edit-confirm" data-planid="' + plan.id + '" data-setnum="' + i + '" title="Confirm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></button>' +
+        '</span>';
+      }else if(doneEntry){
+        html += '<button class="plan-set-pill done" data-planid="' + plan.id + '" data-setnum="' + i + '">✓ ' + doneEntry.weight + '×' + doneEntry.reps + '</button>';
+      }else{
+        html += '<button class="plan-set-pill" data-planid="' + plan.id + '" data-setnum="' + i + '">Set ' + i + '<br>' + target.weight + esc(data.unit) + '×' + target.reps + '</button>';
+      }
+    });
+    html += '</div></div>';
+    return html;
+  }
+
+  function wirePlanChecklist(module, cat){
+    var wrap = document.getElementById("planChecklistWrap");
+    if(!wrap) return;
+    wrap.querySelectorAll(".plan-set-pill:not(.done)").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var planId = btn.getAttribute("data-planid");
+        var setNum = parseInt(btn.getAttribute("data-setnum"), 10);
+        var plan = cat.presetPlan.find(function(p){ return p.id === planId; });
+        if(!plan) return;
+        var target = plan.setTargets[setNum - 1];
+        if(!target) return;
+        var match = findLastMatch(module, gymDraft.categoryId, plan.exercise);
+        gymDraft.entries.push({
+          id: uid(), exercise: plan.exercise, setNumber: setNum, planId: plan.id,
+          weight: target.weight, reps: target.reps, isCardio: false,
+          timeMin: null, speed: null, incline: null, equipment: "", note: "", match: match
+        });
+        saveDraft();
+        renderGymDraftEntries(module);
+        renderPlanChecklist(module, cat);
+        startRestTimer();
+        toast("Set " + setNum + " done 💪");
+      });
+    });
+    wrap.querySelectorAll(".plan-set-pill.done").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        planInlineEdit = {planId: btn.getAttribute("data-planid"), setNum: parseInt(btn.getAttribute("data-setnum"), 10)};
+        renderPlanChecklist(module, cat);
+      });
+    });
+    wrap.querySelectorAll(".plan-edit-confirm").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var planId = btn.getAttribute("data-planid");
+        var setNum = parseInt(btn.getAttribute("data-setnum"), 10);
+        var wEl = wrap.querySelector(".plan-edit-w");
+        var rEl = wrap.querySelector(".plan-edit-r");
+        var w = parseFloat(wEl.value);
+        var r = parseInt(rEl.value, 10);
+        if(isNaN(w) || w < 0 || isNaN(r) || r < 0){ toast("Enter valid weight and reps", true); return; }
+        var entry = gymDraft.entries.find(function(e){ return e.planId === planId && e.setNumber === setNum; });
+        if(entry){ entry.weight = w; entry.reps = r; saveDraft(); }
+        planInlineEdit = null;
+        renderGymDraftEntries(module);
+        renderPlanChecklist(module, cat);
+        toast("Updated");
+      });
+    });
+  }
+
+  var DEFAULT_SET_COUNT = 3;
+  function isCardioCategory(){
+    return !!(gymDraft && gymDraft.categoryName && gymDraft.categoryName.trim().toLowerCase() === "cardio");
   }
 
   function renderGymQuickAdd(module){
@@ -5783,31 +7486,160 @@
     var isCustom = pendingExerciseName === "__custom__";
     var match = !isCustom ? findLastMatch(module, gymDraft.categoryId, pendingExerciseName) : null;
     var equipmentTypes = module.equipmentTypes && module.equipmentTypes.length ? module.equipmentTypes : EQUIPMENT_OPTIONS;
+    var isCardio = isCardioCategory();
+    if(!activeSetRows || activeSetRows.length === 0){
+      activeSetRows = [];
+      for(var k = 0; k < DEFAULT_SET_COUNT; k++) activeSetRows.push({saved:false, entryId:null});
+    }
+
     var html = '<div class="quickadd">';
     if(isCustom){
       html += '<div class="field" style="margin-bottom:10px;"><label>Exercise name</label><input class="input" id="customExName" placeholder="e.g. Cable Fly"></div>';
     }else{
       html += '<div class="ex-name">' + esc(pendingExerciseName) + '</div>';
     }
-    html += '<div class="row-2">' +
-      '<div class="field" style="margin-bottom:10px;"><label>Weight (' + esc(data.unit) + ')</label><input class="input input-mono" type="number" inputmode="decimal" step="0.5" id="qaWeight" placeholder="0"></div>' +
-      '<div class="field" style="margin-bottom:10px;"><label>Reps</label><input class="input input-mono" type="number" inputmode="numeric" step="1" id="qaReps" placeholder="0"></div>' +
-      '</div>' +
-      '<div class="field" style="margin-bottom:10px;"><label>Equipment</label><select class="input" id="qaEquipment">' +
-        equipmentTypes.map(function(opt){ return '<option value="' + esc(opt) + '">' + esc(opt) + '</option>'; }).join("") +
-      '</select></div>' +
-      '<div class="field" style="margin-bottom:10px;"><label>Note <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><input class="input" id="qaNote" placeholder="e.g. Increase weight next time"></div>' +
-      '<div id="qaCompareSlot"></div>' +
-      '<p class="section-sub" style="margin:8px 0 0;">Tap the exercise chip again to deselect, or enter your numbers and tap <b>Save / Add to Session</b> below.</p>' +
-      '</div>';
+
+    html += '<div class="set-table ' + (isCardio ? "cardio-mode" : "strength-mode") + '">';
+    html += '<div class="set-table-head">' +
+      '<span>Set</span>' +
+      (isCardio ? '<span>Time (min)</span><span>Speed</span><span>Incline</span>' : '<span>Weight (' + esc(data.unit) + ')</span><span>Reps</span>') +
+      '<span></span>' +
+    '</div>';
+    activeSetRows.forEach(function(row, idx){
+      var setNum = idx + 1;
+      if(row.saved){
+        var entry = gymDraft.entries.find(function(e){ return e.id === row.entryId; });
+        var summary = "—";
+        if(entry){
+          summary = entry.isCardio
+            ? ((entry.timeMin || 0) + ' min · Speed ' + (entry.speed || 0) + ' · Incline ' + (entry.incline || 0))
+            : (entry.weight + ' ' + esc(data.unit) + ' × ' + entry.reps);
+        }
+        html += '<div class="set-row set-row-saved">' +
+          '<span class="set-num set-num-done">✓</span>' +
+          '<span class="set-saved-summary">Set ' + setNum + ': ' + summary + '</span>' +
+          '<button class="icon-btn set-edit-btn" data-idx="' + idx + '" title="Edit this set"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>' +
+        '</div>';
+      }else{
+        html += '<div class="set-row">' +
+          '<span class="set-num">' + setNum + '</span>' +
+          (isCardio
+            ? '<input class="input input-mono set-time" data-idx="' + idx + '" type="number" inputmode="decimal" step="0.5" placeholder="0">' +
+              '<input class="input input-mono set-speed" data-idx="' + idx + '" type="number" inputmode="decimal" step="0.1" placeholder="0">' +
+              '<input class="input input-mono set-incline" data-idx="' + idx + '" type="number" inputmode="decimal" step="0.5" placeholder="0">'
+            : '<input class="input input-mono set-weight" data-idx="' + idx + '" type="number" inputmode="decimal" step="0.5" placeholder="0">' +
+              '<input class="input input-mono set-reps" data-idx="' + idx + '" type="number" inputmode="numeric" step="1" placeholder="0">') +
+          '<button class="icon-btn set-save-btn" data-idx="' + idx + '" title="Save this set"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></button>' +
+        '</div>';
+      }
+    });
+    html += '</div>';
+
+    html += '<div class="btn-row" style="margin-top:10px;">' +
+      '<button class="btn btn-ghost btn-sm" id="btnRemoveSetRow">− Remove Set</button>' +
+      '<button class="btn btn-ghost btn-sm" id="btnAddSetRow">+ Add Set</button>' +
+    '</div>';
+
+    html += '<div class="field" style="margin:12px 0 10px;"><label>Equipment</label><select class="input" id="qaEquipment">' +
+      equipmentTypes.map(function(opt){ return '<option value="' + esc(opt) + '">' + esc(opt) + '</option>'; }).join("") +
+    '</select></div>' +
+    '<div class="field" style="margin-bottom:10px;"><label>Note <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><input class="input" id="qaNote" placeholder="e.g. Increase weight next time"></div>' +
+    '<div id="qaCompareSlot"></div>' +
+    '</div>';
     wrap.innerHTML = html;
 
     var eqSelect = document.getElementById("qaEquipment");
     if(match && match.equipment && equipmentTypes.indexOf(match.equipment) !== -1) eqSelect.value = match.equipment;
 
-    if(!isCustom){
+    if(!isCustom && !isCardio){
       document.getElementById("qaCompareSlot").innerHTML = compareCardHTML(match, null, null);
     }
+
+    wrap.querySelectorAll(".set-save-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){ saveOneSet(module, parseInt(btn.getAttribute("data-idx"), 10)); });
+    });
+    wrap.querySelectorAll(".set-edit-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        activeSetRows[parseInt(btn.getAttribute("data-idx"), 10)].saved = false;
+        renderGymQuickAdd(module);
+      });
+    });
+    var addBtn = document.getElementById("btnAddSetRow");
+    if(addBtn) addBtn.addEventListener("click", function(){
+      activeSetRows.push({saved:false, entryId:null});
+      renderGymQuickAdd(module);
+    });
+    var rmBtn = document.getElementById("btnRemoveSetRow");
+    if(rmBtn) rmBtn.addEventListener("click", function(){
+      if(activeSetRows.length <= 1){ toast("Keep at least one set row", true); return; }
+      var last = activeSetRows[activeSetRows.length - 1];
+      if(last.saved && last.entryId){
+        gymDraft.entries = gymDraft.entries.filter(function(e){ return e.id !== last.entryId; });
+        saveDraft();
+        renderGymDraftEntries(module);
+      }
+      activeSetRows.pop();
+      renderGymQuickAdd(module);
+    });
+  }
+
+  function saveOneSet(module, idx){
+    if(!gymDraft){ toast("Pick a category first", true); return; }
+    if(!pendingExerciseName){ toast("Pick an exercise above first", true); return; }
+    var isCustom = pendingExerciseName === "__custom__";
+    var nameEl = document.getElementById("customExName");
+    var exName = isCustom ? ((nameEl && nameEl.value) || "").trim() : pendingExerciseName;
+    if(!exName){ toast("Enter an exercise name", true); return; }
+    var eqEl = document.getElementById("qaEquipment"), noteEl = document.getElementById("qaNote");
+    var equipment = eqEl ? eqEl.value : "";
+    var note = noteEl ? noteEl.value.trim() : "";
+    var isCardio = isCardioCategory();
+    var row = activeSetRows[idx];
+    var setNum = idx + 1;
+    var fields;
+
+    if(isCardio){
+      var tEl = document.querySelector('.set-time[data-idx="' + idx + '"]');
+      var spEl = document.querySelector('.set-speed[data-idx="' + idx + '"]');
+      var incEl = document.querySelector('.set-incline[data-idx="' + idx + '"]');
+      var t = tEl && tEl.value !== "" ? parseFloat(tEl.value) : NaN;
+      var sp = spEl && spEl.value !== "" ? parseFloat(spEl.value) : NaN;
+      var inc = incEl && incEl.value !== "" ? parseFloat(incEl.value) : NaN;
+      if(isNaN(t) && isNaN(sp) && isNaN(inc)){ toast("Enter at least one value for this set", true); return; }
+      fields = {isCardio:true, timeMin: isNaN(t) ? 0 : t, speed: isNaN(sp) ? 0 : sp, incline: isNaN(inc) ? 0 : inc, weight:null, reps:null};
+    }else{
+      var wEl = document.querySelector('.set-weight[data-idx="' + idx + '"]');
+      var rEl = document.querySelector('.set-reps[data-idx="' + idx + '"]');
+      var w = wEl && wEl.value !== "" ? parseFloat(wEl.value) : NaN;
+      var r = rEl && rEl.value !== "" ? parseInt(rEl.value, 10) : NaN;
+      if(isNaN(w) || w < 0 || isNaN(r) || r < 0){ toast("Enter both weight and reps", true); return; }
+      fields = {isCardio:false, weight:w, reps:r, timeMin:null, speed:null, incline:null};
+    }
+
+    if(row.saved && row.entryId){
+      var existing = gymDraft.entries.find(function(e){ return e.id === row.entryId; });
+      if(existing){
+        existing.weight = fields.weight; existing.reps = fields.reps; existing.isCardio = fields.isCardio;
+        existing.timeMin = fields.timeMin; existing.speed = fields.speed; existing.incline = fields.incline;
+        existing.equipment = equipment; existing.note = note;
+        existing.match = fields.isCardio ? null : findLastMatch(module, gymDraft.categoryId, exName);
+      }
+    }else{
+      var newEntry = {
+        id: uid(), exercise: exName, setNumber: setNum, equipment: equipment, note: note,
+        isCardio: fields.isCardio, weight: fields.weight, reps: fields.reps,
+        timeMin: fields.timeMin, speed: fields.speed, incline: fields.incline,
+        match: fields.isCardio ? null : findLastMatch(module, gymDraft.categoryId, exName)
+      };
+      gymDraft.entries.push(newEntry);
+      row.entryId = newEntry.id;
+    }
+    row.saved = true;
+    saveDraft();
+    renderGymDraftEntries(module);
+    renderGymQuickAdd(module);
+    startRestTimer();
+    toast("Set " + setNum + " saved 🔥");
   }
 
   function findLastMatch(module, categoryId, exerciseName){
@@ -5858,16 +7690,21 @@
     gymDraft.entries.forEach(function(entry, idx){
       var row = document.createElement("div");
       row.className = "entry-item";
-      var deltaBit;
-      if(entry.match){
-        var diff = entry.weight - entry.match.weight;
-        var cls = diff > 0 ? "up" : (diff < 0 ? "down" : "flat");
-        var sign = diff > 0 ? "+" : "";
-        deltaBit = '<span class="delta ' + cls + '" style="margin-left:8px;">' + sign + diff + '</span>';
-      }else{ deltaBit = '<span class="delta new" style="margin-left:8px;">NEW</span>'; }
+      var statsLine, deltaBit = "";
+      if(entry.isCardio){
+        statsLine = (entry.timeMin || 0) + ' min · Speed ' + (entry.speed || 0) + ' · Incline ' + (entry.incline || 0) + (entry.equipment ? ' · ' + esc(entry.equipment) : '');
+      }else{
+        statsLine = entry.weight + ' ' + esc(data.unit) + ' × ' + entry.reps + ' reps' + (entry.equipment ? ' · ' + esc(entry.equipment) : '');
+        if(entry.match){
+          var diff = entry.weight - entry.match.weight;
+          var cls = diff > 0 ? "up" : (diff < 0 ? "down" : "flat");
+          var sign = diff > 0 ? "+" : "";
+          deltaBit = '<span class="delta ' + cls + '" style="margin-left:8px;">' + sign + diff + '</span>';
+        }else{ deltaBit = '<span class="delta new" style="margin-left:8px;">NEW</span>'; }
+      }
       row.innerHTML =
-        '<div><div class="ex">' + esc(entry.exercise) + '</div>' +
-        '<div class="stats">' + entry.weight + ' ' + esc(data.unit) + ' × ' + entry.reps + ' reps' + (entry.equipment ? ' · ' + esc(entry.equipment) : '') + deltaBit + '</div>' +
+        '<div><div class="ex">' + esc(entry.exercise) + (entry.setNumber ? (' <span style="color:var(--text-faint);font-weight:500;">— Set ' + entry.setNumber + '</span>') : '') + '</div>' +
+        '<div class="stats">' + statsLine + deltaBit + '</div>' +
         (entry.note ? '<div class="ex-note">(' + esc(entry.note) + ')</div>' : '') +
         '</div>' +
         '<button class="rm" data-idx="' + idx + '">✕</button>';
@@ -5878,6 +7715,8 @@
         gymDraft.entries.splice(parseInt(btn.getAttribute("data-idx"),10), 1);
         saveDraft();
         renderGymDraftEntries(module);
+        var cat = module.categories.find(function(c){ return c.id === gymDraft.categoryId; });
+        renderPlanChecklist(module, cat);
       });
     });
   }
@@ -5895,35 +7734,11 @@
     var cancelBtn = document.getElementById("btnCancelSession");
     if(cancelBtn) cancelBtn.onclick = function(){
       if(confirm("Discard this session? Nothing will be saved.")){
-        gymDraft = null; saveDraft(); pendingExerciseName = null;
+        gymDraft = null; saveDraft(); pendingExerciseName = null; activeSetRows = null; planInlineEdit = null;
         gymViewMode = "categories";
         resetRestTimer();
         renderGymModuleBody(module);
       }
-    };
-
-    var saveBtn = document.getElementById("btnSaveExercise");
-    if(saveBtn) saveBtn.onclick = function(){
-      if(!gymDraft){ toast("Pick a category first", true); return; }
-      if(!pendingExerciseName){ toast("Pick an exercise above first", true); return; }
-      var isCustom = pendingExerciseName === "__custom__";
-      var nameEl = document.getElementById("customExName");
-      var exName = isCustom ? ((nameEl && nameEl.value) || "").trim() : pendingExerciseName;
-      var wEl = document.getElementById("qaWeight"), rEl = document.getElementById("qaReps"), eqEl = document.getElementById("qaEquipment"), noteEl = document.getElementById("qaNote");
-      var w = wEl ? parseFloat(wEl.value) : NaN;
-      var r = rEl ? parseInt(rEl.value, 10) : NaN;
-      var equipment = eqEl ? eqEl.value : "";
-      var note = noteEl ? noteEl.value.trim() : "";
-      if(!exName){ toast("Enter an exercise name", true); return; }
-      if(isNaN(w) || w < 0){ toast("Enter a valid weight", true); return; }
-      if(isNaN(r) || r < 0){ toast("Enter valid reps", true); return; }
-      var match = findLastMatch(module, gymDraft.categoryId, exName);
-      gymDraft.entries.push({exercise: exName, weight: w, reps: r, equipment: equipment, note: note, match: match});
-      saveDraft();
-      pendingExerciseName = null;
-      renderGymDraftArea(module);
-      startRestTimer();
-      toast(exName + " logged 🔥 — rest timer started");
     };
 
     var finishBtn = document.getElementById("btnFinishSession");
@@ -5932,18 +7747,146 @@
       var session = {
         id: uid(), number: module.nextSessionNumber, categoryId: gymDraft.categoryId, categoryName: gymDraft.categoryName,
         date: new Date().toISOString(),
-        entries: gymDraft.entries.map(function(e){ return {exercise: e.exercise, weight: e.weight, reps: e.reps, equipment: e.equipment || "", note: e.note || ""}; })
+        entries: gymDraft.entries.map(function(e){ return {exercise: e.exercise, weight: e.weight, reps: e.reps, equipment: e.equipment || "", note: e.note || "", setNumber: e.setNumber || null, isCardio: !!e.isCardio, timeMin: e.timeMin || null, speed: e.speed || null, incline: e.incline || null, planId: e.planId || null}; })
       };
       module.sessions.push(session);
       module.nextSessionNumber++;
       saveData();
-      gymDraft = null; saveDraft(); pendingExerciseName = null;
+      gymDraft = null; saveDraft(); pendingExerciseName = null; activeSetRows = null; planInlineEdit = null;
       gymViewMode = "categories";
       resetRestTimer();
       renderHeader();
       renderGymModuleBody(module);
       toast("Session " + session.number + " smashed! 💥");
     };
+  }
+
+  function planItemBreakdownHTML(plan){
+    var html = '<div class="plan-item-card" data-planid="' + plan.id + '">' +
+      '<div class="plan-item-head"><span class="plan-item-name">' + esc(plan.exercise) + '</span>' +
+        '<button class="icon-btn plan-del" data-planid="' + plan.id + '" title="Remove"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>' +
+      '</div>' +
+      '<div class="plan-item-sets">' +
+        '<div class="plan-set-edit-head"><span></span><span>Weight (' + esc(data.unit) + ')</span><span>Reps</span></div>' +
+        plan.setTargets.map(function(st, idx){
+          return '<div class="plan-set-edit-row">' +
+            '<span class="set-num">' + (idx + 1) + '</span>' +
+            '<input class="input input-mono plan-set-w" data-planid="' + plan.id + '" data-setidx="' + idx + '" value="' + st.weight + '" inputmode="decimal">' +
+            '<input class="input input-mono plan-set-r" data-planid="' + plan.id + '" data-setidx="' + idx + '" value="' + st.reps + '" inputmode="numeric">' +
+          '</div>';
+        }).join("") +
+      '</div>' +
+    '</div>';
+    return html;
+  }
+
+  function renderCatPlanEditor(module, cat, wrapId, onChange){
+    wrapId = wrapId || ("catPlanWrap_" + cat.id);
+    onChange = onChange || function(){ renderGymManagePanel(module); };
+    var wrap = document.getElementById(wrapId);
+    if(!wrap) return;
+
+    var html = cat.presetPlan.length === 0
+      ? '<p class="backup-note">No plan yet — browse a category below and cart exercises into today\'s plan.</p>'
+      : cat.presetPlan.map(planItemBreakdownHTML).join("");
+
+    html += '<div class="section-title" style="margin-top:16px;">Browse &amp; Add Exercises</div>' +
+      '<div class="chip-row">' +
+        module.categories.map(function(c){ return '<button class="chip plan-browse-tab' + (planBrowseCatId === c.id ? " selected" : "") + '" data-catid="' + c.id + '" data-wrapid="' + wrapId + '">' + esc(c.name) + '</button>'; }).join("") +
+      '</div>' +
+      '<div id="planBrowseExWrap_' + wrapId + '"></div>';
+
+    wrap.innerHTML = html;
+
+    wrap.querySelectorAll(".plan-del").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        cat.presetPlan = cat.presetPlan.filter(function(p){ return p.id !== btn.getAttribute("data-planid"); });
+        saveData();
+        onChange();
+      });
+    });
+    wrap.querySelectorAll(".plan-set-w, .plan-set-r").forEach(function(input){
+      input.addEventListener("change", function(){
+        var plan = cat.presetPlan.find(function(p){ return p.id === input.getAttribute("data-planid"); });
+        if(!plan) return;
+        var idx = parseInt(input.getAttribute("data-setidx"), 10);
+        var st = plan.setTargets[idx];
+        if(!st) return;
+        if(input.classList.contains("plan-set-w")){
+          var w = parseFloat(input.value);
+          st.weight = isNaN(w) ? 0 : w;
+        }else{
+          var r = parseInt(input.value, 10);
+          st.reps = isNaN(r) ? 0 : r;
+        }
+        saveData();
+      });
+    });
+    wrap.querySelectorAll(".plan-browse-tab").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var catId = btn.getAttribute("data-catid");
+        planBrowseCatId = (planBrowseCatId === catId) ? null : catId;
+        planCartingExercise = null;
+        renderCatPlanEditor(module, cat, wrapId, onChange);
+      });
+    });
+    if(planBrowseCatId){
+      renderPlanBrowseExercises(module, cat, wrapId, onChange);
+    }
+  }
+
+  function renderPlanBrowseExercises(module, targetCat, wrapId, onChange){
+    var wrap = document.getElementById("planBrowseExWrap_" + wrapId);
+    if(!wrap) return;
+    var browseCat = module.categories.find(function(c){ return c.id === planBrowseCatId; });
+    if(!browseCat){ wrap.innerHTML = ""; return; }
+
+    var html = browseCat.exercises.length === 0
+      ? '<p class="backup-note">No preset exercises in ' + esc(browseCat.name) + ' yet.</p>'
+      : '<div class="chip-row" style="margin-top:8px;">' +
+          browseCat.exercises.map(function(ex){ return '<button class="chip plan-cart-ex" data-ex="' + esc(ex) + '">' + esc(ex) + '</button>'; }).join("") +
+        '</div>';
+    html += '<div id="planCartFormWrap_' + wrapId + '"></div>';
+    wrap.innerHTML = html;
+
+    wrap.querySelectorAll(".plan-cart-ex").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        planCartingExercise = btn.getAttribute("data-ex");
+        renderPlanCartForm(module, targetCat, wrapId, onChange);
+      });
+    });
+    if(planCartingExercise) renderPlanCartForm(module, targetCat, wrapId, onChange);
+  }
+
+  function renderPlanCartForm(module, targetCat, wrapId, onChange){
+    var wrap = document.getElementById("planCartFormWrap_" + wrapId);
+    if(!wrap) return;
+    if(!planCartingExercise){ wrap.innerHTML = ""; return; }
+    wrap.innerHTML = '<div class="quickadd" style="margin-top:8px;">' +
+      '<div class="ex-name">' + esc(planCartingExercise) + '</div>' +
+      '<div class="row-3" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">' +
+        '<input class="input input-mono" id="cartWeight_' + wrapId + '" inputmode="decimal" placeholder="' + esc(data.unit) + '">' +
+        '<input class="input input-mono" id="cartReps_' + wrapId + '" inputmode="numeric" placeholder="Reps">' +
+        '<input class="input input-mono" id="cartSets_' + wrapId + '" inputmode="numeric" placeholder="Sets" value="3">' +
+      '</div>' +
+      '<button class="btn btn-primary btn-sm" id="cartAddBtn_' + wrapId + '" style="width:100%;margin-top:8px;">Add to Today\'s Plan</button>' +
+    '</div>';
+    document.getElementById("cartAddBtn_" + wrapId).addEventListener("click", function(){
+      var w = parseFloat(document.getElementById("cartWeight_" + wrapId).value);
+      var r = parseInt(document.getElementById("cartReps_" + wrapId).value, 10);
+      var sets = parseInt(document.getElementById("cartSets_" + wrapId).value, 10);
+      if(isNaN(w) || w < 0){ toast("Enter a target weight", true); return; }
+      if(isNaN(r) || r < 1){ toast("Enter target reps", true); return; }
+      if(isNaN(sets) || sets < 1) sets = 3;
+      var setTargets = [];
+      for(var i = 0; i < sets; i++) setTargets.push({weight:w, reps:r});
+      targetCat.presetPlan.push({id: uid(), exercise: planCartingExercise, setTargets: setTargets});
+      saveData();
+      var exAdded = planCartingExercise;
+      planCartingExercise = null;
+      renderCatPlanEditor(module, targetCat, wrapId, onChange);
+      toast(exAdded + " added to plan");
+    });
   }
 
   function renderGymManagePanel(module){
@@ -5965,6 +7908,8 @@
           (cat.exercises.length === 0 ? '<span style="color:var(--text-faint);font-size:12.5px;">No preset exercises yet.</span>' : "") +
         '</div>' +
         '<div class="add-exercise-row"><input class="input ex-add-input" data-catid="' + cat.id + '" placeholder="Add exercise…"><button class="btn btn-ghost btn-sm ex-add-btn" data-catid="' + cat.id + '">Add</button></div>' +
+        '<button class="link-btn cat-plan-toggle" data-catid="' + cat.id + '" style="padding-left:0;margin-top:8px;">' + (gymPlanEditCatId === cat.id ? "Hide plan" : "📋 Today's Plan (" + cat.presetPlan.length + ")") + '</button>' +
+        '<div id="catPlanWrap_' + cat.id + '"></div>' +
       '</div>';
     });
     html += '<div class="manage-item"><label>Add a category</label><div class="btn-row"><input class="input" id="newGymCatName" placeholder="e.g. Cardio, Core, Mobility"><button class="btn btn-primary btn-sm" id="btnAddGymCat" style="flex:0 0 auto;">Add</button></div></div>';
@@ -6040,13 +7985,23 @@
         renderGymModuleBody(module);
       });
     });
+    wrap.querySelectorAll(".cat-plan-toggle").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var catId = btn.getAttribute("data-catid");
+        gymPlanEditCatId = gymPlanEditCatId === catId ? null : catId;
+        renderGymManagePanel(module);
+      });
+    });
+    module.categories.forEach(function(cat){
+      if(gymPlanEditCatId === cat.id) renderCatPlanEditor(module, cat);
+    });
     var newCatBtn = document.getElementById("btnAddGymCat");
     if(newCatBtn) newCatBtn.addEventListener("click", function(){
       var input = document.getElementById("newGymCatName");
       var name = input.value.trim();
       if(!name){ toast("Enter a category name", true); return; }
       if(module.categories.some(function(c){ return c.name.toLowerCase() === name.toLowerCase(); })){ toast("That category already exists", true); return; }
-      module.categories.push({id: uid(), name: name, exercises: [], isDefault: false});
+      module.categories.push({id: uid(), name: name, exercises: [], isDefault: false, presetPlan: []});
       saveData();
       gymManageOpen = true;
       renderGymModuleBody(module);
@@ -6537,7 +8492,10 @@
 
   function gymSessionCardHTML(s, showCategoryName){
     var entriesHTML = s.entries.map(function(e){
-      return '<div class="stats" style="margin:2px 0;">' + esc(e.exercise) + ' — ' + e.weight + ' ' + esc(data.unit) + ' × ' + e.reps + (e.equipment ? ' · ' + esc(e.equipment) : '') +
+      var statsLine = e.isCardio
+        ? ((e.timeMin || 0) + ' min · Speed ' + (e.speed || 0) + ' · Incline ' + (e.incline || 0))
+        : (e.weight + ' ' + esc(data.unit) + ' × ' + e.reps);
+      return '<div class="stats" style="margin:2px 0;">' + esc(e.exercise) + (e.setNumber ? (' (Set ' + e.setNumber + ')') : '') + ' — ' + statsLine + (e.equipment ? ' · ' + esc(e.equipment) : '') +
         (e.note ? ' <span class="ex-note-inline">(' + esc(e.note) + ')</span>' : '') + '</div>';
     }).join("");
     var titleText = showCategoryName ? esc(s.categoryName) : ("Session " + s.number);
@@ -7076,25 +9034,64 @@
 
   // ---------- init ----------
   applyTheme(currentTheme());
-  syncRoleUI();
-  renderHeader();
-  var restoredTab = "home";
-  try{ restoredTab = localStorage.getItem(ACTIVE_TAB_KEY) || "home"; }catch(e){}
-  if(restoredTab === "summary" && isStaff()) restoredTab = "home"; // staff can't land on an admin-only tab
-  if(restoredTab === "progress" && isStaff()) restoredTab = "home";
-  if(restoredTab === "tasksHub" && isStaff()) restoredTab = "home";
-  activeTab = restoredTab;
-  document.querySelectorAll(".tab-btn").forEach(function(b){
-    b.classList.toggle("active", b.getAttribute("data-tab") === restoredTab);
+  wireLoginGate();
+  showLoginGate();
+
+  onAuthStateChanged(auth, async function(user){
+    if(!user){
+      firebaseUser = null; firebaseProfile = null; stopCloudSync();
+      setLoginState(null);
+      if(authBooted) showLoginGate();
+      authBooted = true;
+      return;
+    }
+    try{
+      firebaseUser = user;
+      firebaseProfile = await fetchFirebaseProfile(user);
+      data.role = firebaseProfile.role;
+      setLoginState(firebaseProfile.role); // legacy key kept only for backward compatibility
+      if(firebaseProfile.role === "staff"){
+        var sm = findStaffModuleAny();
+        saveStaffProfile({moduleId:(firebaseProfile.moduleId || (sm ? sm.id : "staff")), staffId:firebaseProfile.staffId});
+      }else{
+        saveStaffProfile(null);
+      }
+      await startCloudSync();
+      hideLoginGate();
+      runAppInit();
+      authBooted = true;
+    }catch(err){
+      console.error("Authentication profile error", err);
+      stopCloudSync();
+      try{ await signOut(auth); }catch(e){}
+      showLoginGate();
+      showLoginError("admin", err.message || "Unable to load account profile");
+      showLoginError("staff", err.message || "Unable to load account profile");
+      authBooted = true;
+    }
   });
-  document.querySelectorAll(".panel").forEach(function(p){
-    p.classList.toggle("active", p.id === "panel-" + restoredTab);
-  });
-  renderHome();
-  if(restoredTab === "progress") renderProgress();
-  if(restoredTab === "tasksHub") renderTasksHub();
-  if(restoredTab === "summary") renderSummary();
-  renderBackup();
+
+  function runAppInit(){
+    syncRoleUI();
+    renderHeader();
+    var restoredTab = "home";
+    try{ restoredTab = localStorage.getItem(ACTIVE_TAB_KEY) || "home"; }catch(e){}
+    if(restoredTab === "summary" && isStaff()) restoredTab = "home";
+    if(restoredTab === "progress" && isStaff()) restoredTab = "home";
+    if(restoredTab === "tasksHub" && isStaff()) restoredTab = "home";
+    activeTab = restoredTab;
+    document.querySelectorAll(".tab-btn").forEach(function(b){
+      b.classList.toggle("active", b.getAttribute("data-tab") === restoredTab);
+    });
+    document.querySelectorAll(".panel").forEach(function(p){
+      p.classList.toggle("active", p.id === "panel-" + restoredTab);
+    });
+    renderHome();
+    if(restoredTab === "progress") renderProgress();
+    if(restoredTab === "tasksHub") renderTasksHub();
+    if(restoredTab === "summary") renderSummary();
+    renderBackup();
+  }
 })();
 </script>
 </body>
