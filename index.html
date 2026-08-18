@@ -22,9 +22,9 @@
     --text:#f2f0ea;
     --text-dim:#9a9eaa;
     --text-faint:#656a76;
-    --accent:#ff6b35;
-    --accent-dim:#c9542a;
-    --accent-soft:rgba(255,107,53,.14);
+    --accent:#4f46e5;
+    --accent-dim:#3f39c4;
+    --accent-soft:rgba(79,70,229,.14);
     --up:#8bc084;
     --down:#6fa3c2;
     --danger:#e15554;
@@ -35,6 +35,7 @@
     --font-body:'Inter',system-ui,-apple-system,sans-serif;
     --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
     --app-max-width:560px;
+    --sidebar-width:248px;
   }
   @media(min-width:768px){ :root{ --app-max-width:740px; } }
   @media(min-width:1024px){ :root{ --app-max-width:960px; } }
@@ -50,9 +51,9 @@
     --text:#1c1e22;
     --text-dim:#5c5f66;
     --text-faint:#8a8d94;
-    --accent:#ff6b35;
-    --accent-dim:#c9542a;
-    --accent-soft:rgba(255,107,53,.12);
+    --accent:#4338ca;
+    --accent-dim:#3730a3;
+    --accent-soft:rgba(67,56,202,.10);
     --up:#3f9a45;
     --down:#3d7fa0;
     --danger:#d13f3e;
@@ -219,15 +220,6 @@
   .tile-icon-btn.tile-delete:active{color:var(--danger);border-color:var(--danger);}
   .tile-icon-btn.tile-edit:active{color:var(--accent);border-color:var(--accent);}
 
-  .suggest-badge{
-    position:absolute;top:9px;right:9px;max-width:80px;text-align:right;
-    background:linear-gradient(90deg,#ff5e3a,#ffb238);color:#1a0b04;
-    font-size:8.5px;font-weight:800;letter-spacing:.2px;line-height:1.3;
-    padding:4px 7px;border-radius:9px;
-    font-family:var(--font-mono);text-transform:uppercase;
-    box-shadow:0 3px 12px rgba(255,94,58,.4);
-  }
-
   /* ---------- Home dashboard ---------- */
   .hub-intro{font-size:13px;color:var(--text-dim);line-height:1.6;margin:0;flex:1;}
   .hub-header-row{display:flex;align-items:flex-start;gap:12px;margin:2px 0 18px;}
@@ -307,6 +299,24 @@
   .asset-table th:nth-child(1), .asset-table td:nth-child(1){width:62%;}
   .asset-table th:nth-child(2), .asset-table td:nth-child(2){width:31%;}
   .asset-table th:nth-child(3), .asset-table td:nth-child(3){width:7%;}
+
+  /* ---------- Stock Report ---------- */
+  .stock-table{table-layout:fixed;}
+  .stock-table th:nth-child(1), .stock-table td:nth-child(1){width:22%;}
+  .stock-table th:nth-child(2), .stock-table td:nth-child(2){width:17%;}
+  .stock-table th:nth-child(3), .stock-table td:nth-child(3){width:16%;}
+  .stock-table th:nth-child(4), .stock-table td:nth-child(4){width:15%;}
+  .stock-table th:nth-child(5), .stock-table td:nth-child(5){width:11%;}
+  .stock-table th:nth-child(6), .stock-table td:nth-child(6){width:14%;}
+  .stock-table th:nth-child(7), .stock-table td:nth-child(7){width:5%;}
+
+  /* ---------- Stock Prep Report ---------- */
+  .stockprep-table{table-layout:fixed;}
+  .stockprep-table th:nth-child(1), .stockprep-table td:nth-child(1){width:26%;}
+  .stockprep-table th:nth-child(2), .stockprep-table td:nth-child(2){width:20%;}
+  .stockprep-table th:nth-child(3), .stockprep-table td:nth-child(3){width:24%;}
+  .stockprep-table th:nth-child(4), .stockprep-table td:nth-child(4){width:24%;}
+  .stockprep-table th:nth-child(5), .stockprep-table td:nth-child(5){width:6%;}
 
   /* ---------- EMI Management ---------- */
   .emi-reminders-sub{font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:.3px;text-transform:none;color:var(--text-faint);}
@@ -413,6 +423,18 @@
   .task-top{display:flex;align-items:flex-start;gap:11px;}
   .task-switch{flex-shrink:0;margin-top:1px;}
   .task-body{flex:1;min-width:0;cursor:pointer;}
+  .task-topline{
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    margin-bottom:8px;
+  }
+  .task-people-line{font-size:10.5px;color:var(--text-faint);font-weight:600;letter-spacing:.3px;}
+  .task-topline .badge-pill{flex-shrink:0;margin:0;}
+  .pc-tabs{display:flex;gap:8px;margin-bottom:10px;}
+  .pc-tab{
+    flex:1;background:var(--panel-2);border:1px solid var(--border-strong);color:var(--text-dim);
+    padding:8px 10px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;
+  }
+  .pc-tab.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);}
   .task-title{font-weight:600;font-size:14px;line-height:1.35;}
   .task-badges{margin-top:6px;}
   .task-actions{display:flex;gap:2px;flex-shrink:0;}
@@ -439,62 +461,25 @@
 
   /* ---------- Gym / Fitness energy theme (scoped — Gym module only) ---------- */
   body.theme-gym{
-    background:
-      radial-gradient(900px 520px at 12% -8%, rgba(255,94,58,.20), transparent 60%),
-      radial-gradient(700px 480px at 105% 15%, rgba(51,209,122,.14), transparent 55%),
-      var(--bg-grad);
+    background:var(--bg-grad);
     background-color:var(--bg);
   }
-  .theme-gym{
-    --accent:#ff5e3a;
-    --accent-dim:#e2431a;
-    --accent-soft:rgba(255,94,58,.18);
-    --up:#33d17a;
-  }
   .theme-gym .m-icon{
-    background:linear-gradient(135deg, rgba(255,94,58,.35), rgba(51,209,122,.18)) !important;
-    box-shadow:0 0 24px rgba(255,94,58,.35);
+    background:var(--accent-soft) !important;
   }
-  .theme-gym .m-name{
-    background:linear-gradient(90deg,#ff5e3a,#ffb238);
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-    letter-spacing:.5px;
-  }
+  .theme-gym .m-name{ color:var(--text); letter-spacing:.5px; }
   .gym-tagline{
-    font-size:12.5px;font-weight:700;color:#ffb98f;margin:0 0 20px;letter-spacing:.2px;
+    font-size:12.5px;font-weight:700;color:var(--text-dim);margin:0 0 20px;letter-spacing:.2px;
   }
-  .theme-gym .section-title{letter-spacing:1.4px;color:#ffb98f;}
-  .theme-gym .btn-primary{
-    background:linear-gradient(90deg,#ff5e3a,#ff8a3d);color:#1a0b04;
-    box-shadow:0 6px 20px rgba(255,94,58,.4);
-  }
-  .theme-gym .btn-finish{
-    background:linear-gradient(90deg,#22c56b,#33d17a);color:#08210f;
-    box-shadow:0 6px 20px rgba(51,209,122,.36);
-  }
-  .theme-gym .btn-ghost{border-color:rgba(255,94,58,.35);}
-  .theme-gym .tile{border-color:rgba(255,94,58,.22);}
-  .theme-gym .tile .t-icon{background:rgba(255,94,58,.16);}
+  .theme-gym .section-title{letter-spacing:1.4px;}
+  .theme-gym .tile{border-color:var(--border-strong);}
+  .theme-gym .tile .t-icon{background:var(--accent-soft);}
   .tile.active-glow{
     border-color:var(--tile-accent, var(--accent));
     background:linear-gradient(160deg, var(--tile-accent-soft, var(--accent-soft)), var(--panel) 60%);
     box-shadow:0 0 0 1px var(--tile-accent, var(--accent)) inset, 0 10px 28px -10px var(--tile-accent-soft, var(--accent-soft)), 0 2px 10px rgba(0,0,0,.25);
     transition:box-shadow .3s ease, background .3s ease;
   }
-  .theme-gym .tile.active-glow{
-    border-color:#ff5e3a;
-    background:linear-gradient(160deg, rgba(255,94,58,.16), var(--panel) 60%);
-    box-shadow:0 0 0 1.5px #ff5e3a inset, 0 12px 32px -10px rgba(255,94,58,.4), 0 2px 10px rgba(0,0,0,.3);
-  }
-  .theme-gym .card{border-color:rgba(255,94,58,.18);}
-  .theme-gym .active-cat .name span{color:#ff8a3d;}
-  .theme-gym .compare-side.today .val{color:#ff8a3d;}
-  .theme-gym .compare{border-color:rgba(255,94,58,.3);box-shadow:0 0 18px rgba(255,94,58,.1);}
-  .theme-gym .quickadd{border-color:rgba(255,94,58,.35);box-shadow:0 0 16px rgba(255,94,58,.08);}
-  .theme-gym .draft-entries-card,
-  .theme-gym #draftEntriesCard{border-color:rgba(255,94,58,.22);}
-  .theme-gym .chip.selected{background:var(--accent-soft);border-color:var(--accent);color:#ff8a3d;}
-  .theme-gym .back-btn{border-color:rgba(255,94,58,.35);}
 
 
   /* ---------- Forms ---------- */
@@ -549,7 +534,6 @@
     padding:11px 8px;border-radius:12px;font-size:12.5px;font-weight:600;cursor:pointer;
   }
   .qa-pill:active{transform:scale(.96);}
-  .theme-gym .qa-pill{border-color:rgba(255,94,58,.3);}
 
   /* ---------- Rest timer ---------- */
   .rest-timer-card{
@@ -558,7 +542,6 @@
   }
   .rt-header{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;color:var(--text-dim);margin-bottom:8px;font-weight:600;}
   .rt-display{font-family:var(--font-mono);font-size:26px;font-weight:700;color:var(--text);letter-spacing:1px;}
-  .theme-gym .rt-display{color:#ff8a3d;}
   #rtPresets{justify-content:center;margin-bottom:10px;}
 
   /* ---------- Category comparison table ---------- */
@@ -655,6 +638,7 @@
   .badge-pill.status{color:var(--accent);border-color:var(--accent-dim);background:var(--accent-soft);}
   .badge-pill.completed{color:var(--up);border-color:var(--up);background:rgba(139,192,132,.14);}
   .badge-pill.pending-red{color:var(--danger);border-color:var(--danger);background:var(--danger-soft);font-weight:700;}
+  .badge-pill.badge-neutral{color:var(--text-dim);border-color:var(--border-strong);}
   .pending-task-card{border-left:3px solid var(--danger);}
   .entry-card .ehead-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
   .entry-card .enum{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);white-space:nowrap;}
@@ -729,6 +713,97 @@
   @media(min-width:600px){ .app{padding:0 24px;} }
   @media(min-width:1024px){ .app{padding:0 32px;} }
   @media(min-width:1440px){ .app{padding:0 40px;} }
+
+  /* =========================================================
+     DESKTOP ENTERPRISE LAYOUT (>=1024px) — sidebar navigation,
+     full-width fluid container, polished cards/tables.
+     Below 1024px, everything above is untouched (mobile-first).
+     ========================================================= */
+  @media(min-width:1024px){
+    html, body{ overflow-x:hidden; }
+    body{ padding-bottom:0; }
+
+    .app{
+      max-width:none; width:auto; margin:0 0 0 var(--sidebar-width);
+      padding:0 40px 48px;
+      box-sizing:border-box;
+    }
+    .header{
+      margin-left:var(--sidebar-width);
+      padding:26px 40px 18px;
+      position:sticky; top:0; z-index:40;
+      background:var(--bg); border-bottom:1px solid var(--border);
+      box-sizing:border-box;
+    }
+    .brand h1{ font-size:22px; }
+
+    /* Bottom tab bar becomes a fixed left sidebar — same buttons, same click handlers, just restyled. */
+    .tabbar{
+      position:fixed; left:0; top:0; bottom:0; right:auto;
+      width:var(--sidebar-width);
+      background:var(--panel);
+      border-top:none; border-right:1px solid var(--border);
+      padding:24px 14px;
+      backdrop-filter:none;
+      display:flex; flex-direction:column;
+      z-index:60;
+      box-shadow:2px 0 16px rgba(0,0,0,.08);
+      box-sizing:border-box;
+      overflow-y:auto;
+    }
+    .tabbar::before{
+      content:"⬤ IRON LOG";
+      display:block;
+      font-family:var(--font-display); font-weight:800; font-size:14px;
+      letter-spacing:1.2px; color:var(--accent);
+      padding:4px 12px 26px;
+      white-space:nowrap;
+    }
+    .tabbar-inner{
+      max-width:none; margin:0; width:100%;
+      display:flex; flex-direction:column; gap:4px;
+      justify-content:flex-start;
+    }
+    .tab-btn{
+      flex-direction:row; justify-content:flex-start; align-items:center;
+      gap:13px; width:100%; padding:12px 14px;
+      border-radius:10px; font-size:13.5px; font-weight:600; letter-spacing:.2px;
+      text-align:left; box-sizing:border-box;
+    }
+    .tab-btn svg{ width:19px; height:19px; flex-shrink:0; }
+    .tab-btn:hover{ background:var(--panel-2); color:var(--text-dim); }
+    .tab-btn.active{ background:var(--accent-soft); color:var(--accent); }
+    .tab-btn.active svg{ stroke:var(--accent); }
+
+    /* Fluid responsive grids so wide monitors never show a lopsided single column with dead space. */
+    .tile-grid{ grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:16px; }
+    .biz-subtabs{ gap:10px; }
+
+    /* Corporate-dashboard polish: real depth on cards, tables, and interactive surfaces. */
+    .card, .sheet-table-card, .quickadd, .manage-panel, .task-card, .emi-card{
+      box-shadow:0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    }
+    .card:hover, .sheet-table-card:hover, .tile:hover{
+      box-shadow:0 4px 14px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.06);
+    }
+    .tile{ box-shadow:0 1px 3px rgba(0,0,0,.08); transition:box-shadow .2s ease, transform .15s ease; }
+    .tile:hover{ transform:translateY(-2px); }
+    .btn{ box-shadow:0 1px 2px rgba(0,0,0,.06); }
+    .modal-card{ box-shadow:0 20px 60px rgba(0,0,0,.35); }
+
+    /* Data grids: comfortable padding and a clear hover row for scanability at desktop density. */
+    .sheet-table td, .sheet-table th{ padding:2px; }
+    .sheet-cell-locked, .sheet-cell-input{ padding:11px 8px; }
+    .sheet-table tbody tr:hover .sheet-cell-locked{ background:var(--panel-2); }
+    .sheet-scroll{ box-shadow:0 1px 3px rgba(0,0,0,.06); }
+
+    /* Modals/dropdowns already use position:fixed + high z-index, so they overlay correctly
+       above the sidebar (z-index:60) and header (z-index:40) without any extra rules needed. */
+  }
+  @media(min-width:1440px){
+    .app{ padding:0 56px 56px; }
+    .header{ padding:26px 56px 18px; }
+  }
 </style>
 <script>
 (function(){
@@ -738,6 +813,7 @@
   }catch(e){}
 })();
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -796,6 +872,13 @@
     <div id="categoryComparisonWrap"></div>
     <div id="categorySessionsWrap"></div>
     <div id="progLogList"></div>
+  </div>
+
+  <!-- ===================== MASTER TASKS HUB TAB ===================== -->
+  <div class="panel" id="panel-tasksHub">
+    <div class="section-title" style="margin-top:0;">🗂️ Master Tasks Hub</div>
+    <p class="hub-intro">General tasks — created without a company tag — live here. Tag a task to a specific business when creating it, and it appears directly inside that Business's own Tasks tab instead.</p>
+    <div id="tasksHubContent"></div>
   </div>
 
   <!-- ===================== SUMMARY TAB ===================== -->
@@ -867,6 +950,10 @@
       <svg viewBox="0 0 24 24"><path d="M4 19V10M11 19V5M18 19v-7"/></svg>
       Progress
     </button>
+    <button class="tab-btn" data-tab="tasksHub" id="navTasksHubBtn">
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      Tasks Hub
+    </button>
     <button class="tab-btn" data-tab="summary" id="navSummaryBtn">
       <svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-5 3 3 5-7"/></svg>
       Summary
@@ -893,7 +980,7 @@
   var DRAFT_KEY = "ironLogGymDraft_v1";
 
   var ICON_OPTIONS = ["🏋️","💼","📁","🧘","👨‍👩‍👧","💰","🩺","✈️","🎯","📝","🎓","⚽","🎵","🛠️","🍎","📚","🏡","⭐"];
-  var ACCENT_PALETTE = ["#ff6b35","#6fa3c2","#8bc084","#c792ea","#f2c14e","#ef6f6c","#5fd0c0","#e08fd6"];
+  var ACCENT_PALETTE = ["#4f46e5","#6fa3c2","#8bc084","#c792ea","#f2c14e","#ef6f6c","#5fd0c0","#e08fd6"];
   var EQUIPMENT_OPTIONS = ["Barbell","Dumbbell","Machine","Cable","Bodyweight","Kettlebell","Band","Other"];
   var GYM_TAGLINES = [
     "Let's crush it today 🔥",
@@ -910,7 +997,7 @@
   // ---------- default module blueprints ----------
   function freshGymModule(){
     return {
-      id:"gym", name:"Gym / Fitness", icon:"🏋️", accent:"#ff6b35", type:"gym", isDefault:true,
+      id:"gym", name:"Gym / Fitness", icon:"🏋️", accent:"#4f46e5", type:"gym", isDefault:true,
       nextSessionNumber:1,
       categories:[
         {id:"push", name:"Push Day", exercises:["Bench Press","Overhead Press","Incline Dumbbell Press","Tricep Pushdown","Lateral Raise"], isDefault:true},
@@ -972,6 +1059,30 @@
       id: uid(), name: name || "Milestone", type:"ledger",
       rows: [{id: uid(), particular:"Opening Balance", segment:"", debit:"", credit:"0", locked:true}]
     };
+  }
+  var STOCK_FIELDS = [
+    {key:"customerName", label:"Customer Name", headers:["customer name","customer","client name","client"]},
+    {key:"vehicleNumber", label:"Vehicle Number", headers:["vehicle number","vehicle no","vehicle no.","reg number","registration number","vehicle num"]},
+    {key:"vehicleModel", label:"Vehicle Model", headers:["vehicle model","model"]},
+    {key:"paymentMode", label:"Payment Mode", headers:["payment mode","payment","payment method"]},
+    {key:"delayDays", label:"Delay Days", headers:["delay days","delay","days delayed"]},
+    {key:"status", label:"Status", headers:["status"]}
+  ];
+  function freshStockTab(name){
+    return {id: uid(), name: name || "Stock Report", type:"stock", rows: []};
+  }
+  var STOCKPREP_FIELDS = [
+    {key:"vehicleNumber", label:"Vehicle Number", headers:["vehicle number","vehicle no","vehicle no.","reg number","registration number","vehicle num"]},
+    {key:"segment", label:"Segment", headers:["segment"]}
+  ];
+  var MAINTENANCE_CATEGORIES = ["Mechanical", "Bodywork / Painting", "Fitness Renewal"];
+  var PAPERWORK_TYPES = ["RC Transfer", "Insurance", "Other Legal / Admin"];
+  var PREP_STATUS_OPTIONS = ["Pending", "In Progress", "Done"];
+  function freshStockPrepTab(name){
+    return {id: uid(), name: name || "Stock Prep Report", type:"stockprep", vehicles: []};
+  }
+  function freshPrepVehicle(vehicleNumber, segment){
+    return {id: uid(), vehicleNumber: vehicleNumber || "", segment: segment || "", maintenance: [], paperwork: []};
   }
   var WEEKDAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   var WORKFLOW_LOOKBACK_DAYS = 90;
@@ -1162,6 +1273,7 @@
   function freshStaffMember(name, staffId){
     return {
       id: uid(), name: name || "New Staff", staffId: staffId || "", createdAt: new Date().toISOString(),
+      baseSalary: 15000, allowedBusinessIds: null, // null = no restriction, staff can tag any company
       tasks: [], workflowItems: [], attendance: [], leaves: []
     };
   }
@@ -1169,7 +1281,9 @@
     return {
       id:"staff", name:"Staff", icon:"👥", accent:ACCENT_PALETTE[2], type:"staff", isDefault:true,
       office: {lat:null, lng:null, radius:75},
-      staffMembers: []
+      staffMembers: [],
+      holidays: [], // {id, date:"YYYY-MM-DD", label}
+      tasks: [] // peer-created tasks: staff-to-staff or staff-to-admin, separate from Business-assigned tasks
     };
   }
   // One-time upgrade: if a generic module was named "Staff", convert it into the specialized directory —
@@ -1178,7 +1292,7 @@
     return {
       id: oldModule.id, name: oldModule.name || "Staff", icon: oldModule.icon || "👥",
       accent: oldModule.accent || ACCENT_PALETTE[2], type:"staff", isDefault:false,
-      office: {lat:null, lng:null, radius:75}, staffMembers: []
+      office: {lat:null, lng:null, radius:75}, staffMembers: [], holidays: [], tasks: []
     };
   }
   function haversineMeters(lat1, lng1, lat2, lng2){
@@ -1263,6 +1377,7 @@
   var selectedEditModuleIcon = ICON_OPTIONS[0];
 
   var activeTab = "home";
+  var ACTIVE_TAB_KEY = "ironLogActiveTab";
   var progModuleId = null;
   var progCategoryId = null;
   var progExercise = null;
@@ -1412,6 +1527,10 @@
             if(typeof t.completedAt === "undefined") t.completedAt = t.status === "completed" ? t.createdAt : null;
             if(typeof t.notes === "undefined") t.notes = "";
             if(typeof t.assignedTo === "undefined") t.assignedTo = null;
+            if(typeof t.vehicleNumber === "undefined") t.vehicleNumber = null;
+            if(typeof t.createdBy === "undefined") t.createdBy = "admin";
+            if(typeof t.extensionRequest === "undefined") t.extensionRequest = null;
+            if(typeof t.isNew === "undefined") t.isNew = false;
           });
           if(!Array.isArray(b.frequencyOptions) || b.frequencyOptions.length === 0) b.frequencyOptions = DEFAULT_FREQUENCY_OPTIONS.slice();
           migrateBusinessTabs(b);
@@ -1456,6 +1575,36 @@
                 if(typeof item.assignedTo === "undefined") item.assignedTo = null;
               });
               tab.completions.forEach(function(c){ if(!c.id) c.id = uid(); });
+            }else if(tab.type === "stock"){
+              if(!Array.isArray(tab.rows)) tab.rows = [];
+              tab.rows.forEach(function(r){
+                if(!r.id) r.id = uid();
+                STOCK_FIELDS.forEach(function(f){ if(typeof r[f.key] === "undefined") r[f.key] = ""; });
+              });
+            }else if(tab.type === "stockprep"){
+              if(!Array.isArray(tab.vehicles)) tab.vehicles = [];
+              tab.vehicles.forEach(function(v){
+                if(!v.id) v.id = uid();
+                if(typeof v.vehicleNumber === "undefined") v.vehicleNumber = "";
+                if(typeof v.segment === "undefined") v.segment = "";
+                if(!Array.isArray(v.maintenance)) v.maintenance = [];
+                if(!Array.isArray(v.paperwork)) v.paperwork = [];
+                v.maintenance.forEach(function(item){
+                  if(!item.id) item.id = uid();
+                  if(!item.category) item.category = MAINTENANCE_CATEGORIES[0];
+                  if(typeof item.description === "undefined") item.description = "";
+                  if(typeof item.assignedTo === "undefined") item.assignedTo = null;
+                  if(!item.status) item.status = "Pending";
+                  if(!item.createdAt) item.createdAt = new Date().toISOString();
+                });
+                v.paperwork.forEach(function(item){
+                  if(!item.id) item.id = uid();
+                  if(!item.docType) item.docType = PAPERWORK_TYPES[0];
+                  if(typeof item.description === "undefined") item.description = "";
+                  if(!item.status) item.status = "Pending";
+                  if(!item.createdAt) item.createdAt = new Date().toISOString();
+                });
+              });
             }
           });
         });
@@ -1463,23 +1612,40 @@
         if(!m.office) m.office = {lat:null, lng:null, radius:75};
         if(typeof m.office.radius !== "number") m.office.radius = 75;
         if(!Array.isArray(m.staffMembers)) m.staffMembers = [];
+        if(!Array.isArray(m.holidays)) m.holidays = [];
+        if(!Array.isArray(m.tasks)) m.tasks = [];
+        m.holidays.forEach(function(h){ if(!h.id) h.id = uid(); });
+        function normalizeStaffTask(t){
+          if(!t.id) t.id = uid();
+          if(!t.status) t.status = "pending";
+          if(typeof t.deadline === "undefined") t.deadline = null;
+          if(!t.createdAt) t.createdAt = new Date().toISOString();
+          if(typeof t.completedAt === "undefined") t.completedAt = t.status === "completed" ? t.createdAt : null;
+          if(typeof t.notes === "undefined") t.notes = "";
+          if(typeof t.assignedTo === "undefined") t.assignedTo = null;
+            if(typeof t.vehicleNumber === "undefined") t.vehicleNumber = null;
+          if(typeof t.companyId === "undefined") t.companyId = null;
+          if(typeof t.createdBy === "undefined") t.createdBy = null;
+          if(typeof t.extensionRequest === "undefined") t.extensionRequest = null;
+          if(typeof t.isNew === "undefined") t.isNew = false;
+        }
+        m.tasks.forEach(normalizeStaffTask);
         m.staffMembers.forEach(function(s){
           if(!s.id) s.id = uid();
           if(!s.staffId) s.staffId = "";
           if(!s.createdAt) s.createdAt = new Date().toISOString();
+          if(typeof s.baseSalary !== "number") s.baseSalary = 15000;
+          if(typeof s.allowedBusinessIds === "undefined") s.allowedBusinessIds = null;
           if(!Array.isArray(s.tasks)) s.tasks = [];
           if(!Array.isArray(s.workflowItems)) s.workflowItems = [];
           if(!Array.isArray(s.attendance)) s.attendance = [];
           if(!Array.isArray(s.leaves)) s.leaves = [];
-          s.tasks.forEach(function(t){
-            if(!t.id) t.id = uid();
-            if(!t.status) t.status = "pending";
-            if(typeof t.deadline === "undefined") t.deadline = null;
-            if(!t.createdAt) t.createdAt = new Date().toISOString();
-            if(typeof t.completedAt === "undefined") t.completedAt = t.status === "completed" ? t.createdAt : null;
-            if(typeof t.notes === "undefined") t.notes = "";
+          s.tasks.forEach(normalizeStaffTask);
+          s.attendance.forEach(function(a){
+            if(!a.id) a.id = uid();
+            if(typeof a.fine === "undefined") a.fine = 0;
+            if(typeof a.punchOutAdminSet === "undefined") a.punchOutAdminSet = false;
           });
-          s.attendance.forEach(function(a){ if(!a.id) a.id = uid(); });
           s.leaves.forEach(function(l){ if(!l.id) l.id = uid(); if(!l.status) l.status = "pending"; });
         });
       }else{
@@ -1525,12 +1691,12 @@
     return d.toLocaleDateString(undefined, {month:"short", day:"numeric", year:"numeric"});
   }
   function hexToRgba(hex, alpha){
-    hex = (hex || "#ff6b35").replace("#","");
+    hex = (hex || "#4f46e5").replace("#","");
     var r = parseInt(hex.substring(0,2),16), g = parseInt(hex.substring(2,4),16), b = parseInt(hex.substring(4,6),16);
     return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
   }
   function darkenHex(hex, amount){
-    hex = (hex || "#ff6b35").replace("#","");
+    hex = (hex || "#4f46e5").replace("#","");
     var r = parseInt(hex.substring(0,2),16), g = parseInt(hex.substring(2,4),16), b = parseInt(hex.substring(4,6),16);
     r = Math.max(0, Math.round(r * (1 - amount)));
     g = Math.max(0, Math.round(g * (1 - amount)));
@@ -1538,7 +1704,7 @@
     return "#" + [r,g,b].map(function(v){ var h = v.toString(16); return h.length < 2 ? "0" + h : h; }).join("");
   }
   function getContrastTextColor(hex){
-    hex = (hex || "#ff6b35").replace("#","");
+    hex = (hex || "#4f46e5").replace("#","");
     var r = parseInt(hex.substring(0,2),16), g = parseInt(hex.substring(2,4),16), b = parseInt(hex.substring(4,6),16);
     var brightness = (r * 299 + g * 587 + b * 114) / 1000;
     return brightness > 150 ? "#14161b" : "#ffffff";
@@ -1672,7 +1838,9 @@
   function switchTab(name){
     if(name === "summary" && isStaff()){ toast("Summary is restricted to Admin", true); return; }
     if(name === "progress" && isStaff()){ toast("Progress is restricted to Admin", true); return; }
+    if(name === "tasksHub" && isStaff()){ toast("Tasks Hub is restricted to Admin", true); return; }
     activeTab = name;
+    try{ localStorage.setItem(ACTIVE_TAB_KEY, name); }catch(e){}
     document.querySelectorAll(".tab-btn").forEach(function(b){
       b.classList.toggle("active", b.getAttribute("data-tab") === name);
     });
@@ -1684,6 +1852,7 @@
     }
     if(name === "home") renderHome();
     if(name === "progress") renderProgress();
+    if(name === "tasksHub") renderTasksHub();
     if(name === "summary") renderSummary();
     if(name === "backup") renderBackup();
   }
@@ -1693,6 +1862,8 @@
     if(summaryBtn) summaryBtn.style.display = isStaff() ? "none" : "flex";
     var progressBtn = document.querySelector('.tab-btn[data-tab="progress"]');
     if(progressBtn) progressBtn.style.display = isStaff() ? "none" : "flex";
+    var tasksHubBtn = document.getElementById("navTasksHubBtn");
+    if(tasksHubBtn) tasksHubBtn.style.display = isStaff() ? "none" : "flex";
   }
 
   function renderSummary(){
@@ -1712,6 +1883,31 @@
         document.getElementById("summaryEmiPanel").style.display = target === "emi" ? "block" : "none";
       };
     });
+  }
+
+  function renderTasksHub(){
+    var wrap = document.getElementById("tasksHubContent");
+    if(!wrap) return;
+    var staffModule = findStaffModuleAny();
+    if(!staffModule){
+      wrap.innerHTML = '<div class="empty-state"><div class="big">🗂️</div><p>Set up the Staff module first — General Tasks live alongside it.</p></div>';
+      return;
+    }
+    var all = getAllGeneralTasks().sort(function(a,b){ return new Date(b.task.createdAt) - new Date(a.task.createdAt); });
+    var byId = {};
+    all.forEach(function(e){ byId[e.task.id] = e.task; });
+    if(all.some(function(e){ return e.task.isNew; })){ all.forEach(function(e){ e.task.isNew = false; }); saveData(); }
+    var filterKey = "tasksHub";
+    var pending = all.filter(function(e){ return e.task.status !== "completed"; });
+    var completed = all.filter(function(e){ return e.task.status === "completed"; });
+    var showing = getStaffListFilter(filterKey) === "completed" ? completed : pending;
+    var html = pendingCompletedTabsHTML(filterKey, pending.length, completed.length);
+    html += showing.length === 0
+      ? '<div class="empty-state"><div class="big">🗂️</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "Nothing completed yet." : "No general tasks right now.") + '</p></div>'
+      : showing.map(function(e){ return staffTaskCardHTML(e, true, null); }).join("");
+    wrap.innerHTML = html;
+    wirePendingCompletedTabs(wrap, filterKey, renderTasksHub);
+    wireStaffTaskCardEvents(wrap, staffModule, null, true, byId, renderTasksHub);
   }
 
   function renderHeader(){
@@ -2033,7 +2229,7 @@
     var wrap = document.getElementById("bizTabbar");
     var html = '<button class="biz-subtab-btn' + (bizSubView === "tasks" ? " active" : "") + '" data-tabid="tasks">📋 Tasks</button>';
     business.tabs.forEach(function(t){
-      var icon = t.type === "ledger" ? "💰" : (t.type === "workflow" ? "🗓️" : "📊");
+      var icon = t.type === "ledger" ? "💰" : (t.type === "workflow" ? "🗓️" : (t.type === "stock" ? "🚚" : (t.type === "stockprep" ? "🔧" : "📊")));
       html += '<button class="biz-subtab-btn' + (bizSubView === t.id ? " active" : "") + '" data-tabid="' + t.id + '">' + icon + ' ' + esc(t.name) + '</button>';
     });
     if(!isStaff()) html += '<button class="biz-subtab-btn biz-subtab-add" id="btnAddTab" title="Add tab">+</button>';
@@ -2064,6 +2260,8 @@
           '<option value="social">Tracking Table (like Social Media)</option>' +
           '<option value="ledger">Ledger (like Milestone)</option>' +
           '<option value="workflow">Workflow (recurring schedule)</option>' +
+          '<option value="stock">Stock Report (vehicle inventory)</option>' +
+          '<option value="stockprep">Stock Prep Report (reconditioning tracker)</option>' +
         '</select></div>' +
         '<div class="btn-row"><button class="btn btn-ghost btn-sm" id="newTabCancel">Cancel</button><button class="btn btn-primary" id="newTabCreate">Create Tab</button></div>' +
       '</div>';
@@ -2072,7 +2270,7 @@
       var name = document.getElementById("newTabName").value.trim();
       var type = document.getElementById("newTabType").value;
       if(!name){ toast("Enter a tab name", true); return; }
-      var newTab = type === "ledger" ? freshLedgerTab(name) : (type === "workflow" ? freshWorkflowTab(name) : freshSocialTab(name));
+      var newTab = type === "ledger" ? freshLedgerTab(name) : (type === "workflow" ? freshWorkflowTab(name) : (type === "stock" ? freshStockTab(name) : (type === "stockprep" ? freshStockPrepTab(name) : freshSocialTab(name))));
       business.tabs.push(newTab);
       saveData();
       showAddTabForm = false;
@@ -2135,6 +2333,8 @@
 
     if(tab.type === "social") renderBizSheetPanel(module, business, tab);
     else if(tab.type === "workflow") renderBizWorkflowPanel(module, business, tab);
+    else if(tab.type === "stock") renderBizStockPanel(module, business, tab);
+    else if(tab.type === "stockprep") renderBizStockPrepPanel(module, business, tab);
     else renderBizLedgerPanel(module, business, tab);
   }
 
@@ -2143,11 +2343,17 @@
     return (staffModule ? staffModule.staffMembers : []) || [];
   }
 
+  var bizTaskFormOpen = {}; // business.id -> bool, transient
+
   function renderBizTasksPanel(module, business){
     var panel = document.getElementById("bizTasksPanel");
     var staffOptions = staffAssignOptions();
+    var vehicleNumbers = getVehicleNumbersForBusiness(business);
+    var formOpen = !!bizTaskFormOpen[business.id];
     panel.innerHTML =
-        '<div class="section-title" style="margin-top:0;">Add a task</div>' +
+        '<div class="sheet-table-header" style="margin-bottom:' + (formOpen ? "10px" : "16px") + ';"><span class="section-title" style="margin:0;">Tasks</span>' +
+          '<button class="btn btn-primary btn-sm" id="btnToggleTaskForm">' + (formOpen ? "Close" : "+ Add Task") + '</button></div>' +
+        (formOpen ?
         '<div class="quickadd">' +
           '<div class="field" style="margin-bottom:10px;"><label>Task</label><input class="input" id="taskTitleInput" placeholder="e.g. Shoot reels, follow up with client…"></div>' +
           '<div class="row-2">' +
@@ -2157,9 +2363,14 @@
               staffOptions.map(function(s){ return '<option value="' + s.id + '">' + esc(s.name) + '</option>'; }).join("") +
             '</select></div>' +
           '</div>' +
+          (vehicleNumbers.length > 0 ? '<div class="field" style="margin-bottom:10px;"><label>Vehicle Number <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><select class="input" id="taskVehicleInput">' +
+            '<option value="">— None —</option>' +
+            vehicleNumbers.map(function(v){ return '<option value="' + esc(v) + '">' + esc(v) + '</option>'; }).join("") +
+          '</select></div>' : '') +
+          '<div class="field" style="margin-bottom:10px;"><label>Notes <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><textarea class="input task-notes-input" id="taskNotesInput" rows="2" placeholder="Add details, reminders, links…"></textarea></div>' +
           '<button class="btn btn-primary" id="taskAddBtn" style="width:100%;">Add Task</button>' +
-        '</div>' +
-        '<div class="section-title">Pending Tasks</div>' +
+        '</div>' : '') +
+        '<div class="section-title"' + (formOpen ? '' : ' style="margin-top:0;"') + '>Pending Tasks</div>' +
         '<div id="bizPendingList"></div>' +
         '<button class="link-btn" id="btnToggleBizCompleted" style="padding-left:0;margin-top:6px;">' + (bizCompletedOpen ? "Hide completed history" : "Show completed history") + '</button>' +
         '<div id="bizCompletedWrap"></div>' +
@@ -2168,17 +2379,24 @@
           '<button class="link-btn" id="btnToggleBizManage" style="padding-left:0;">' + (bizManageOpen ? "Hide business settings" : "Manage this business") + '</button>' +
           '<div id="bizManagePanel"></div>');
 
-      document.getElementById("taskAddBtn").addEventListener("click", function(){
+      document.getElementById("btnToggleTaskForm").addEventListener("click", function(){
+        bizTaskFormOpen[business.id] = !formOpen;
+        renderBizTasksPanel(module, business);
+      });
+      var taskAddBtn = document.getElementById("taskAddBtn");
+      if(taskAddBtn) taskAddBtn.addEventListener("click", function(){
         var title = document.getElementById("taskTitleInput").value.trim();
         var deadline = document.getElementById("taskDeadlineInput").value || null;
         var assignedTo = document.getElementById("taskAssignInput").value || null;
+        var noteText = document.getElementById("taskNotesInput").value.trim();
+        var vehicleInput = document.getElementById("taskVehicleInput");
+        var vehicleNumber = vehicleInput ? (vehicleInput.value || null) : null;
         if(!title){ toast("Enter a task", true); return; }
-        business.tasks.push({id: uid(), title: title, deadline: deadline, status: "pending", createdAt: new Date().toISOString(), completedAt: null, notes: "", assignedTo: assignedTo});
+        business.tasks.push({id: uid(), title: title, deadline: deadline, status: "pending", createdAt: new Date().toISOString(), completedAt: null, notes: noteText, assignedTo: assignedTo, createdBy: "admin", extensionRequest: null, isNew: !!assignedTo, vehicleNumber: vehicleNumber});
         saveData();
         renderHeader();
-        document.getElementById("taskTitleInput").value = "";
-        document.getElementById("taskDeadlineInput").value = "";
-        rerenderBizTaskLists(module, business);
+        bizTaskFormOpen[business.id] = false;
+        renderBizTasksPanel(module, business);
         var assignedName = assignedTo ? (staffOptions.find(function(s){ return s.id === assignedTo; }) || {}).name : null;
         toast(assignedName ? (title + " assigned to " + assignedName) : (title + " added 📌"));
       });
@@ -2255,11 +2473,23 @@
     });
   }
 
-  function assignedToBadgeHTML(task){
-    if(!task.assignedTo) return '';
+  var ADMIN_DISPLAY_NAME = "Ansar";
+  function taskCreatorName(task){
+    if(!task.createdBy || task.createdBy === "admin") return ADMIN_DISPLAY_NAME;
+    var staffModule = findStaffModuleAny();
+    var member = staffModule ? findStaffMember(staffModule, task.createdBy) : null;
+    return member ? member.name : "Unknown";
+  }
+  function taskAssigneeName(task){
+    if(!task.assignedTo || task.assignedTo === "admin") return ADMIN_DISPLAY_NAME;
     var staffModule = findStaffModuleAny();
     var member = staffModule ? findStaffMember(staffModule, task.assignedTo) : null;
-    return '<span class="badge-pill" style="color:var(--down);border-color:var(--down);">👤 ' + esc(member ? member.name : "Unassigned staff") + '</span>';
+    return member ? member.name : "Unknown";
+  }
+
+  function vehicleBadgeHTML(task){
+    if(!task.vehicleNumber) return '';
+    return '<span class="badge-pill badge-neutral">🚚 ' + esc(task.vehicleNumber) + '</span>';
   }
 
   function taskRowHTML(task){
@@ -2267,18 +2497,30 @@
     var isCompleted = task.status === "completed";
     var titleStyle = isCompleted ? "text-decoration:line-through;color:var(--text-faint);" : "";
     var html = '<div class="task-card" data-tid="' + task.id + '">';
+    html += '<div class="task-topline"><span class="task-people-line">By ' + esc(taskCreatorName(task)) + ' → To ' + esc(taskAssigneeName(task)) + '</span></div>';
     html += '<div class="task-top">';
     html += '<button class="switch task-switch' + (isCompleted ? " on" : "") + '" data-tid="' + task.id + '" title="' + (isCompleted ? "Mark as pending" : "Mark as complete") + '"><span class="knob"></span></button>';
     html += '<div class="task-body task-clickable" data-tid="' + task.id + '">';
     html += '<div class="task-title" style="' + titleStyle + '">' + esc(task.title) + '</div>';
     html += '<div class="task-badges">' + (isCompleted
       ? '<span class="badge-pill completed">✓ Completed ' + fmtDate(task.completedAt) + '</span>'
-      : taskDeadlineBadge(task)) + assignedToBadgeHTML(task) + '</div>';
+      : taskDeadlineBadge(task)) + vehicleBadgeHTML(task) +
+      (task.extensionRequest ? ('<span class="badge-pill" style="' + (task.extensionRequest.status === "approved" ? "color:var(--down);border-color:var(--down);" : task.extensionRequest.status === "rejected" ? "color:var(--danger);border-color:var(--danger);" : "") + '">📅 Extension: ' + esc(task.extensionRequest.status) + '</span>') : '') +
+      '</div>';
     html += '</div>';
     html += '<div class="task-actions">';
     if(!isCompleted) html += '<button class="icon-btn task-edit" data-tid="' + task.id + '" title="Edit task"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>';
     html += '<button class="icon-btn task-del" data-tid="' + task.id + '" title="Delete task"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>';
     html += '</div></div>';
+
+    // Reviewed right here, next to the task itself — Admin never needs to leave the Business page for this.
+    if(task.extensionRequest && task.extensionRequest.status === "pending" && task.createdBy === "admin"){
+      html += '<div class="task-confirm"><span>Extend deadline to ' + fmtDate(task.extensionRequest.newDate) + '?</span>' +
+        '<div class="btn-row" style="margin-top:8px;">' +
+          '<button class="btn btn-ghost btn-sm task-ext-reject" data-tid="' + task.id + '">Reject</button>' +
+          '<button class="btn btn-primary btn-sm task-ext-approve" data-tid="' + task.id + '">Approve</button>' +
+        '</div></div>';
+    }
 
     if(state.confirming){
       html += '<div class="task-confirm">' +
@@ -2301,6 +2543,26 @@
   }
 
   function wireTaskRows(wrap, module, business, rerenderFn){
+    wrap.querySelectorAll(".task-ext-approve").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-tid");
+        var task = business.tasks.find(function(t){ return t.id === id; });
+        // Approving an extension ONLY moves the deadline forward — it must never touch task.status.
+        // The task stays exactly as it was (Pending unless someone completed it separately).
+        if(task && task.extensionRequest){ task.deadline = task.extensionRequest.newDate; task.extensionRequest.status = "approved"; saveData(); }
+        rerenderFn();
+        toast("Extension approved");
+      });
+    });
+    wrap.querySelectorAll(".task-ext-reject").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-tid");
+        var task = business.tasks.find(function(t){ return t.id === id; });
+        if(task && task.extensionRequest){ task.extensionRequest.status = "rejected"; saveData(); }
+        rerenderFn();
+        toast("Extension rejected");
+      });
+    });
     wrap.querySelectorAll(".task-switch").forEach(function(btn){
       btn.addEventListener("click", function(){
         getTaskState(btn.getAttribute("data-tid")).confirming = true;
@@ -2985,6 +3247,7 @@
   /* ---------- Workflow (recurring schedule) ---------- */
   var workflowConfirmState = {}; // "itemId|dateStr" -> bool, transient
   var workflowManageOpen = {}; // tabId -> bool, transient
+  var workflowAddFormOpen = {}; // tabId -> bool, transient
 
   function workflowPendingCardHTML(entry){
     var item = entry.item;
@@ -3023,8 +3286,17 @@
     var panel = document.getElementById("bizTabInner");
     var status = computeWorkflowStatus(tab);
     var manageOpen = !!workflowManageOpen[tab.id];
+    var addOpen = !!workflowAddFormOpen[tab.id];
 
-    var html = '<div class="sheet-table-card">';
+    var html = '<div class="sheet-table-card">' +
+      '<div class="sheet-table-header" style="margin-bottom:0;">' +
+        '<span class="sheet-table-title">Schedule</span>' +
+        '<button class="btn btn-primary btn-sm" id="btnToggleWorkflowAdd">' + (addOpen ? "Close" : "+ Add Scheduled Task") + '</button>' +
+      '</div>' +
+      '<div id="workflowAddFormWrap"></div>' +
+    '</div>';
+
+    html += '<div class="sheet-table-card">';
     html += '<div class="section-title" style="margin-top:0;color:var(--up);">✅ Completed Today</div>';
     html += status.completedToday.length === 0
       ? '<div class="empty-state"><div class="big">🗓️</div><p>Nothing completed yet today.</p></div>'
@@ -3047,16 +3319,21 @@
     }
     html += '</div>';
 
-    html += '<button class="link-btn" id="btnToggleWorkflowManage" style="padding-left:0;">' + (manageOpen ? "Hide schedule manager" : "Manage schedule") + '</button>';
+    html += '<button class="link-btn" id="btnToggleWorkflowManage" style="padding-left:0;">' + (manageOpen ? "Hide" : "Manage / remove scheduled items") + '</button>';
     html += '<div id="workflowManagePanel"></div>';
 
     panel.innerHTML = html;
     wireWorkflowPanel(panel, module, business, tab);
     wireViewMoreButtons(panel, function(){ renderBizWorkflowPanel(module, business, tab); });
     renderWorkflowManagePanel(module, business, tab);
+    renderWorkflowAddForm(module, business, tab);
 
     document.getElementById("btnToggleWorkflowManage").addEventListener("click", function(){
       workflowManageOpen[tab.id] = !manageOpen;
+      renderBizWorkflowPanel(module, business, tab);
+    });
+    document.getElementById("btnToggleWorkflowAdd").addEventListener("click", function(){
+      workflowAddFormOpen[tab.id] = !addOpen;
       renderBizWorkflowPanel(module, business, tab);
     });
   }
@@ -3093,7 +3370,6 @@
   function renderWorkflowManagePanel(module, business, tab){
     var wrap = document.getElementById("workflowManagePanel");
     if(!workflowManageOpen[tab.id]){ wrap.innerHTML = ""; return; }
-    var staffOptions = staffAssignOptions();
     var html = '<div class="manage-panel">';
     tab.items.forEach(function(item){
       var assignedName = item.assignedTo ? (function(){ var sm = findStaffMember(findStaffModuleAny() || {}, item.assignedTo); return sm ? sm.name : "Unassigned staff"; })() : "Myself";
@@ -3101,21 +3377,43 @@
         '<button class="icon-btn workflow-item-del" data-item-id="' + item.id + '" title="Remove from schedule"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>';
     });
     if(tab.items.length === 0) html += '<p class="backup-note">Nothing scheduled yet.</p>';
-    html += '<div class="manage-item" style="margin-top:14px;"><label>Add scheduled task</label>' +
-      '<input class="input" id="wfNewName" placeholder="Task name" style="margin-bottom:8px;">' +
-      '<select class="input" id="wfNewType" style="margin-bottom:8px;">' +
-        '<option value="daily">Every day</option>' +
-        '<option value="weekly">Every week (specific day)</option>' +
-        '<option value="monthly">Every month (specific date)</option>' +
-      '</select>' +
-      '<select class="input" id="wfNewAssign" style="margin-bottom:8px;">' +
-        '<option value="">Myself (Admin)</option>' +
-        staffOptions.map(function(s){ return '<option value="' + s.id + '">' + esc(s.name) + '</option>'; }).join("") +
-      '</select>' +
-      '<div id="wfNewExtra"></div>' +
-      '<button class="btn btn-primary btn-sm" id="wfAddBtn" style="margin-top:8px;">Add to schedule</button>' +
-    '</div></div>';
+    html += '</div>';
     wrap.innerHTML = html;
+
+    wrap.querySelectorAll(".workflow-item-del").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var itemId = btn.getAttribute("data-item-id");
+        var item = tab.items.find(function(i){ return i.id === itemId; });
+        if(!item) return;
+        if(!confirm('Remove "' + item.name + '" from the schedule? Past completion history stays recorded, but it will no longer be scheduled going forward.')) return;
+        tab.items = tab.items.filter(function(i){ return i.id !== itemId; });
+        saveData();
+        renderBizWorkflowPanel(module, business, tab);
+        toast("Removed from schedule");
+      });
+    });
+  }
+
+  function renderWorkflowAddForm(module, business, tab){
+    var wrap = document.getElementById("workflowAddFormWrap");
+    if(!wrap) return;
+    if(!workflowAddFormOpen[tab.id]){ wrap.innerHTML = ""; return; }
+    var staffOptions = staffAssignOptions();
+    wrap.innerHTML =
+      '<div class="manage-item" style="margin-top:14px;">' +
+        '<input class="input" id="wfNewName" placeholder="Task name" style="margin-bottom:8px;">' +
+        '<select class="input" id="wfNewType" style="margin-bottom:8px;">' +
+          '<option value="daily">Every day</option>' +
+          '<option value="weekly">Every week (specific day)</option>' +
+          '<option value="monthly">Every month (specific date)</option>' +
+        '</select>' +
+        '<select class="input" id="wfNewAssign" style="margin-bottom:8px;">' +
+          '<option value="">Myself (Admin)</option>' +
+          staffOptions.map(function(s){ return '<option value="' + s.id + '">' + esc(s.name) + '</option>'; }).join("") +
+        '</select>' +
+        '<div id="wfNewExtra"></div>' +
+        '<button class="btn btn-primary btn-sm" id="wfAddBtn" style="margin-top:8px;">Add to schedule</button>' +
+      '</div>';
 
     function renderExtra(){
       var type = document.getElementById("wfNewType").value;
@@ -3141,18 +3439,6 @@
     renderExtra();
     document.getElementById("wfNewType").addEventListener("change", renderExtra);
 
-    wrap.querySelectorAll(".workflow-item-del").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        var itemId = btn.getAttribute("data-item-id");
-        var item = tab.items.find(function(i){ return i.id === itemId; });
-        if(!item) return;
-        if(!confirm('Remove "' + item.name + '" from the schedule? Past completion history stays recorded, but it will no longer be scheduled going forward.')) return;
-        tab.items = tab.items.filter(function(i){ return i.id !== itemId; });
-        saveData();
-        renderBizWorkflowPanel(module, business, tab);
-        toast("Removed from schedule");
-      });
-    });
     document.getElementById("wfAddBtn").addEventListener("click", function(){
       var name = document.getElementById("wfNewName").value.trim();
       var type = document.getElementById("wfNewType").value;
@@ -3172,7 +3458,7 @@
       }
       tab.items.push(newItem);
       saveData();
-      workflowManageOpen[tab.id] = true;
+      workflowAddFormOpen[tab.id] = false;
       renderBizWorkflowPanel(module, business, tab);
       toast(name + " added to schedule");
     });
@@ -3501,6 +3787,7 @@
   var staffView = "directory"; // "directory" | a staffMember.id
   var staffAddFormOpen = false;
   var staffOfficeConfigOpen = false;
+  var staffRulebookOpen = false;
   var staffTaskConfirm = {}; // taskId -> bool, transient
   var STAFF_PROFILE_KEY = "ironLogStaffProfile";
   var DEVICE_AUTH_KEY = "ironLogAuthorizedDevice";
@@ -3528,6 +3815,9 @@
     if(staffView === "directory" || !findStaffMember(module, staffView)){
       staffView = "directory";
       body.innerHTML =
+        '<div class="card">' +
+          '<p class="backup-note" style="margin:0;">📋 General (non-business-tagged) tasks now live in their own dedicated <b>Tasks Hub</b> — find it in the main navigation.</p>' +
+        '</div>' +
         '<div class="section-title" style="margin-top:0;">Office Location</div>' +
         '<button class="link-btn" id="btnToggleOfficeConfig" style="padding-left:0;">' + (staffOfficeConfigOpen ? "Hide" : "Configure geofence") + '</button>' +
         '<div id="staffOfficeConfigWrap"></div>' +
@@ -3549,9 +3839,17 @@
           '<div class="m-icon" style="background:' + hexToRgba(module.accent,.16) + ';font-size:20px;">👤</div>' +
           '<div><div class="m-name" style="font-size:18px;">' + esc(staff.name) + '</div><div class="m-meta">ID: ' + esc(staff.staffId || "—") + '</div></div>' +
         '</div>' +
-        '<p class="backup-note">To assign work to ' + esc(staff.name) + ', open any Business → Tasks or Workflow → and pick them from the "Assign To" list. Everything assigned appears here automatically.</p>' +
-        '<div class="section-title" style="margin-top:0;">Assigned Tasks</div>' +
+        '<div id="staffSalaryCard"></div>' +
+        '<div id="staffEfficiencyCard"></div>' +
+        '<div class="section-title">🏢 Company Access</div>' +
+        '<p class="backup-note">Control which companies ' + esc(staff.name) + ' can tag when creating their own tasks. Leave none checked to allow all companies.</p>' +
+        '<div id="staffCompanyAccessWrap"></div>' +
+        '<p class="backup-note">To assign work to ' + esc(staff.name) + ', open any Business → Tasks or Workflow → and pick them from the "Assign To" list, or tap "+ New Task" below.</p>' +
+        '<div class="section-title" style="margin-top:0;">📥 Incoming Tasks</div>' +
         '<div id="staffTaskList"></div>' +
+        '<div class="sheet-table-header" style="margin:16px 0 0;"><span class="section-title" style="margin:0;">📤 Outgoing Tasks (created by ' + esc(staff.name) + ')</span>' +
+          '<button class="btn btn-primary btn-sm" id="btnOpenNewTaskModal">+ New Task</button></div>' +
+        '<div id="staffOutgoingList"></div>' +
         '<div class="section-title">Assigned Workflows</div>' +
         '<div id="staffWorkflowList"></div>' +
         '<div class="section-title">Attendance History</div>' +
@@ -3563,9 +3861,16 @@
         staffView = "directory";
         renderStaffModuleBody(module);
       });
+      document.getElementById("btnOpenNewTaskModal").addEventListener("click", function(){
+        openStaffNewTaskModal(module, staff, true);
+      });
+      renderStaffSalaryCard(module, staff, true);
+      renderStaffEfficiencyCard(module, staff);
+      renderStaffCompanyAccess(module, staff);
       renderStaffTaskList(module, staff, true);
+      renderStaffOutgoingList(module, staff);
       renderStaffWorkflowList(module, staff);
-      renderStaffAttendanceList(staff);
+      renderStaffAttendanceList(module, staff, true);
       renderStaffLeaveList(module, staff, true);
     }
   }
@@ -3614,6 +3919,39 @@
     });
   }
 
+  function renderStaffCompanyAccess(module, staff){
+    var wrap = document.getElementById("staffCompanyAccessWrap");
+    if(!wrap) return;
+    var bizModule = data.modules.business;
+    var businesses = (bizModule && bizModule.type === "business") ? bizModule.businesses : [];
+    if(businesses.length === 0){
+      wrap.innerHTML = '<p class="backup-note">No businesses exist yet.</p>';
+      return;
+    }
+    var allowed = staff.allowedBusinessIds; // null = unrestricted
+    wrap.innerHTML = '<div class="chip-row">' +
+      businesses.map(function(b){
+        var checked = !allowed || allowed.indexOf(b.id) !== -1;
+        return '<label class="chip' + (checked ? " selected" : "") + '" style="cursor:pointer;">' +
+          '<input type="checkbox" class="staff-company-check" data-biz-id="' + b.id + '" ' + (checked ? "checked" : "") + ' style="margin-right:5px;">' +
+          '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + b.accent + ';margin-right:4px;"></span>' +
+          esc(b.name) +
+        '</label>';
+      }).join("") +
+    '</div>';
+    wrap.querySelectorAll(".staff-company-check").forEach(function(cb){
+      cb.addEventListener("change", function(){
+        var allChecks = Array.from(wrap.querySelectorAll(".staff-company-check"));
+        var checkedIds = allChecks.filter(function(c){ return c.checked; }).map(function(c){ return c.getAttribute("data-biz-id"); });
+        // All checked (or none checked) both mean "no restriction" — only a partial selection becomes an active allowlist.
+        staff.allowedBusinessIds = (checkedIds.length === 0 || checkedIds.length === allChecks.length) ? null : checkedIds;
+        saveData();
+        renderStaffCompanyAccess(module, staff);
+        toast(staff.allowedBusinessIds ? "Company access updated" : "No restriction — all companies allowed");
+      });
+    });
+  }
+
   function renderStaffOfficeConfig(module){
     var wrap = document.getElementById("staffOfficeConfigWrap");
     if(!wrap) return;
@@ -3634,7 +3972,35 @@
           (isDeviceAuthorized() ? "✅ Authorized for punching" : "🚫 Not authorized") +
         '</div></div></div>' +
         '<button class="btn ' + (isDeviceAuthorized() ? "btn-ghost" : "btn-primary") + '" id="btnToggleDeviceAuth">' + (isDeviceAuthorized() ? "Revoke authorization" : "🔓 Authorize This Device") + '</button>' +
+      '</div>' +
+      '<div class="card">' +
+        '<p class="backup-note">Sundays are automatically treated as non-working. Mark additional Official Holidays here so salary is never deducted for them.</p>' +
+        '<div class="chip-row" style="margin-bottom:10px;">' +
+          (module.holidays.length === 0 ? '<span class="backup-note" style="margin:0;">No holidays marked yet.</span>' :
+            module.holidays.slice().sort(function(a,b){ return new Date(a.date)-new Date(b.date); }).map(function(h){
+              return '<span class="chip">' + fmtDate(h.date) + (h.label ? " — " + esc(h.label) : "") + ' <span class="x staff-holiday-del" data-holiday-id="' + h.id + '">✕</span></span>';
+            }).join("")) +
+        '</div>' +
+        '<div class="row-2"><input class="input" type="date" id="newHolidayDate"><input class="input" id="newHolidayLabel" placeholder="Label (optional)"></div>' +
+        '<button class="btn btn-ghost btn-sm" id="btnAddHoliday" style="margin-top:8px;">+ Mark Holiday</button>' +
       '</div>';
+    document.getElementById("btnAddHoliday").addEventListener("click", function(){
+      var date = document.getElementById("newHolidayDate").value;
+      var label = document.getElementById("newHolidayLabel").value.trim();
+      if(!date){ toast("Pick a date", true); return; }
+      if(module.holidays.some(function(h){ return h.date === date; })){ toast("That date is already marked", true); return; }
+      module.holidays.push({id: uid(), date:date, label:label});
+      saveData();
+      renderStaffOfficeConfig(module);
+      toast("Holiday marked");
+    });
+    wrap.querySelectorAll(".staff-holiday-del").forEach(function(x){
+      x.addEventListener("click", function(){
+        module.holidays = module.holidays.filter(function(h){ return h.id !== x.getAttribute("data-holiday-id"); });
+        saveData();
+        renderStaffOfficeConfig(module);
+      });
+    });
     document.getElementById("btnCaptureOffice").addEventListener("click", function(){
       if(!navigator.geolocation){ toast("Geolocation not supported on this device", true); return; }
       toast("Getting location…");
@@ -3658,20 +4024,69 @@
     });
   }
 
-  // Pulls every task assigned to this staff member, live, from every business — plus any legacy
-  // directly-assigned tasks from before this restructure. Returns references, not copies, so completing
-  // a task here mutates the same object the Business module renders — no separate sync step needed.
+  // Pulls every task assigned to this staff member, live, from every business, plus peer-created tasks
+  // (staff-to-staff or staff-to-admin), plus any legacy directly-assigned tasks from before this restructure.
+  // Returns references, not copies, so completing a task here mutates the same object everywhere it's shown.
   function getAssignedTasksForStaff(staffId){
     var results = [];
     var bizModule = data.modules.business;
     if(bizModule && bizModule.type === "business"){
       (bizModule.businesses || []).forEach(function(biz){
         (biz.tasks || []).forEach(function(t){
-          if(t.assignedTo === staffId) results.push({task:t, businessName: biz.name});
+          if(t.assignedTo === staffId) results.push({task:t, businessName: biz.name, businessAccent: biz.accent});
+        });
+      });
+    }
+    var staffModule = findStaffModuleAny();
+    if(staffModule){
+      (staffModule.tasks || []).forEach(function(t){
+        if(t.assignedTo === staffId) results.push({task:t, businessName: null, isPeer:true});
+      });
+    }
+    return results;
+  }
+  // Peer tasks THIS staff member created (their "Outgoing" list) — assigned to another staff member or Admin.
+  // Shared Pending/Completed tab UI, reused across the Tasks, Outgoing Tasks, and Workflow lists.
+  var staffListFilter = {}; // key -> "pending" | "completed", transient, defaults to pending
+  function getStaffListFilter(key){ return staffListFilter[key] || "pending"; }
+  function pendingCompletedTabsHTML(key, pendingCount, completedCount){
+    var active = getStaffListFilter(key);
+    return '<div class="pc-tabs">' +
+      '<button class="pc-tab' + (active === "pending" ? " active" : "") + '" data-pc-key="' + key + '" data-pc-val="pending">Pending (' + pendingCount + ')</button>' +
+      '<button class="pc-tab' + (active === "completed" ? " active" : "") + '" data-pc-key="' + key + '" data-pc-val="completed">Completed (' + completedCount + ')</button>' +
+    '</div>';
+  }
+  function wirePendingCompletedTabs(wrap, key, rerenderFn){
+    wrap.querySelectorAll('.pc-tab[data-pc-key="' + key + '"]').forEach(function(btn){
+      btn.addEventListener("click", function(){
+        staffListFilter[key] = btn.getAttribute("data-pc-val");
+        rerenderFn();
+      });
+    });
+  }
+
+  function getOutgoingPeerTasksForStaff(staffId){
+    var results = [];
+    var staffModule = findStaffModuleAny();
+    if(staffModule){
+      (staffModule.tasks || []).filter(function(t){ return t.createdBy === staffId; })
+        .forEach(function(t){ results.push({task:t, businessName:null, isPeer:true}); });
+    }
+    var bizModule = data.modules.business;
+    if(bizModule && bizModule.type === "business"){
+      (bizModule.businesses || []).forEach(function(biz){
+        (biz.tasks || []).forEach(function(t){
+          if(t.createdBy === staffId) results.push({task:t, businessName: biz.name, businessAccent: biz.accent});
         });
       });
     }
     return results;
+  }
+  // The full General Tasks pool — every task created without a business tag, regardless of who it's assigned to.
+  function getAllGeneralTasks(){
+    var staffModule = findStaffModuleAny();
+    if(!staffModule) return [];
+    return (staffModule.tasks || []).map(function(t){ return {task:t, businessName:null, isPeer:true}; });
   }
   function getAssignedWorkflowItemsForStaff(staffId){
     var results = [];
@@ -3689,24 +4104,73 @@
     return results;
   }
 
-  function staffTaskCardHTML(entry){
+  function companyBadgeHTML(entry){
+    if(entry.businessName){
+      var accent = entry.businessAccent || "var(--down)";
+      return '<span class="badge-pill" style="color:' + accent + ';border-color:' + accent + ';">🏢 ' + esc(entry.businessName) + '</span>';
+    }
+    if(entry.task && entry.task.companyId){
+      var bizModule = data.modules.business;
+      var biz = (bizModule && bizModule.businesses) ? bizModule.businesses.find(function(b){ return b.id === entry.task.companyId; }) : null;
+      if(biz) return '<span class="badge-pill" style="color:' + biz.accent + ';border-color:' + biz.accent + ';">🏢 ' + esc(biz.name) + '</span>';
+    }
+    return '';
+  }
+
+  var staffTaskNotesOpen = {}; // taskId -> bool, transient
+  var staffExtensionFormOpen = {}; // taskId -> bool, transient
+
+  function staffTaskCardHTML(entry, isAdminView, viewerStaffId){
     var task = entry.task;
     var isCompleted = task.status === "completed";
     var confirming = !!staffTaskConfirm[task.id];
-    var html = '<div class="task-card"><div class="task-top">' +
+    var notesOpen = !!staffTaskNotesOpen[task.id];
+    var extFormOpen = !!staffExtensionFormOpen[task.id];
+    var canDelete = isAdminView || (viewerStaffId && task.createdBy === viewerStaffId);
+    var canRequestExtension = !isAdminView && viewerStaffId && task.assignedTo === viewerStaffId && task.deadline && !isCompleted && !task.extensionRequest;
+    // Business-origin task extensions are now reviewed directly in the Business module, next to the task —
+    // this view only still handles peer tasks (staff-to-staff), since those have no Business home.
+    var canReviewExtension = task.extensionRequest && task.extensionRequest.status === "pending" &&
+      viewerStaffId && task.createdBy === viewerStaffId;
+
+    var html = '<div class="task-card' + (!isCompleted ? " pending-task-card" : "") + '">';
+    html += '<div class="task-topline"><span class="task-people-line">By ' + esc(taskCreatorName(task)) + ' → To ' + esc(taskAssigneeName(task)) + '</span>' + companyBadgeHTML(entry) + '</div>';
+    html += '<div class="task-top">' +
       '<button class="switch task-switch' + (isCompleted ? " on" : "") + '" data-task-id="' + task.id + '" title="' + (isCompleted ? "Mark as pending" : "Mark as complete") + '"><span class="knob"></span></button>' +
-      '<div class="task-body"><div class="task-title" style="' + (isCompleted ? "text-decoration:line-through;color:var(--text-faint);" : "") + '">' + esc(task.title) + '</div>' +
+      '<div class="task-body">' +
+      '<div class="task-title" style="cursor:pointer;' + (isCompleted ? "text-decoration:line-through;color:var(--text-faint);" : "") + '" data-notes-toggle="' + task.id + '">' + esc(task.title) + (task.isNew ? ' <span class="badge-pill" style="color:var(--accent);border-color:var(--accent);">● NEW</span>' : '') + '</div>' +
       '<div class="task-badges">' +
-        (entry.businessName ? '<span class="badge-pill" style="color:var(--down);border-color:var(--down);">🏢 ' + esc(entry.businessName) + '</span>' : '') +
+        (entry.isPeer ? '<span class="badge-pill badge-neutral">👤 Peer task</span>' : '') +
         (isCompleted ? '<span class="badge-pill completed">✓ Completed ' + fmtDate(task.completedAt) + '</span>' : taskDeadlineBadge(task)) +
+        vehicleBadgeHTML(task) +
+        // Deliberately NOT reusing the green .completed badge style here — an approved extension only
+        // updates the deadline, the task itself stays Pending, and the badge must never visually imply otherwise.
+        (task.extensionRequest ? ('<span class="badge-pill" style="' + (task.extensionRequest.status === "approved" ? "color:var(--down);border-color:var(--down);" : task.extensionRequest.status === "rejected" ? "color:var(--danger);border-color:var(--danger);" : "") + '">📅 Extension: ' + esc(task.extensionRequest.status) + '</span>') : '') +
       '</div></div>' +
-      '<button class="icon-btn staff-task-del" data-task-id="' + task.id + '" title="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>' +
+      (canDelete ? '<button class="icon-btn staff-task-del" data-task-id="' + task.id + '" title="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>' : '') +
     '</div>';
+
+    if(notesOpen){
+      html += '<div style="margin-top:8px;"><textarea class="input staff-task-notes" data-task-id="' + task.id + '" rows="2" placeholder="Add a note…">' + esc(task.notes || "") + '</textarea></div>';
+    }
     if(confirming){
       html += '<div class="task-confirm"><span>' + (isCompleted ? "Move this task back to pending?" : "Mark this task complete?") + '</span>' +
         '<div class="btn-row" style="margin-top:8px;">' +
           '<button class="btn btn-ghost btn-sm staff-task-confirm-no" data-task-id="' + task.id + '">Cancel</button>' +
           '<button class="btn btn-primary btn-sm staff-task-confirm-yes" data-task-id="' + task.id + '">Confirm</button>' +
+        '</div></div>';
+    }
+    if(canRequestExtension){
+      html += '<button class="link-btn" style="padding-left:0;margin-top:6px;" data-ext-toggle="' + task.id + '">' + (extFormOpen ? "Hide" : "Request deadline extension") + '</button>';
+      if(extFormOpen){
+        html += '<div class="row-2" style="margin-top:6px;"><input class="input" type="date" id="extDate-' + task.id + '"><button class="btn btn-primary btn-sm" data-ext-submit="' + task.id + '">Submit</button></div>';
+      }
+    }
+    if(canReviewExtension){
+      html += '<div class="task-confirm"><span>Extend deadline to ' + fmtDate(task.extensionRequest.newDate) + '?</span>' +
+        '<div class="btn-row" style="margin-top:8px;">' +
+          '<button class="btn btn-ghost btn-sm staff-ext-reject" data-task-id="' + task.id + '">Reject</button>' +
+          '<button class="btn btn-primary btn-sm staff-ext-approve" data-task-id="' + task.id + '">Approve</button>' +
         '</div></div>';
     }
     html += '</div>';
@@ -3719,21 +4183,51 @@
     var legacy = (staff.tasks || []).map(function(t){ return {task:t, businessName:null}; });
     var fromBusiness = getAssignedTasksForStaff(staff.id);
     var all = legacy.concat(fromBusiness).sort(function(a,b){ return new Date(b.task.createdAt) - new Date(a.task.createdAt); });
-    wrap.innerHTML = all.length === 0
-      ? '<div class="empty-state"><div class="big">📋</div><p>No tasks assigned yet' + (isAdminView ? '.' : ' — assigned tasks from any Business will appear here.') + '</p></div>'
-      : all.map(staffTaskCardHTML).join("");
+    var viewerStaffId = isAdminView ? null : staff.id;
+    // Clear "new" badges once the recipient has actually seen this list (not when Admin is just checking on them).
+    if(!isAdminView){
+      var anyNew = all.some(function(e){ return e.task.isNew; });
+      if(anyNew){ all.forEach(function(e){ e.task.isNew = false; }); saveData(); }
+    }
+    var filterKey = "tasks:" + staff.id + ":" + (isAdminView ? "admin" : "self");
+    var pending = all.filter(function(e){ return e.task.status !== "completed"; });
+    var completed = all.filter(function(e){ return e.task.status === "completed"; });
+    var showing = getStaffListFilter(filterKey) === "completed" ? completed : pending;
+    var html = pendingCompletedTabsHTML(filterKey, pending.length, completed.length);
+    html += showing.length === 0
+      ? '<div class="empty-state"><div class="big">📋</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "Nothing completed yet." : ("No pending tasks" + (isAdminView ? "." : " — assigned tasks from any Business will appear here."))) + '</p></div>'
+      : showing.map(function(e){ return staffTaskCardHTML(e, isAdminView, viewerStaffId); }).join("");
+    wrap.innerHTML = html;
     var byId = {};
     all.forEach(function(e){ byId[e.task.id] = e.task; });
+    wirePendingCompletedTabs(wrap, filterKey, function(){ renderStaffTaskList(module, staff, isAdminView); });
+    wireStaffTaskCardEvents(wrap, module, staff, isAdminView, byId, function(){ renderStaffTaskList(module, staff, isAdminView); });
+  }
+
+  function wireStaffTaskCardEvents(wrap, module, staff, isAdminView, byId, rerender){
+    wrap.querySelectorAll("[data-notes-toggle]").forEach(function(el){
+      el.addEventListener("click", function(){
+        var id = el.getAttribute("data-notes-toggle");
+        staffTaskNotesOpen[id] = !staffTaskNotesOpen[id];
+        rerender();
+      });
+    });
+    wrap.querySelectorAll(".staff-task-notes").forEach(function(el){
+      el.addEventListener("focusout", function(){
+        var t = byId[el.getAttribute("data-task-id")];
+        if(t){ t.notes = el.value; saveData(); }
+      });
+    });
     wrap.querySelectorAll(".task-switch").forEach(function(btn){
       btn.addEventListener("click", function(){
         staffTaskConfirm[btn.getAttribute("data-task-id")] = true;
-        renderStaffTaskList(module, staff, isAdminView);
+        rerender();
       });
     });
     wrap.querySelectorAll(".staff-task-confirm-no").forEach(function(btn){
       btn.addEventListener("click", function(){
         staffTaskConfirm[btn.getAttribute("data-task-id")] = false;
-        renderStaffTaskList(module, staff, isAdminView);
+        rerender();
       });
     });
     wrap.querySelectorAll(".staff-task-confirm-yes").forEach(function(btn){
@@ -3745,16 +4239,54 @@
           saveData(); renderHeader();
         }
         staffTaskConfirm[btn.getAttribute("data-task-id")] = false;
-        renderStaffTaskList(module, staff, isAdminView);
+        rerender();
         toast("Task updated");
+      });
+    });
+    wrap.querySelectorAll("[data-ext-toggle]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-ext-toggle");
+        staffExtensionFormOpen[id] = !staffExtensionFormOpen[id];
+        rerender();
+      });
+    });
+    wrap.querySelectorAll("[data-ext-submit]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-ext-submit");
+        var newDate = document.getElementById("extDate-" + id).value;
+        if(!newDate){ toast("Pick a new date", true); return; }
+        var t = byId[id];
+        if(t){ t.extensionRequest = {newDate:newDate, status:"pending", requestedAt:new Date().toISOString()}; saveData(); }
+        staffExtensionFormOpen[id] = false;
+        rerender();
+        toast("Extension requested");
+      });
+    });
+    wrap.querySelectorAll(".staff-ext-approve").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var t = byId[btn.getAttribute("data-task-id")];
+        if(t && t.extensionRequest){ t.deadline = t.extensionRequest.newDate; t.extensionRequest.status = "approved"; saveData(); }
+        rerender();
+        toast("Extension approved");
+      });
+    });
+    wrap.querySelectorAll(".staff-ext-reject").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var t = byId[btn.getAttribute("data-task-id")];
+        if(t && t.extensionRequest){ t.extensionRequest.status = "rejected"; saveData(); }
+        rerender();
+        toast("Extension rejected");
       });
     });
     wrap.querySelectorAll(".staff-task-del").forEach(function(btn){
       btn.addEventListener("click", function(){
         if(!confirm("Delete this task? This can't be undone.")) return;
         var tid = btn.getAttribute("data-task-id");
-        if(staff.tasks.some(function(x){ return x.id === tid; })){
+        var staffModule = findStaffModuleAny();
+        if(staff && staff.tasks.some(function(x){ return x.id === tid; })){
           staff.tasks = staff.tasks.filter(function(x){ return x.id !== tid; });
+        }else if(staffModule && staffModule.tasks.some(function(x){ return x.id === tid; })){
+          staffModule.tasks = staffModule.tasks.filter(function(x){ return x.id !== tid; });
         }else{
           var bizModule = data.modules.business;
           if(bizModule && bizModule.type === "business"){
@@ -3764,7 +4296,7 @@
           }
         }
         saveData(); renderHeader();
-        renderStaffTaskList(module, staff, isAdminView);
+        rerender();
         toast("Task deleted");
       });
     });
@@ -3794,9 +4326,21 @@
     var wrap = document.getElementById("staffWorkflowList");
     if(!wrap) return;
     var items = getAssignedWorkflowItemsForStaff(staff.id);
-    wrap.innerHTML = items.length === 0
-      ? '<div class="empty-state"><div class="big">🗓️</div><p>No workflow items assigned yet.</p></div>'
-      : items.map(staffWorkflowCardHTML).join("");
+    var todayStr = isoDateStr(new Date());
+    function isItemDone(entry){
+      var c = (entry.tab.completions || []).find(function(x){ return x.itemId === entry.item.id && x.dueDate === todayStr; });
+      return !!(c && c.status === "completed");
+    }
+    var filterKey = "workflow:" + staff.id;
+    var pending = items.filter(function(e){ return !isItemDone(e); });
+    var completed = items.filter(isItemDone);
+    var showing = getStaffListFilter(filterKey) === "completed" ? completed : pending;
+    var html = pendingCompletedTabsHTML(filterKey, pending.length, completed.length);
+    html += showing.length === 0
+      ? '<div class="empty-state"><div class="big">🗓️</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "Nothing completed yet today." : "No pending workflow items.") + '</p></div>'
+      : showing.map(staffWorkflowCardHTML).join("");
+    wrap.innerHTML = html;
+    wirePendingCompletedTabs(wrap, filterKey, function(){ renderStaffWorkflowList(module, staff); });
     wrap.querySelectorAll(".staff-wf-mark").forEach(function(btn){
       btn.addEventListener("click", function(){
         var itemId = btn.getAttribute("data-item-id"), tabId = btn.getAttribute("data-tab-id");
@@ -3819,7 +4363,203 @@
     });
   }
 
-  function renderStaffAttendanceList(staff){
+  /* ---------- Outgoing (peer-created) tasks + New Task modal ---------- */
+  function renderStaffOutgoingList(module, staff){
+    var wrap = document.getElementById("staffOutgoingList");
+    if(!wrap) return;
+    var outgoing = getOutgoingPeerTasksForStaff(staff.id).sort(function(a,b){ return new Date(b.task.createdAt) - new Date(a.task.createdAt); });
+    var byId = {};
+    outgoing.forEach(function(e){ byId[e.task.id] = e.task; });
+    var filterKey = "outgoing:" + staff.id;
+    var pending = outgoing.filter(function(e){ return e.task.status !== "completed"; });
+    var completed = outgoing.filter(function(e){ return e.task.status === "completed"; });
+    var showing = getStaffListFilter(filterKey) === "completed" ? completed : pending;
+    var html = pendingCompletedTabsHTML(filterKey, pending.length, completed.length);
+    html += showing.length === 0
+      ? '<div class="empty-state"><div class="big">📤</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "Nothing completed yet." : "Tasks you create and assign to others will appear here.") + '</p></div>'
+      : showing.map(function(e){ return staffTaskCardHTML(e, false, staff.id); }).join("");
+    wrap.innerHTML = html;
+    wirePendingCompletedTabs(wrap, filterKey, function(){ renderStaffOutgoingList(module, staff); });
+    wireStaffTaskCardEvents(wrap, module, staff, false, byId, function(){ renderStaffOutgoingList(module, staff); });
+  }
+
+  function getAllowedBusinessesForStaff(staff){
+    var bizModule = data.modules.business;
+    var all = (bizModule && bizModule.type === "business") ? bizModule.businesses : [];
+    if(!staff.allowedBusinessIds) return all; // unrestricted
+    return all.filter(function(b){ return staff.allowedBusinessIds.indexOf(b.id) !== -1; });
+  }
+
+  function openStaffNewTaskModal(module, actingStaff, isAdminActing){
+    var creatorId = isAdminActing ? "admin" : actingStaff.id;
+    var assignOptions = isAdminActing
+      ? (module.staffMembers || [])
+      : (module.staffMembers || []).filter(function(s){ return s.id !== actingStaff.id; });
+    var allowedBusinesses = getAllowedBusinessesForStaff(actingStaff);
+    showModal(
+      '<div class="modal-header"><h3 class="modal-title">New Task</h3><button class="modal-close-btn" id="modalCloseBtn">✕</button></div>' +
+      '<div class="modal-body">' +
+        '<div class="field" style="margin-bottom:10px;"><label>Task</label><input class="input" id="newPeerTaskTitle" placeholder="What needs doing?"></div>' +
+        '<div class="row-2">' +
+          '<div class="field" style="margin-bottom:10px;"><label>Target Date</label><input class="input" type="date" id="newPeerTaskDate"></div>' +
+          '<div class="field" style="margin-bottom:10px;"><label>Assign To</label><select class="input" id="newPeerTaskAssign">' +
+            (isAdminActing ? '' : '<option value="admin">Admin</option>') +
+            assignOptions.map(function(s){ return '<option value="' + s.id + '"' + (isAdminActing && s.id === actingStaff.id ? " selected" : "") + '>' + esc(s.name) + '</option>'; }).join("") +
+          '</select></div>' +
+        '</div>' +
+        (allowedBusinesses.length > 0 ? '<div class="field" style="margin-bottom:10px;"><label>Company <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><select class="input" id="newPeerTaskCompany">' +
+          '<option value="">— None —</option>' +
+          allowedBusinesses.map(function(b){ return '<option value="' + b.id + '">' + esc(b.name) + '</option>'; }).join("") +
+        '</select></div>' : '') +
+        '<div class="field" style="margin-bottom:10px;"><label>Vehicle Number <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><select class="input" id="newPeerTaskVehicle"><option value="">— Select a company first —</option></select></div>' +
+        '<div class="field" style="margin-bottom:14px;"><label>Notes <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><textarea class="input task-notes-input" id="newPeerTaskNotes" rows="3" placeholder="Add details, reminders, links…"></textarea></div>' +
+        '<button class="btn btn-primary" id="btnCreatePeerTask" style="width:100%;">Create Task</button>' +
+      '</div>'
+    );
+
+    function refreshVehicleOptions(){
+      var companySelect = document.getElementById("newPeerTaskCompany");
+      var vehicleSelect = document.getElementById("newPeerTaskVehicle");
+      var companyId = companySelect ? companySelect.value : "";
+      var biz = allowedBusinesses.find(function(b){ return b.id === companyId; });
+      var vehicles = biz ? getVehicleNumbersForBusiness(biz) : [];
+      vehicleSelect.innerHTML = vehicles.length === 0
+        ? '<option value="">' + (biz ? "No vehicles in this company's Stock Report" : "— Select a company first —") + '</option>'
+        : '<option value="">— None —</option>' + vehicles.map(function(v){ return '<option value="' + esc(v) + '">' + esc(v) + '</option>'; }).join("");
+    }
+    var companySelectEl = document.getElementById("newPeerTaskCompany");
+    if(companySelectEl) companySelectEl.addEventListener("change", refreshVehicleOptions);
+    refreshVehicleOptions();
+
+    document.getElementById("btnCreatePeerTask").addEventListener("click", function(){
+      var title = document.getElementById("newPeerTaskTitle").value.trim();
+      var date = document.getElementById("newPeerTaskDate").value || null;
+      var assignTo = document.getElementById("newPeerTaskAssign").value;
+      var noteText = document.getElementById("newPeerTaskNotes").value.trim();
+      var companyInput = document.getElementById("newPeerTaskCompany");
+      var companyId = companyInput ? (companyInput.value || null) : null;
+      var vehicleInput = document.getElementById("newPeerTaskVehicle");
+      var vehicleNumber = vehicleInput ? (vehicleInput.value || null) : null;
+      if(!title){ toast("Enter a task", true); return; }
+      var newTask = {id: uid(), title:title, deadline:date, status:"pending", createdAt:new Date().toISOString(), completedAt:null, notes:noteText, assignedTo:assignTo, createdBy:creatorId, extensionRequest:null, isNew:true, vehicleNumber:vehicleNumber, companyId:null};
+
+      // Route by business tag: a tagged company means this task belongs to that Business's own Tasks tab,
+      // not the general staff task pool — it lives there just like any task Admin created from inside that business.
+      var routedToBusiness = null;
+      if(companyId){
+        var bizModule = data.modules.business;
+        if(bizModule && bizModule.type === "business"){
+          routedToBusiness = (bizModule.businesses || []).find(function(b){ return b.id === companyId; });
+        }
+      }
+      if(routedToBusiness){
+        routedToBusiness.tasks.push(newTask);
+      }else{
+        module.tasks.push(newTask); // no business tagged — falls back to the General Tasks pool
+      }
+
+      saveData(); renderHeader();
+      closeModal();
+      if(isAdminActing) renderStaffTaskList(module, actingStaff, true);
+      else renderStaffOutgoingList(module, actingStaff);
+      toast(routedToBusiness ? (title + " added to " + routedToBusiness.name) : (title + " added to General Tasks"));
+    });
+  }
+
+  /* ---------- Salary & attendance summary ---------- */
+  var staffSalaryMonth = {}; // staffId -> "YYYY-MM", transient — defaults to current month
+  var staffSalaryBreakdownOpen = {}; // staffId -> bool, transient
+
+  function renderStaffSalaryCard(module, staff, isAdminView){
+    var wrap = document.getElementById("staffSalaryCard");
+    if(!wrap) return;
+    var monthKey = staffSalaryMonth[staff.id] || todayDateInputValue().slice(0,7);
+    staffSalaryMonth[staff.id] = monthKey;
+    var res = computeMonthlySalary(module, staff, monthKey);
+    var bank = computeCashLeaveBank(module, staff, monthKey);
+    var breakdownOpen = !!staffSalaryBreakdownOpen[staff.id];
+
+    var html = '<div class="sheet-table-card">';
+    html += '<div class="sheet-table-header"><span class="sheet-table-title">Salary — ' + monthKey + '</span>' +
+      '<input class="input" type="month" id="staffSalaryMonthPicker" value="' + monthKey + '" style="width:auto;">' +
+    '</div>';
+    if(isAdminView){
+      html += '<div class="field" style="margin-bottom:12px;"><label>Base Monthly Salary (₹)</label><input class="input input-mono" type="number" id="staffBaseSalaryInput" value="' + staff.baseSalary + '"></div>';
+    }
+    html += '<div class="biz-stats-grid" style="grid-template-columns:repeat(2,1fr);">' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Days Worked</div><div class="bsc-value">' + res.daysWorked + '</div></div>' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Half Days</div><div class="bsc-value">' + res.halfDays + '</div></div>' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Leaves Taken</div><div class="bsc-value" style="color:' + (res.leaveDays > 0 ? "var(--danger)" : "var(--text)") + ';">' + res.leaveDays + '</div></div>' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Fines</div><div class="bsc-value" style="color:' + (res.fines > 0 ? "var(--danger)" : "var(--text)") + ';">₹' + res.fines + '</div></div>' +
+    '</div>';
+    html += '<div class="closing-balance-banner' + (res.net <= 0 ? " neg" : "") + '" style="margin-top:14px;">' +
+      '<div class="cbb-label">Net Salary This Month</div>' +
+      '<div class="cbb-value">₹' + res.net.toFixed(0) + '</div>' +
+      '<div class="cbb-formula">₹' + res.perDayRate.toFixed(0) + '/day × ' + res.workingDays + ' working days so far, minus ₹' + res.fines + ' in fines</div>' +
+    '</div>';
+    html += '<p class="backup-note" style="margin-top:10px;">' +
+      (res.cashLeaveApplies ? "✅ This month's 1 cash leave is fully paid." : (res.leaveDays >= 2 ? "⚠️ 2+ leaves this month — cash leave benefit cancelled, standard deductions applied." : "No leaves taken yet this month.")) +
+      ' Carried-forward unused cash leaves this financial year: <b>' + bank + '</b>.' +
+    '</p>';
+    html += '<button class="link-btn" id="btnToggleSalaryBreakdown" style="padding-left:0;">' + (breakdownOpen ? "Hide" : "Show") + ' day-by-day breakdown</button>';
+    if(breakdownOpen){
+      var statusLabel = {present:"Present", halfday:"Half Day", leave:"Leave", off:"Off"};
+      html += '<div class="sheet-scroll" style="margin-top:8px;"><table class="sheet-table"><thead><tr><th class="sheet-col-head">Date</th><th class="sheet-col-head">Status</th><th class="sheet-col-head ledger-num-head">Fine</th></tr></thead><tbody>' +
+        res.breakdown.slice().reverse().map(function(b){
+          return '<tr><td><span class="sheet-cell-locked ledger-text-cell">' + fmtDate(b.date) + '</span></td>' +
+            '<td><span class="sheet-cell-locked">' + statusLabel[b.status] + '</span></td>' +
+            '<td><span class="sheet-cell-locked ledger-num-cell' + (b.fine > 0 ? ' ledger-profit neg' : '') + '">' + (b.fine > 0 ? "₹" + b.fine : "—") + '</span></td></tr>';
+        }).join("") +
+      '</tbody></table></div>';
+    }
+    html += '</div>';
+    wrap.innerHTML = html;
+
+    document.getElementById("staffSalaryMonthPicker").addEventListener("change", function(){
+      staffSalaryMonth[staff.id] = this.value || monthKey;
+      renderStaffSalaryCard(module, staff, isAdminView);
+    });
+    document.getElementById("btnToggleSalaryBreakdown").addEventListener("click", function(){
+      staffSalaryBreakdownOpen[staff.id] = !breakdownOpen;
+      renderStaffSalaryCard(module, staff, isAdminView);
+    });
+    var baseInput = document.getElementById("staffBaseSalaryInput");
+    if(baseInput) baseInput.addEventListener("change", function(){
+      var v = parseFloat(this.value);
+      staff.baseSalary = (isNaN(v) || v < 0) ? staff.baseSalary : v;
+      this.value = staff.baseSalary;
+      saveData();
+      renderStaffSalaryCard(module, staff, isAdminView);
+      toast("Base salary updated");
+    });
+  }
+
+  /* ---------- Efficiency analysis ---------- */
+  function renderStaffEfficiencyCard(module, staff){
+    var wrap = document.getElementById("staffEfficiencyCard");
+    if(!wrap) return;
+    var monthKey = staffSalaryMonth[staff.id] || todayDateInputValue().slice(0,7);
+    var res = computeMonthlySalary(module, staff, monthKey);
+    var attendanceScore = res.workingDays > 0 ? ((res.daysWorked + res.halfDays * 0.5) / res.workingDays) * 100 : 0;
+
+    var legacy = (staff.tasks || []);
+    var fromBusiness = getAssignedTasksForStaff(staff.id).map(function(e){ return e.task; });
+    var allTasks = legacy.concat(fromBusiness);
+    var completedTasks = allTasks.filter(function(t){ return t.status === "completed"; }).length;
+    var taskScore = allTasks.length > 0 ? (completedTasks / allTasks.length) * 100 : null;
+
+    wrap.innerHTML =
+      '<div class="sheet-table-card">' +
+        '<div class="section-title" style="margin-top:0;">📊 Efficiency Analysis <span class="emi-reminders-sub">(' + monthKey + ')</span></div>' +
+        '<div class="biz-stats-grid" style="grid-template-columns:repeat(2,1fr);">' +
+          '<div class="biz-stat-cell"><div class="bsc-label">Attendance Rate</div><div class="bsc-value" style="color:' + (attendanceScore >= 90 ? "var(--up)" : attendanceScore >= 70 ? "var(--text)" : "var(--danger)") + ';">' + attendanceScore.toFixed(0) + '%</div></div>' +
+          '<div class="biz-stat-cell"><div class="bsc-label">Task Completion</div><div class="bsc-value" style="color:' + (taskScore === null ? "var(--text-faint)" : taskScore >= 80 ? "var(--up)" : taskScore >= 50 ? "var(--text)" : "var(--danger)") + ';">' + (taskScore === null ? "—" : taskScore.toFixed(0) + "%") + '</div></div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  var staffPunchFixOpen = {}; // recordId -> bool, transient
+  function renderStaffAttendanceList(module, staff, isAdminView){
     var wrap = document.getElementById("staffAttendanceList");
     if(!wrap) return;
     var records = staff.attendance.slice().sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
@@ -3828,13 +4568,54 @@
       return;
     }
     function timeLabel(iso){ return new Date(iso).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}); }
+    var statusMeta = {present:{label:"Present", cls:"completed"}, halfday:{label:"Half Day", cls:""}, leave:{label:"Leave", cls:"pending-red"}};
     wrap.innerHTML = expandableListHTML(records, "staffAtt:" + staff.id, LIST_LIMIT, function(r){
+      var info = computeDayAttendance(r);
+      var meta = statusMeta[info.status];
       var inBadge = r.punchInAt ? ('<span class="badge-pill ' + (r.punchInValid ? "completed" : "pending-red") + '">In ' + timeLabel(r.punchInAt) + (r.punchInValid ? "" : " (off-site)") + '</span>') : '<span class="badge-pill">No punch-in</span>';
-      var outBadge = r.punchOutAt ? ('<span class="badge-pill ' + (r.punchOutValid ? "completed" : "pending-red") + '">Out ' + timeLabel(r.punchOutAt) + (r.punchOutValid ? "" : " (off-site)") + '</span>') : '<span class="badge-pill">No punch-out</span>';
-      return '<div class="card card-tight"><div class="hist-row" style="border:none;padding:0 0 6px;"><div class="left"><div class="date" style="font-weight:600;">' + fmtDate(r.date) + '</div></div></div>' +
-        '<div style="display:flex;gap:6px;flex-wrap:wrap;">' + inBadge + outBadge + '</div></div>';
+      var outBadge = r.punchOutAt ? ('<span class="badge-pill ' + (r.punchOutValid ? "completed" : "pending-red") + '">Out ' + timeLabel(r.punchOutAt) + (r.punchOutValid ? "" : " (off-site)") + (r.punchOutAdminSet ? " · admin-set" : "") + '</span>') : '<span class="badge-pill">No punch-out</span>';
+      var html = '<div class="card card-tight"><div class="hist-row" style="border:none;padding:0 0 6px;">' +
+        '<div class="left"><div class="date" style="font-weight:600;">' + fmtDate(r.date) + '</div></div>' +
+        '<div class="right"><span class="badge-pill ' + meta.cls + '">' + meta.label + '</span>' + (info.fine > 0 ? ' <span class="badge-pill pending-red">₹' + info.fine + ' fine</span>' : '') + '</div>' +
+      '</div>' +
+        '<div style="display:flex;gap:6px;flex-wrap:wrap;">' + inBadge + outBadge + '</div>';
+      if(isAdminView){
+        html += '<button class="link-btn" style="padding-left:0;margin-top:6px;" data-fix-id="' + r.id + '">' + (staffPunchFixOpen[r.id] ? "Hide" : "Fix punch-out time") + '</button>';
+        if(staffPunchFixOpen[r.id]){
+          html += '<div class="row-2" style="margin-top:6px;"><input class="input" type="time" id="fixTime-' + r.id + '"><button class="btn btn-primary btn-sm" data-save-fix="' + r.id + '">Save</button></div>' +
+            '<p class="backup-note" style="margin-top:4px;">Setting a punch-out time lets salary be credited normally — the ₹50 missed-punch fine still applies.</p>';
+        }
+      }
+      html += '</div>';
+      return html;
     });
-    wireViewMoreButtons(wrap, function(){ renderStaffAttendanceList(staff); });
+    wireViewMoreButtons(wrap, function(){ renderStaffAttendanceList(module, staff, isAdminView); });
+    if(isAdminView){
+      wrap.querySelectorAll("[data-fix-id]").forEach(function(btn){
+        btn.addEventListener("click", function(){
+          var id = btn.getAttribute("data-fix-id");
+          staffPunchFixOpen[id] = !staffPunchFixOpen[id];
+          renderStaffAttendanceList(module, staff, isAdminView);
+        });
+      });
+      wrap.querySelectorAll("[data-save-fix]").forEach(function(btn){
+        btn.addEventListener("click", function(){
+          var id = btn.getAttribute("data-save-fix");
+          var timeVal = document.getElementById("fixTime-" + id).value;
+          if(!timeVal){ toast("Pick a time", true); return; }
+          var rec = staff.attendance.find(function(a){ return a.id === id; });
+          if(rec){
+            rec.punchOutAt = rec.date + "T" + timeVal + ":00";
+            rec.punchOutAdminSet = true;
+            rec.punchOutValid = true;
+            saveData();
+          }
+          staffPunchFixOpen[id] = false;
+          renderStaffAttendanceList(module, staff, isAdminView);
+          toast("Punch-out time updated");
+        });
+      });
+    }
   }
 
   function renderStaffLeaveList(module, staff, isAdminView){
@@ -3875,20 +4656,137 @@
   }
 
   /* ---------- Staff-facing dashboard (rendered on Home when role = staff) ---------- */
+  /* ---------- Attendance rules, fines, and salary calculation (pure functions) ---------- */
+  var PUNCH_WINDOW_START_MIN = 8 * 60;        // 8:00 AM
+  var PUNCH_WINDOW_END_MIN = 19 * 60;         // 7:00 PM
+  var PRESENT_CUTOFF_MIN = 10 * 60 + 45;      // 10:45 AM
+  var HALFDAY_ARRIVE_START_MIN = 13 * 60;     // 1:00 PM
+  var HALFDAY_ARRIVE_END_MIN = 17 * 60 + 20;  // 5:20 PM
+  var EARLY_LEAVE_CUTOFF_MIN = 13 * 60;       // 1:00 PM
+  var MISSED_PUNCHOUT_FINE = 50;
+
+  function minutesOfDay(iso){ var d = new Date(iso); return d.getHours() * 60 + d.getMinutes(); }
+  function nowMinutesOfDay(){ var d = new Date(); return d.getHours() * 60 + d.getMinutes(); }
+  function isWithinPunchWindow(){
+    var m = nowMinutesOfDay();
+    return m >= PUNCH_WINDOW_START_MIN && m <= PUNCH_WINDOW_END_MIN;
+  }
+  function isNonWorkingDay(module, dateStr){
+    var d = new Date(dateStr + "T00:00:00");
+    if(d.getDay() === 0) return true; // Sunday, automatic
+    return (module.holidays || []).some(function(h){ return h.date === dateStr; });
+  }
+  // Given an attendance record (or none), determines the day's status and any fine — purely derived,
+  // so fixing a punch-out later (by staff or Admin) automatically recalculates everything downstream.
+  function computeDayAttendance(rec){
+    if(!rec || !rec.punchInAt) return {status:"leave", fine:0};
+    var inMin = minutesOfDay(rec.punchInAt);
+    var status;
+    if(inMin < PRESENT_CUTOFF_MIN) status = "present";
+    else if(inMin >= HALFDAY_ARRIVE_START_MIN && inMin <= HALFDAY_ARRIVE_END_MIN) status = "halfday";
+    else status = "leave"; // arrived in the 10:45am–1pm gap, or after 5:20pm — neither qualifies
+    var fine = 0;
+    if(status !== "leave"){
+      if(!rec.punchOutAt){
+        fine = MISSED_PUNCHOUT_FINE;
+      }else{
+        var outMin = minutesOfDay(rec.punchOutAt);
+        if(outMin < EARLY_LEAVE_CUTOFF_MIN && status === "present") status = "halfday";
+      }
+    }
+    return {status:status, fine:fine};
+  }
+  function daysInMonth(year, month){ return new Date(year, month + 1, 0).getDate(); }
+  // Computes a full month's attendance + salary breakdown for one staff member, day by day, up to today.
+  function computeMonthlySalary(module, member, monthKey){
+    var parts = monthKey.split("-");
+    var year = parseInt(parts[0], 10), month = parseInt(parts[1], 10) - 1;
+    var totalDaysInMonth = daysInMonth(year, month);
+    var perDayRate = member.baseSalary / totalDaysInMonth;
+    var today = new Date(); today.setHours(0,0,0,0);
+
+    var daysWorked = 0, halfDays = 0, leaveDays = 0, totalFines = 0, workingDaysSoFar = 0;
+    var breakdown = [];
+    for(var day = 1; day <= totalDaysInMonth; day++){
+      var dObj = new Date(year, month, day);
+      if(dObj > today) break;
+      var dateStr = isoDateStr(dObj);
+      if(isNonWorkingDay(module, dateStr)){
+        breakdown.push({date:dateStr, status:"off", fine:0});
+        continue;
+      }
+      workingDaysSoFar++;
+      var rec = member.attendance.find(function(a){ return a.date === dateStr; });
+      var info = computeDayAttendance(rec);
+      totalFines += info.fine;
+      if(info.status === "present") daysWorked++;
+      else if(info.status === "halfday") halfDays++;
+      else leaveDays++;
+      breakdown.push({date:dateStr, status:info.status, fine:info.fine});
+    }
+    // Cash leave: exactly 1 leave day this month is fully paid. 2+ cancels the benefit for the whole month.
+    var cashLeaveApplies = leaveDays === 1;
+    var gross = 0;
+    breakdown.forEach(function(b){
+      if(b.status === "off") return;
+      if(b.status === "present") gross += perDayRate;
+      else if(b.status === "halfday") gross += perDayRate * 0.5;
+      else if(b.status === "leave" && cashLeaveApplies) gross += perDayRate;
+    });
+    var net = Math.max(0, gross - totalFines);
+    return {monthKey:monthKey, perDayRate:perDayRate, totalDaysInMonth:totalDaysInMonth, workingDays:workingDaysSoFar,
+      daysWorked:daysWorked, halfDays:halfDays, leaveDays:leaveDays, fines:totalFines,
+      cashLeaveApplies:cashLeaveApplies, gross:gross, net:net, breakdown:breakdown};
+  }
+  // Indian financial year: April–March. Returns how many cash-leave credits have accumulated unused
+  // since the FY started, for display only — the per-month deduction rule above is what actually applies.
+  function fyStartYear(date){ return date.getMonth() >= 3 ? date.getFullYear() : date.getFullYear() - 1; }
+  function computeCashLeaveBank(module, member, uptoMonthKey){
+    var parts = uptoMonthKey.split("-");
+    var targetYear = parseInt(parts[0], 10), targetMonth = parseInt(parts[1], 10) - 1;
+    var fyStart = fyStartYear(new Date(targetYear, targetMonth, 1));
+    var cursor = new Date(fyStart, 3, 1);
+    var bank = 0, guard = 0;
+    while((cursor.getFullYear() < targetYear || (cursor.getFullYear() === targetYear && cursor.getMonth() < targetMonth)) && guard < 12){
+      var mk = cursor.getFullYear() + "-" + String(cursor.getMonth() + 1).padStart(2, "0");
+      var res = computeMonthlySalary(module, member, mk);
+      if(res.leaveDays === 0) bank += 1;
+      cursor.setMonth(cursor.getMonth() + 1);
+      guard++;
+    }
+    return Math.max(0, bank);
+  }
+
   function getTodayAttendanceRecord(member){
     var todayStr = todayDateInputValue();
     var rec = member.attendance.find(function(a){ return a.date === todayStr; });
     if(!rec){
-      rec = {id: uid(), date:todayStr, punchInAt:null, punchInLat:null, punchInLng:null, punchInValid:null, punchOutAt:null, punchOutLat:null, punchOutLng:null, punchOutValid:null};
+      rec = {id: uid(), date:todayStr, punchInAt:null, punchInLat:null, punchInLng:null, punchInValid:null, punchOutAt:null, punchOutLat:null, punchOutLng:null, punchOutValid:null, fine:0, punchOutAdminSet:false};
       member.attendance.push(rec);
     }
     return rec;
   }
   function doPunch(module, member, type){
-    if(!isDeviceAuthorized()){
-      toast("Attendance can only be punched from the authorized office device.", true);
-      return;
-    }
+    if(!isDeviceAuthorized()){ toast("Attendance can only be punched from the authorized office device.", true); return; }
+    if(!isWithinPunchWindow()){ toast("Punching is only allowed between 8:00 AM and 7:00 PM.", true); return; }
+    var rec = getTodayAttendanceRecord(member);
+    if(type === "in" && rec.punchInAt){ toast("You've already punched in today.", true); return; }
+    if(type === "out" && !rec.punchInAt){ toast("Punch in first.", true); return; }
+    if(type === "out" && rec.punchOutAt){ toast("You've already punched out today.", true); return; }
+
+    showModal(
+      '<div class="modal-header"><h3 class="modal-title">Confirm ' + (type === "in" ? "Punch In" : "Punch Out") + '</h3><button class="modal-close-btn" id="modalCloseBtn">✕</button></div>' +
+      '<div class="modal-body"><p class="backup-note">This records your ' + (type === "in" ? "punch-in" : "punch-out") + ' time now and checks your location against the office. Only one punch ' + (type === "in" ? "in" : "out") + ' is allowed per day.</p>' +
+        '<div class="btn-row" style="margin-top:14px;"><button class="btn btn-ghost" id="punchModalCancel">Cancel</button><button class="btn btn-primary" id="punchModalConfirm">Confirm</button></div>' +
+      '</div>'
+    );
+    document.getElementById("punchModalCancel").addEventListener("click", closeModal);
+    document.getElementById("punchModalConfirm").addEventListener("click", function(){
+      closeModal();
+      executePunch(module, member, type);
+    });
+  }
+  function executePunch(module, member, type){
     if(!navigator.geolocation){ toast("Geolocation not supported on this device", true); return; }
     toast("Getting your location…");
     navigator.geolocation.getCurrentPosition(function(pos){
@@ -3910,18 +4808,64 @@
     }, {enableHighAccuracy:true, timeout:10000});
   }
 
+  function renderStaffRulebook(){
+    var wrap = document.getElementById("staffRulebookWrap");
+    if(!wrap) return;
+    if(!staffRulebookOpen){ wrap.innerHTML = ""; return; }
+    wrap.innerHTML =
+      '<div style="margin-top:10px;">' +
+        '<p class="backup-note"><b>Punching window:</b> 8:00 AM – 7:00 PM only. One punch-in and one punch-out per day.</p>' +
+        '<p class="backup-note"><b>Present:</b> Punch in before 10:45 AM.</p>' +
+        '<p class="backup-note"><b>Half Day:</b> Punch in between 1:00 PM – 5:20 PM, or punch out before 1:00 PM after a normal morning punch-in.</p>' +
+        '<p class="backup-note"><b>Full Day Leave:</b> No punch-in, or punch-in outside the Present/Half-Day windows.</p>' +
+        '<p class="backup-note"><b>Missed punch-out fine:</b> ₹50 is automatically deducted for any day you forget to punch out — even if Admin later fixes the time on your behalf, the fine stays as a reminder, though your attendance status is corrected so your salary isn\'t otherwise affected.</p>' +
+        '<p class="backup-note"><b>Cash leave:</b> Your first leave day each month is fully paid. Taking a 2nd leave in the same month cancels that benefit for the whole month — both leave days become unpaid.</p>' +
+        '<p class="backup-note" style="color:var(--danger);"><b>⚠️ Your responsibility:</b> Phone battery, charging, or connectivity issues are personal responsibility and will not be excused as a reason for a missed or late punch.</p>' +
+      '</div>';
+  }
+
+  var staffDashboardTab = "attendance"; // "attendance" | "work", transient
+
   function renderStaffDashboard(module, member){
     var wrap = document.getElementById("homeModuleScreen");
+    var html = '<div class="module-header">' +
+      '<div class="m-icon" style="background:' + hexToRgba(module.accent,.16) + ';">👤</div>' +
+      '<div><div class="m-name">' + esc(member.name) + '</div><div class="m-meta">ID: ' + esc(member.staffId || "—") + '</div></div>' +
+    '</div>';
+    html += '<div class="biz-subtabs" id="staffDashTabs">' +
+      '<button class="biz-subtab-btn' + (staffDashboardTab === "attendance" ? " active" : "") + '" data-dashtab="attendance">📍 Attendance</button>' +
+      '<button class="biz-subtab-btn' + (staffDashboardTab === "work" ? " active" : "") + '" data-dashtab="work">✅ Work</button>' +
+    '</div>';
+    html += '<div id="staffDashAttendancePanel" style="display:' + (staffDashboardTab === "attendance" ? "block" : "none") + ';"></div>';
+    html += '<div id="staffDashWorkPanel" style="display:' + (staffDashboardTab === "work" ? "block" : "none") + ';"></div>';
+    html += '<button class="link-btn" id="btnStaffSwitchProfile" style="margin-top:16px;padding-left:0;">Not you? Switch profile</button>';
+
+    wrap.innerHTML = html;
+
+    wrap.querySelectorAll("#staffDashTabs .biz-subtab-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        staffDashboardTab = btn.getAttribute("data-dashtab");
+        renderStaffDashboard(module, member);
+      });
+    });
+    document.getElementById("btnStaffSwitchProfile").addEventListener("click", function(){
+      saveStaffProfile(null);
+      renderHome();
+    });
+
+    if(staffDashboardTab === "attendance") renderStaffDashAttendanceTab(module, member);
+    else renderStaffDashWorkTab(module, member);
+  }
+
+  function renderStaffDashAttendanceTab(module, member){
+    var wrap = document.getElementById("staffDashAttendancePanel");
+    if(!wrap) return;
     var rec = member.attendance.find(function(a){ return a.date === todayDateInputValue(); });
     var punchedIn = rec && rec.punchInAt;
     var punchedOut = rec && rec.punchOutAt;
     function timeLabel(iso){ return new Date(iso).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}); }
 
-    var html = '<div class="module-header">' +
-      '<div class="m-icon" style="background:' + hexToRgba(module.accent,.16) + ';">👤</div>' +
-      '<div><div class="m-name">' + esc(member.name) + '</div><div class="m-meta">ID: ' + esc(member.staffId || "—") + '</div></div>' +
-    '</div>';
-    html += '<div class="sheet-table-card" style="text-align:center;"><div class="section-title" style="margin-top:0;">Attendance</div>';
+    var html = '<div class="sheet-table-card" style="text-align:center;"><div class="section-title" style="margin-top:0;">Punch In / Out</div>';
     if(!isDeviceAuthorized()){
       html += '<p class="backup-note" style="color:var(--danger);">🚫 This device isn\'t authorized for punching. Attendance can only be recorded from the designated office device.</p>';
     }
@@ -3935,8 +4879,14 @@
     }
     html += '</div>';
 
-    html += '<div class="section-title">Today\'s Tasks</div><div id="staffTaskList"></div>';
-    html += '<div class="section-title">My Workflows</div><div id="staffWorkflowList"></div>';
+    html += '<div class="sheet-table-card">' +
+      '<button class="link-btn" id="btnToggleRulebook" style="padding-left:0;">' + (staffRulebookOpen ? "Hide attendance rules" : "📖 View attendance rules & guidelines") + '</button>' +
+      '<div id="staffRulebookWrap"></div>' +
+    '</div>';
+
+    html += '<div id="staffSalaryCard"></div>';
+    html += '<div id="staffEfficiencyCard"></div>';
+    html += '<div class="section-title">Attendance History</div><div id="staffAttendanceList"></div>';
     html += '<div class="section-title">Request Leave / Break</div><div class="quickadd">' +
       '<div class="row-2">' +
         '<div class="field" style="margin-bottom:10px;"><label>Type</label><select class="input" id="staffLeaveType"><option value="Leave">Leave</option><option value="Break">Break</option></select></div>' +
@@ -3946,7 +4896,6 @@
       '<button class="btn btn-primary" id="staffLeaveSubmit">Submit Request</button>' +
     '</div>';
     html += '<div class="section-title">My Requests</div><div id="staffLeaveList"></div>';
-    html += '<button class="link-btn" id="btnStaffSwitchProfile" style="margin-top:16px;padding-left:0;">Not you? Switch profile</button>';
 
     wrap.innerHTML = html;
 
@@ -3954,6 +4903,13 @@
     if(punchInBtn) punchInBtn.addEventListener("click", function(){ doPunch(module, member, "in"); });
     var punchOutBtn = document.getElementById("btnPunchOut");
     if(punchOutBtn) punchOutBtn.addEventListener("click", function(){ doPunch(module, member, "out"); });
+
+    document.getElementById("btnToggleRulebook").addEventListener("click", function(){
+      staffRulebookOpen = !staffRulebookOpen;
+      renderStaffRulebook();
+      document.getElementById("btnToggleRulebook").textContent = staffRulebookOpen ? "Hide attendance rules" : "📖 View attendance rules & guidelines";
+    });
+    renderStaffRulebook();
 
     document.getElementById("staffLeaveSubmit").addEventListener("click", function(){
       var type = document.getElementById("staffLeaveType").value;
@@ -3965,14 +4921,30 @@
       renderStaffLeaveList(module, member, false);
       toast("Request submitted");
     });
-    document.getElementById("btnStaffSwitchProfile").addEventListener("click", function(){
-      saveStaffProfile(null);
-      renderHome();
+
+    renderStaffSalaryCard(module, member, false);
+    renderStaffEfficiencyCard(module, member);
+    renderStaffAttendanceList(module, member, false);
+    renderStaffLeaveList(module, member, false);
+  }
+
+  function renderStaffDashWorkTab(module, member){
+    var wrap = document.getElementById("staffDashWorkPanel");
+    if(!wrap) return;
+    wrap.innerHTML =
+      '<div class="section-title" style="margin-top:0;">📥 Incoming Tasks</div><div id="staffTaskList"></div>' +
+      '<div class="sheet-table-header" style="margin:16px 0 0;"><span class="section-title" style="margin:0;">📤 Outgoing Tasks</span>' +
+        '<button class="btn btn-primary btn-sm" id="btnOpenNewTaskModal">+ New Task</button></div>' +
+      '<div id="staffOutgoingList"></div>' +
+      '<div class="section-title">My Workflows</div><div id="staffWorkflowList"></div>';
+
+    document.getElementById("btnOpenNewTaskModal").addEventListener("click", function(){
+      openStaffNewTaskModal(module, member);
     });
 
     renderStaffTaskList(module, member, false);
+    renderStaffOutgoingList(module, member);
     renderStaffWorkflowList(module, member);
-    renderStaffLeaveList(module, member, false);
   }
 
   function renderStaffGate(){
@@ -4003,6 +4975,473 @@
       return;
     }
     renderStaffDashboard(staffModule, member);
+  }
+
+  /* ---------- Stock Report (Excel import, vehicle inventory) ---------- */
+  var stockEditMode = {}; // tabId -> bool, transient
+
+  function normalizeVehicleNumber(v){ return (v || "").toString().trim().toLowerCase(); }
+
+  function mapExcelRowToStockFields(row){
+    var normalizedRow = {};
+    Object.keys(row).forEach(function(k){ normalizedRow[k.toString().trim().toLowerCase()] = row[k]; });
+    var result = {};
+    STOCK_FIELDS.forEach(function(f){
+      var val = "";
+      for(var i = 0; i < f.headers.length; i++){
+        if(normalizedRow.hasOwnProperty(f.headers[i]) && normalizedRow[f.headers[i]] !== ""){ val = normalizedRow[f.headers[i]]; break; }
+      }
+      result[f.key] = (val === undefined || val === null) ? "" : val.toString().trim();
+    });
+    return result;
+  }
+
+  function parseStockExcelFile(file, module, business, tab){
+    if(typeof XLSX === "undefined"){ toast("Excel library failed to load — check your connection and try again", true); return; }
+    var reader = new FileReader();
+    reader.onload = function(e){
+      try{
+        var wb = XLSX.read(new Uint8Array(e.target.result), {type:"array"});
+        var sheet = wb.Sheets[wb.SheetNames[0]];
+        var rawRows = XLSX.utils.sheet_to_json(sheet, {defval:""});
+        var existing = {};
+        tab.rows.forEach(function(r){ if(r.vehicleNumber) existing[normalizeVehicleNumber(r.vehicleNumber)] = true; });
+        var added = 0, dupSkipped = 0, noVehicleSkipped = 0;
+        rawRows.forEach(function(raw){
+          var mapped = mapExcelRowToStockFields(raw);
+          if(!mapped.vehicleNumber){ noVehicleSkipped++; return; }
+          var key = normalizeVehicleNumber(mapped.vehicleNumber);
+          if(existing[key]){ dupSkipped++; return; }
+          existing[key] = true;
+          var row = {id: uid()};
+          STOCK_FIELDS.forEach(function(f){ row[f.key] = mapped[f.key]; });
+          tab.rows.push(row);
+          added++;
+        });
+        saveData();
+        renderBizStockPanel(module, business, tab);
+        var msg = added + " row" + (added === 1 ? "" : "s") + " added";
+        if(dupSkipped > 0) msg += ", " + dupSkipped + " duplicate vehicle number" + (dupSkipped === 1 ? "" : "s") + " skipped";
+        if(noVehicleSkipped > 0) msg += ", " + noVehicleSkipped + " skipped (no vehicle number)";
+        toast(msg);
+      }catch(err){
+        toast("Couldn't read that file — make sure it's a valid Excel file", true);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function renderBizStockPanel(module, business, tab){
+    var panel = document.getElementById("bizTabInner");
+    var editMode = !!stockEditMode[tab.id];
+
+    var html = '<div class="sheet-table-card">';
+    html += '<div class="sheet-table-header"><span class="sheet-table-title">Stock Report</span>' +
+      '<button class="btn btn-ghost btn-sm sheet-edit-table-btn' + (editMode ? " active" : "") + '" id="btnToggleStockEdit">' + (editMode ? "🔓 Editing" : "✏️ Edit Table") + '</button></div>';
+    html += '<div class="btn-row" style="margin-bottom:12px;">' +
+      '<button class="btn btn-primary btn-sm" id="btnUploadExcel">📤 Upload Excel</button>' +
+      '<input type="file" id="stockExcelInput" accept=".xlsx,.xls,.csv" style="display:none;">' +
+    '</div>';
+    html += '<p class="backup-note" style="margin-bottom:10px;">Only Customer Name, Vehicle Number, Vehicle Model, Payment Mode, Delay Days, and Status are read from the file — other columns are ignored. Rows with a Vehicle Number already in this table are skipped automatically.</p>';
+
+    if(tab.rows.length === 0){
+      html += '<div class="empty-state"><div class="big">🚚</div><p>No stock records yet. Upload an Excel file or add rows manually.</p></div>';
+    }else{
+      html += '<div class="sheet-scroll"><table class="sheet-table stock-table"><thead><tr>' +
+        STOCK_FIELDS.map(function(f){ return '<th class="sheet-col-head">' + esc(f.label) + '</th>'; }).join("") +
+        (editMode ? '<th class="sheet-corner"></th>' : '') +
+      '</tr></thead><tbody>';
+      tab.rows.forEach(function(r){
+        html += '<tr data-row-id="' + r.id + '">';
+        STOCK_FIELDS.forEach(function(f){
+          html += '<td>' + (editMode
+            ? '<input class="sheet-cell-input stock-input" data-field="' + f.key + '" data-row-id="' + r.id + '" value="' + esc(r[f.key]) + '">'
+            : '<span class="sheet-cell-locked">' + (esc(r[f.key]) || "—") + '</span>') + '</td>';
+        });
+        if(editMode) html += '<td><button class="sheet-mini-btn stock-del-row" data-row-id="' + r.id + '" title="Delete">✕</button></td>';
+        html += '</tr>';
+      });
+      html += '</tbody></table></div>';
+    }
+    if(editMode){
+      html += '<button class="btn btn-ghost btn-sm" id="btnAddStockRow" style="margin-top:8px;">+ Add Row</button>';
+    }
+    html += '<p class="backup-note" style="margin-top:10px;">Total records: <b>' + tab.rows.length + '</b></p>';
+    html += '</div>';
+    panel.innerHTML = html;
+
+    document.getElementById("btnToggleStockEdit").addEventListener("click", function(){
+      stockEditMode[tab.id] = !stockEditMode[tab.id];
+      renderBizStockPanel(module, business, tab);
+    });
+    document.getElementById("btnUploadExcel").addEventListener("click", function(){
+      document.getElementById("stockExcelInput").click();
+    });
+    document.getElementById("stockExcelInput").addEventListener("change", function(e){
+      var file = e.target.files[0];
+      if(file) parseStockExcelFile(file, module, business, tab);
+      e.target.value = "";
+    });
+
+    panel.addEventListener("focusout", function stockFocusOut(e){
+      var el = e.target;
+      if(!el.classList || !el.classList.contains("stock-input")) return;
+      var row = tab.rows.find(function(r){ return r.id === el.getAttribute("data-row-id"); });
+      if(!row) return;
+      var field = el.getAttribute("data-field");
+      var newVal = el.value.trim();
+      if(field === "vehicleNumber" && newVal){
+        var dup = tab.rows.some(function(r){ return r.id !== row.id && normalizeVehicleNumber(r.vehicleNumber) === normalizeVehicleNumber(newVal); });
+        if(dup){ toast("That vehicle number already exists in this table", true); el.value = row.vehicleNumber; return; }
+      }
+      row[field] = newVal;
+      saveData();
+    });
+
+    var addRowBtn = document.getElementById("btnAddStockRow");
+    if(addRowBtn) addRowBtn.addEventListener("click", function(){
+      var blank = {id: uid()};
+      STOCK_FIELDS.forEach(function(f){ blank[f.key] = ""; });
+      tab.rows.push(blank);
+      saveData();
+      renderBizStockPanel(module, business, tab);
+    });
+    panel.querySelectorAll(".stock-del-row").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        if(!confirm("Delete this stock record? This can't be undone.")) return;
+        tab.rows = tab.rows.filter(function(r){ return r.id !== btn.getAttribute("data-row-id"); });
+        saveData();
+        renderBizStockPanel(module, business, tab);
+      });
+    });
+  }
+
+  /* ---------- Stock Prep Report (vehicle reconditioning tracker) ---------- */
+  var stockPrepView = {}; // tabId -> "list" | vehicleId, transient
+  var stockPrepEditMode = {}; // tabId -> bool, transient
+  var prepMaintFormOpen = {}; // vehicleId -> bool, transient
+  var prepPaperFormOpen = {}; // vehicleId -> bool, transient
+
+  function mapExcelRowToPrepFields(row){
+    var normalizedRow = {};
+    Object.keys(row).forEach(function(k){ normalizedRow[k.toString().trim().toLowerCase()] = row[k]; });
+    var result = {};
+    STOCKPREP_FIELDS.forEach(function(f){
+      var val = "";
+      for(var i = 0; i < f.headers.length; i++){
+        if(normalizedRow.hasOwnProperty(f.headers[i]) && normalizedRow[f.headers[i]] !== ""){ val = normalizedRow[f.headers[i]]; break; }
+      }
+      result[f.key] = (val === undefined || val === null) ? "" : val.toString().trim();
+    });
+    return result;
+  }
+
+  function parseStockPrepExcelFile(file, module, business, tab){
+    if(typeof XLSX === "undefined"){ toast("Excel library failed to load — check your connection and try again", true); return; }
+    var reader = new FileReader();
+    reader.onload = function(e){
+      try{
+        var wb = XLSX.read(new Uint8Array(e.target.result), {type:"array"});
+        var sheet = wb.Sheets[wb.SheetNames[0]];
+        var rawRows = XLSX.utils.sheet_to_json(sheet, {defval:""});
+        var existing = {};
+        tab.vehicles.forEach(function(v){ if(v.vehicleNumber) existing[normalizeVehicleNumber(v.vehicleNumber)] = true; });
+        var added = 0, dupSkipped = 0, noVehicleSkipped = 0;
+        rawRows.forEach(function(raw){
+          var mapped = mapExcelRowToPrepFields(raw);
+          if(!mapped.vehicleNumber){ noVehicleSkipped++; return; }
+          var key = normalizeVehicleNumber(mapped.vehicleNumber);
+          if(existing[key]){ dupSkipped++; return; }
+          existing[key] = true;
+          tab.vehicles.push(freshPrepVehicle(mapped.vehicleNumber, mapped.segment));
+          added++;
+        });
+        saveData();
+        renderBizStockPrepPanel(module, business, tab);
+        var msg = added + " vehicle" + (added === 1 ? "" : "s") + " added";
+        if(dupSkipped > 0) msg += ", " + dupSkipped + " duplicate vehicle number" + (dupSkipped === 1 ? "" : "s") + " skipped";
+        if(noVehicleSkipped > 0) msg += ", " + noVehicleSkipped + " skipped (no vehicle number)";
+        toast(msg);
+      }catch(err){
+        toast("Couldn't read that file — make sure it's a valid Excel file", true);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function prepStatusBadgeHTML(items){
+    if(items.length === 0) return '<span class="badge-pill badge-neutral">None yet</span>';
+    var done = items.filter(function(i){ return i.status === "Done"; }).length;
+    var allDone = done === items.length;
+    return '<span class="badge-pill' + (allDone ? " completed" : "") + '">' + done + ' / ' + items.length + ' done</span>';
+  }
+
+  function renderBizStockPrepPanel(module, business, tab){
+    var panel = document.getElementById("bizTabInner");
+    var view = stockPrepView[tab.id] || "list";
+    if(view === "list" || !tab.vehicles.some(function(v){ return v.id === view; })){
+      stockPrepView[tab.id] = "list";
+      renderStockPrepList(module, business, tab);
+    }else{
+      var vehicle = tab.vehicles.find(function(v){ return v.id === view; });
+      renderStockPrepVehicleDetail(module, business, tab, vehicle);
+    }
+  }
+
+  function renderStockPrepList(module, business, tab){
+    var panel = document.getElementById("bizTabInner");
+    var editMode = !!stockPrepEditMode[tab.id];
+
+    var html = '<div class="sheet-table-card">';
+    html += '<div class="sheet-table-header"><span class="sheet-table-title">Stock Prep Report</span>' +
+      '<button class="btn btn-ghost btn-sm sheet-edit-table-btn' + (editMode ? " active" : "") + '" id="btnToggleStockPrepEdit">' + (editMode ? "🔓 Editing" : "✏️ Edit Table") + '</button></div>';
+    html += '<div class="btn-row" style="margin-bottom:12px;">' +
+      '<button class="btn btn-primary btn-sm" id="btnUploadPrepExcel">📤 Upload Excel</button>' +
+      '<input type="file" id="stockPrepExcelInput" accept=".xlsx,.xls,.csv" style="display:none;">' +
+    '</div>';
+    html += '<p class="backup-note" style="margin-bottom:10px;">Only Vehicle Number and Segment are read from the file, matched by column header regardless of position — other columns are ignored. Duplicate vehicle numbers are skipped automatically.</p>';
+
+    if(tab.vehicles.length === 0){
+      html += '<div class="empty-state"><div class="big">🔧</div><p>No vehicles yet. Upload an Excel file or add one manually.</p></div>';
+    }else{
+      html += '<div class="sheet-scroll"><table class="sheet-table stockprep-table"><thead><tr>' +
+        '<th class="sheet-col-head">Vehicle Number</th>' +
+        '<th class="sheet-col-head">Segment</th>' +
+        '<th class="sheet-col-head">Maintenance</th>' +
+        '<th class="sheet-col-head">Paperwork</th>' +
+        (editMode ? '<th class="sheet-corner"></th>' : '') +
+      '</tr></thead><tbody>';
+      tab.vehicles.forEach(function(v){
+        html += '<tr data-vehicle-id="' + v.id + '">';
+        html += '<td>' + (editMode
+          ? '<input class="sheet-cell-input prep-input" data-field="vehicleNumber" data-vehicle-id="' + v.id + '" value="' + esc(v.vehicleNumber) + '">'
+          : '<span class="sheet-cell-locked prep-open-vehicle" data-vehicle-id="' + v.id + '" style="cursor:pointer;text-decoration:underline;color:var(--accent);">' + (esc(v.vehicleNumber) || "—") + '</span>') + '</td>';
+        html += '<td>' + (editMode
+          ? '<input class="sheet-cell-input prep-input" data-field="segment" data-vehicle-id="' + v.id + '" value="' + esc(v.segment) + '">'
+          : '<span class="sheet-cell-locked">' + (esc(v.segment) || "—") + '</span>') + '</td>';
+        html += '<td>' + prepStatusBadgeHTML(v.maintenance) + '</td>';
+        html += '<td>' + prepStatusBadgeHTML(v.paperwork) + '</td>';
+        if(editMode) html += '<td><button class="sheet-mini-btn prep-del-vehicle" data-vehicle-id="' + v.id + '" title="Delete">✕</button></td>';
+        html += '</tr>';
+      });
+      html += '</tbody></table></div>';
+      if(!editMode) html += '<p class="backup-note" style="margin-top:8px;">Tap a vehicle number to open its Maintenance and Paperwork trackers.</p>';
+    }
+    if(editMode){
+      html += '<button class="btn btn-ghost btn-sm" id="btnAddPrepVehicle" style="margin-top:8px;">+ Add Vehicle</button>';
+    }
+    html += '</div>';
+    panel.innerHTML = html;
+
+    document.getElementById("btnToggleStockPrepEdit").addEventListener("click", function(){
+      stockPrepEditMode[tab.id] = !stockPrepEditMode[tab.id];
+      renderStockPrepList(module, business, tab);
+    });
+    document.getElementById("btnUploadPrepExcel").addEventListener("click", function(){
+      document.getElementById("stockPrepExcelInput").click();
+    });
+    document.getElementById("stockPrepExcelInput").addEventListener("change", function(e){
+      var file = e.target.files[0];
+      if(file) parseStockPrepExcelFile(file, module, business, tab);
+      e.target.value = "";
+    });
+    panel.querySelectorAll(".prep-open-vehicle").forEach(function(el){
+      el.addEventListener("click", function(){
+        stockPrepView[tab.id] = el.getAttribute("data-vehicle-id");
+        renderBizStockPrepPanel(module, business, tab);
+      });
+    });
+    panel.addEventListener("focusout", function prepFocusOut(e){
+      var el = e.target;
+      if(!el.classList || !el.classList.contains("prep-input")) return;
+      var v = tab.vehicles.find(function(x){ return x.id === el.getAttribute("data-vehicle-id"); });
+      if(!v) return;
+      var field = el.getAttribute("data-field");
+      var newVal = el.value.trim();
+      if(field === "vehicleNumber" && newVal){
+        var dup = tab.vehicles.some(function(x){ return x.id !== v.id && normalizeVehicleNumber(x.vehicleNumber) === normalizeVehicleNumber(newVal); });
+        if(dup){ toast("That vehicle number already exists in this table", true); el.value = v.vehicleNumber; return; }
+      }
+      v[field] = newVal;
+      saveData();
+    });
+    var addBtn = document.getElementById("btnAddPrepVehicle");
+    if(addBtn) addBtn.addEventListener("click", function(){
+      tab.vehicles.push(freshPrepVehicle("", ""));
+      saveData();
+      renderStockPrepList(module, business, tab);
+    });
+    panel.querySelectorAll(".prep-del-vehicle").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        if(!confirm("Delete this vehicle and all its Maintenance/Paperwork records? This can't be undone.")) return;
+        tab.vehicles = tab.vehicles.filter(function(v){ return v.id !== btn.getAttribute("data-vehicle-id"); });
+        saveData();
+        renderStockPrepList(module, business, tab);
+      });
+    });
+  }
+
+  function prepItemRowHTML(item, kind){
+    var label = kind === "maintenance" ? item.category : item.docType;
+    var assignedStaff = null;
+    if(kind === "maintenance" && item.assignedTo){
+      var staffModule = findStaffModuleAny();
+      assignedStaff = staffModule ? findStaffMember(staffModule, item.assignedTo) : null;
+    }
+    var statusClass = item.status === "Done" ? "completed" : (item.status === "In Progress" ? "" : "pending-red");
+    return '<div class="card card-tight" data-item-id="' + item.id + '">' +
+      '<div class="hist-row" style="border:none;padding:0 0 6px;">' +
+        '<div class="left"><div class="date" style="font-weight:600;">' + esc(label) + '</div>' +
+          (item.description ? '<div class="sess">' + esc(item.description) + '</div>' : '') +
+          (assignedStaff ? '<div class="sess">👤 ' + esc(assignedStaff.name) + '</div>' : '') +
+        '</div>' +
+        '<div class="right"><span class="badge-pill ' + statusClass + '">' + esc(item.status) + '</span></div>' +
+      '</div>' +
+      '<select class="input prep-item-status" data-item-id="' + item.id + '" data-kind="' + kind + '" style="margin-top:6px;">' +
+        PREP_STATUS_OPTIONS.map(function(s){ return '<option value="' + s + '"' + (s === item.status ? " selected" : "") + '>' + s + '</option>'; }).join("") +
+      '</select>' +
+      '<button class="link-btn prep-item-del" data-item-id="' + item.id + '" data-kind="' + kind + '" style="padding-left:0;margin-top:4px;color:var(--danger);">Remove</button>' +
+    '</div>';
+  }
+
+  function renderStockPrepVehicleDetail(module, business, tab, vehicle){
+    var panel = document.getElementById("bizTabInner");
+    var maintOpen = !!prepMaintFormOpen[vehicle.id];
+    var paperOpen = !!prepPaperFormOpen[vehicle.id];
+    var staffOptions = staffAssignOptions();
+
+    var html = '<div class="biz-tab-header" style="margin-bottom:16px;">' +
+      '<button class="back-btn" id="btnBackToPrepList"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>' +
+      '<span class="sheet-table-title">' + esc(vehicle.vehicleNumber || "Vehicle") + (vehicle.segment ? (' <span style="color:var(--text-faint);font-weight:500;">— ' + esc(vehicle.segment) + '</span>') : '') + '</span>' +
+    '</div>';
+
+    html += '<div class="sheet-table-card">';
+    html += '<div class="sheet-table-header" style="margin-bottom:10px;"><span class="sheet-table-title">🔧 Maintenance</span>' +
+      '<button class="btn btn-primary btn-sm" id="btnToggleMaintForm">' + (maintOpen ? "Close" : "+ Add Item") + '</button></div>';
+    html += '<div id="prepMaintFormWrap"></div>';
+    html += vehicle.maintenance.length === 0
+      ? '<div class="empty-state"><div class="big">🔧</div><p>No maintenance items yet.</p></div>'
+      : vehicle.maintenance.map(function(item){ return prepItemRowHTML(item, "maintenance"); }).join("");
+    html += '</div>';
+
+    html += '<div class="sheet-table-card">';
+    html += '<div class="sheet-table-header" style="margin-bottom:10px;"><span class="sheet-table-title">📄 Paperwork</span>' +
+      '<button class="btn btn-primary btn-sm" id="btnTogglePaperForm">' + (paperOpen ? "Close" : "+ Add Item") + '</button></div>';
+    html += '<div id="prepPaperFormWrap"></div>';
+    html += vehicle.paperwork.length === 0
+      ? '<div class="empty-state"><div class="big">📄</div><p>No paperwork items yet.</p></div>'
+      : vehicle.paperwork.map(function(item){ return prepItemRowHTML(item, "paperwork"); }).join("");
+    html += '</div>';
+
+    panel.innerHTML = html;
+
+    document.getElementById("btnBackToPrepList").addEventListener("click", function(){
+      stockPrepView[tab.id] = "list";
+      renderBizStockPrepPanel(module, business, tab);
+    });
+    document.getElementById("btnToggleMaintForm").addEventListener("click", function(){
+      prepMaintFormOpen[vehicle.id] = !maintOpen;
+      renderStockPrepVehicleDetail(module, business, tab, vehicle);
+    });
+    document.getElementById("btnTogglePaperForm").addEventListener("click", function(){
+      prepPaperFormOpen[vehicle.id] = !paperOpen;
+      renderStockPrepVehicleDetail(module, business, tab, vehicle);
+    });
+
+    if(maintOpen){
+      var mWrap = document.getElementById("prepMaintFormWrap");
+      mWrap.innerHTML = '<div class="quickadd">' +
+        '<div class="field" style="margin-bottom:10px;"><label>Category</label><select class="input" id="newMaintCategory">' +
+          MAINTENANCE_CATEGORIES.map(function(c){ return '<option value="' + c + '">' + c + '</option>'; }).join("") +
+        '</select></div>' +
+        '<div class="field" style="margin-bottom:10px;"><label>Description</label><input class="input" id="newMaintDesc" placeholder="e.g. Front bumper dent, AC servicing…"></div>' +
+        '<div class="field" style="margin-bottom:10px;"><label>Assign To <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><select class="input" id="newMaintAssign">' +
+          '<option value="">— Unassigned —</option>' +
+          staffOptions.map(function(s){ return '<option value="' + s.id + '">' + esc(s.name) + '</option>'; }).join("") +
+        '</select></div>' +
+        '<button class="btn btn-primary" id="btnCreateMaintItem" style="width:100%;">Add Maintenance Item</button>' +
+      '</div>';
+      document.getElementById("btnCreateMaintItem").addEventListener("click", function(){
+        var desc = document.getElementById("newMaintDesc").value.trim();
+        vehicle.maintenance.push({
+          id: uid(), category: document.getElementById("newMaintCategory").value, description: desc,
+          assignedTo: document.getElementById("newMaintAssign").value || null, status:"Pending", createdAt:new Date().toISOString()
+        });
+        saveData();
+        prepMaintFormOpen[vehicle.id] = false;
+        renderStockPrepVehicleDetail(module, business, tab, vehicle);
+        toast("Maintenance item added");
+      });
+    }
+    if(paperOpen){
+      var pWrap = document.getElementById("prepPaperFormWrap");
+      pWrap.innerHTML = '<div class="quickadd">' +
+        '<div class="field" style="margin-bottom:10px;"><label>Document Type</label><select class="input" id="newPaperType">' +
+          PAPERWORK_TYPES.map(function(t){ return '<option value="' + t + '">' + t + '</option>'; }).join("") +
+        '</select></div>' +
+        '<div class="field" style="margin-bottom:10px;"><label>Description <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><input class="input" id="newPaperDesc" placeholder="Any specific notes…"></div>' +
+        '<button class="btn btn-primary" id="btnCreatePaperItem" style="width:100%;">Add Paperwork Item</button>' +
+      '</div>';
+      document.getElementById("btnCreatePaperItem").addEventListener("click", function(){
+        var desc = document.getElementById("newPaperDesc").value.trim();
+        vehicle.paperwork.push({
+          id: uid(), docType: document.getElementById("newPaperType").value, description: desc,
+          status:"Pending", createdAt:new Date().toISOString()
+        });
+        saveData();
+        prepPaperFormOpen[vehicle.id] = false;
+        renderStockPrepVehicleDetail(module, business, tab, vehicle);
+        toast("Paperwork item added");
+      });
+    }
+
+    panel.querySelectorAll(".prep-item-status").forEach(function(sel){
+      sel.addEventListener("change", function(){
+        var kind = sel.getAttribute("data-kind");
+        var list = kind === "maintenance" ? vehicle.maintenance : vehicle.paperwork;
+        var item = list.find(function(i){ return i.id === sel.getAttribute("data-item-id"); });
+        if(item){ item.status = sel.value; saveData(); }
+        renderStockPrepVehicleDetail(module, business, tab, vehicle);
+      });
+    });
+    panel.querySelectorAll(".prep-item-del").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        if(!confirm("Remove this item? This can't be undone.")) return;
+        var kind = btn.getAttribute("data-kind");
+        if(kind === "maintenance") vehicle.maintenance = vehicle.maintenance.filter(function(i){ return i.id !== btn.getAttribute("data-item-id"); });
+        else vehicle.paperwork = vehicle.paperwork.filter(function(i){ return i.id !== btn.getAttribute("data-item-id"); });
+        saveData();
+        renderStockPrepVehicleDetail(module, business, tab, vehicle);
+      });
+    });
+  }
+
+  // Every unique Vehicle Number across every Stock Report tab, in any business — used to populate the
+  // Vehicle Number dropdown on task creation.
+  function getAllVehicleNumbers(){
+    var nums = [];
+    var bizModule = data.modules.business;
+    if(bizModule && bizModule.type === "business"){
+      (bizModule.businesses || []).forEach(function(biz){
+        (biz.tabs || []).forEach(function(tab){
+          if(tab.type !== "stock") return;
+          (tab.rows || []).forEach(function(r){
+            if(r.vehicleNumber && nums.indexOf(r.vehicleNumber) === -1) nums.push(r.vehicleNumber);
+          });
+        });
+      });
+    }
+    return nums.sort();
+  }
+  function getVehicleNumbersForBusiness(business){
+    var nums = [];
+    (business.tabs || []).forEach(function(tab){
+      if(tab.type !== "stock") return;
+      (tab.rows || []).forEach(function(r){
+        if(r.vehicleNumber && nums.indexOf(r.vehicleNumber) === -1) nums.push(r.vehicleNumber);
+      });
+    });
+    return nums.sort();
   }
 
   /* =========================================================
@@ -5174,10 +6613,10 @@
     var r = manyPoints ? 1.7 : 2.6;
     var circles = values.map(function(v,i){
       var parts = pts[i].split(",");
-      return '<circle cx="'+parts[0]+'" cy="'+parts[1]+'" r="' + r + '" fill="#ff6b35"/>';
+      return '<circle cx="'+parts[0]+'" cy="'+parts[1]+'" r="' + r + '" fill="#4f46e5"/>';
     }).join("");
     return '<svg viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none">' +
-      '<polyline points="' + pts.join(" ") + '" fill="none" stroke="#ff6b35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' + circles + '</svg>';
+      '<polyline points="' + pts.join(" ") + '" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' + circles + '</svg>';
   }
 
   function restDayCardHTML(r){
@@ -5639,7 +7078,22 @@
   applyTheme(currentTheme());
   syncRoleUI();
   renderHeader();
+  var restoredTab = "home";
+  try{ restoredTab = localStorage.getItem(ACTIVE_TAB_KEY) || "home"; }catch(e){}
+  if(restoredTab === "summary" && isStaff()) restoredTab = "home"; // staff can't land on an admin-only tab
+  if(restoredTab === "progress" && isStaff()) restoredTab = "home";
+  if(restoredTab === "tasksHub" && isStaff()) restoredTab = "home";
+  activeTab = restoredTab;
+  document.querySelectorAll(".tab-btn").forEach(function(b){
+    b.classList.toggle("active", b.getAttribute("data-tab") === restoredTab);
+  });
+  document.querySelectorAll(".panel").forEach(function(p){
+    p.classList.toggle("active", p.id === "panel-" + restoredTab);
+  });
   renderHome();
+  if(restoredTab === "progress") renderProgress();
+  if(restoredTab === "tasksHub") renderTasksHub();
+  if(restoredTab === "summary") renderSummary();
   renderBackup();
 })();
 </script>
