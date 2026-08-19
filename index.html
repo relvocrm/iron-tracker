@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#14161B">
-<title>Iron Log — Life Hub</title>
+<title>RelvoCRM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -46,14 +46,14 @@
     --bg-grad: radial-gradient(1200px 600px at 50% -10%, #ffffff 0%, #f4f3ef 60%);
     --panel:#ffffff;
     --panel-2:#f0efe9;
-    --border:#e3e1d9;
-    --border-strong:#cdcabf;
+    --border:#dcd9cf;
+    --border-strong:#b3af9f;
     --text:#1c1e22;
-    --text-dim:#5c5f66;
-    --text-faint:#8a8d94;
+    --text-dim:#484b52;
+    --text-faint:#6b6e76;
     --accent:#4338ca;
     --accent-dim:#3730a3;
-    --accent-soft:rgba(67,56,202,.10);
+    --accent-soft:rgba(67,56,202,.16);
     --up:#3f9a45;
     --down:#3d7fa0;
     --danger:#d13f3e;
@@ -93,19 +93,6 @@
     display:flex;align-items:center;justify-content:space-between;
     padding:22px 0 14px;
   }
-  .brand{display:flex;align-items:baseline;gap:8px;}
-  .brand-mark{
-    width:10px;height:22px;background:var(--accent);border-radius:2px;
-    box-shadow:0 0 0 3px var(--accent-soft);
-  }
-  .brand h1{
-    font-family:var(--font-display);font-weight:800;font-size:26px;
-    letter-spacing:.5px;margin:0;text-transform:uppercase;
-  }
-  .brand small{color:var(--text-faint);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;}
-  .session-badge{text-align:right;font-family:var(--font-mono);}
-  .session-badge .num{font-size:20px;font-weight:600;color:var(--accent);line-height:1;}
-  .session-badge .lbl{font-size:9px;color:var(--text-faint);letter-spacing:1px;text-transform:uppercase;}
 
   /* ---------- Tabs (bottom nav) ---------- */
   .tabbar{
@@ -545,7 +532,13 @@
   .btn-danger{background:var(--danger-soft);color:var(--danger);}
   .btn-finish{background:var(--up);color:#122016;}
   .btn-sm{width:auto;padding:8px 14px;font-size:12.5px;}
-  .btn-header-action{width:auto;padding:6px 12px;font-size:11.5px;font-weight:700;letter-spacing:.2px;border-radius:8px;flex-shrink:0;}
+  .btn-header-action{
+    width:auto; padding:5px 11px; font-size:11px; font-weight:700; letter-spacing:.15px;
+    border-radius:20px; flex-shrink:0; line-height:1.4;
+  }
+  .btn-header-action:active{transform:scale(.95);}
+  .btn-primary.btn-header-action{background:var(--accent-soft); color:var(--accent); border:1px solid transparent;}
+  .btn-primary.btn-header-action:active{background:var(--accent); color:#fff;}
   .btn-row{display:flex;gap:10px;margin-top:6px;}
   .btn-row .btn{flex:1;}
   .btn-row-3 .btn{font-size:12.5px;padding:12px 6px;line-height:1.25;}
@@ -814,7 +807,6 @@
       background:var(--bg); border-bottom:1px solid var(--border);
       box-sizing:border-box;
     }
-    .brand h1{ font-size:22px; }
 
     /* Bottom tab bar becomes a fixed left sidebar — same buttons, same click handlers, just restyled. */
     .tabbar{
@@ -831,7 +823,7 @@
       overflow-y:auto;
     }
     .tabbar::before{
-      content:"⬤ IRON LOG";
+      content:"⬤ RELVOCRM";
       display:block;
       font-family:var(--font-display); font-weight:800; font-size:14px;
       letter-spacing:1.2px; color:var(--accent);
@@ -893,6 +885,7 @@
   .login-card{
     width:100%; max-width:380px; background:var(--panel); border:1px solid var(--border-strong);
     border-radius:var(--radius); padding:32px 26px; box-shadow:0 20px 60px rgba(0,0,0,.35);
+    position:relative; overflow:hidden;
   }
   .login-brand{font-family:var(--font-display);font-weight:800;font-size:16px;letter-spacing:1.5px;color:var(--accent);text-align:center;margin-bottom:6px;}
   .login-title{font-size:14px;color:var(--text-dim);text-align:center;margin-bottom:22px;}
@@ -900,6 +893,17 @@
   .login-role-btn{flex:1;padding:10px;border-radius:8px;border:none;background:transparent;color:var(--text-dim);font-weight:700;font-size:13px;}
   .login-role-btn.active{background:var(--accent);color:#fff;}
   .login-error{color:var(--danger);font-size:12.5px;margin-top:8px;text-align:center;min-height:16px;}
+  .login-spinner-overlay{
+    position:absolute; inset:0; z-index:5;
+    background:var(--panel); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
+  }
+  .login-spinner{
+    width:46px; height:46px; border-radius:50%;
+    border:3.5px solid var(--border-strong); border-top-color:var(--accent);
+    animation:loginSpin .75s cubic-bezier(.5,0,.5,1) infinite;
+  }
+  @keyframes loginSpin{ to{ transform:rotate(360deg); } }
+  .login-spinner-text{font-size:12.5px;font-weight:700;letter-spacing:.3px;color:var(--text-dim);}
   .login-staff-tile{
     display:flex; align-items:center; gap:12px; width:100%; padding:12px 14px; margin-bottom:8px;
     background:var(--panel-2); border:1px solid var(--border-strong); border-radius:10px;
@@ -919,45 +923,33 @@
 </head>
 <body>
 
+<div id="bootLoader" class="login-gate">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+    <div class="login-spinner"></div>
+    <div class="login-spinner-text">Loading…</div>
+  </div>
+</div>
+
 <div id="loginGate" class="login-gate" style="display:none;">
   <div class="login-card">
-    <div class="login-brand">⬤ IRON LOG</div>
+    <div class="login-brand">⬤ RELVOCRM</div>
     <div class="login-title">Sign in to continue</div>
-    <div class="login-role-tabs">
-      <button class="login-role-btn active" id="loginTabAdmin" data-role="admin">Admin</button>
-      <button class="login-role-btn" id="loginTabStaff" data-role="staff">Staff</button>
-    </div>
-    <div id="loginAdminPane">
-      <div class="field" style="margin-bottom:10px;"><label>Admin Email</label><input class="input" type="email" id="loginAdminEmail" autocomplete="username" placeholder="admin@yourcompany.com"></div>
-      <div class="field" style="margin-bottom:14px;"><label>Password</label><input class="input" type="password" id="loginAdminPassword" autocomplete="current-password" placeholder="Firebase password"></div>
-      <button class="btn btn-primary" id="btnLoginAdmin" style="width:100%;">Sign In as Admin</button>
-      <div id="loginAdminError" class="login-error"></div>
-    </div>
-    <div id="loginStaffPane" style="display:none;">
-      <div class="field" style="margin-bottom:10px;"><label>Staff Email</label><input class="input" type="email" id="loginStaffEmail" autocomplete="username" placeholder="staff@yourcompany.com"></div>
-      <div class="field" style="margin-bottom:14px;"><label>Password</label><input class="input" type="password" id="loginStaffPassword" autocomplete="current-password" placeholder="Firebase password"></div>
-      <button class="btn btn-primary" id="btnLoginStaff" style="width:100%;">Sign In as Staff</button>
-      <div id="loginStaffError" class="login-error"></div>
+    <div class="field" style="margin-bottom:10px;"><label>User ID</label><input class="input" type="text" id="loginIdentifier" autocomplete="username" placeholder="User ID"></div>
+    <div class="field" style="margin-bottom:14px;"><label>Password</label><input class="input" type="password" id="loginPassword" autocomplete="current-password" placeholder="Password"></div>
+    <button class="btn btn-primary" id="btnLogin" style="width:100%;">Sign In</button>
+    <div id="loginError" class="login-error"></div>
+    <div id="loginSpinnerOverlay" class="login-spinner-overlay" style="display:none;">
+      <div class="login-spinner"></div>
+      <div class="login-spinner-text">Signing you in…</div>
     </div>
   </div>
 </div>
 
 <div class="app">
   <div class="header">
-    <div class="brand">
-      <div class="brand-mark"></div>
-      <div>
-        <h1>Iron Log</h1>
-        <small>Personal Life Hub</small>
-      </div>
-    </div>
-    <div class="header-right">
+    <div class="header-right" style="margin-left:auto;">
       <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Dark/Light theme"><span id="themeToggleIcon">🌙</span></button>
-      <button class="theme-toggle-btn" id="btnLogOut" title="Log out">🚪</button>
-      <div class="session-badge">
-        <div class="num" id="headerTotalCount">0</div>
-        <div class="lbl">Total Logged</div>
-      </div>
+      <button class="btn btn-ghost btn-header-action" id="btnLogOut" title="Log out">Logout</button>
     </div>
   </div>
 
@@ -1025,15 +1017,8 @@
   <div class="panel" id="panel-backup">
     <div class="section-title" style="margin-top:0;">Access</div>
     <div class="card">
-      <p class="backup-note">Iron Log now uses Firebase Authentication and Firestore synchronization. Admin/Staff access is determined by the signed-in Firebase user profile. The local Admin PIN below is kept only as a legacy convenience and is not used as the cloud security boundary.</p>
+      <p class="backup-note">Admin and Staff access is determined entirely by the signed-in Firebase account. There is no local override — the only way to change who's signed in is to log out and sign back in with a different account.</p>
       <div id="roleStatusWrap" style="margin-top:12px;"></div>
-    </div>
-    <div class="card">
-      <p class="backup-note"><b>Admin PIN</b> — required to switch back from Staff to Admin mode. Leave blank for no PIN.</p>
-      <div class="row-2" style="margin-top:10px;">
-        <input class="input" type="password" id="adminPinInput" placeholder="Set a PIN" inputmode="numeric">
-        <button class="btn btn-ghost" id="btnSavePin">Save PIN</button>
-      </div>
     </div>
 
     <div class="section-title">Back up your data</div>
@@ -1050,14 +1035,14 @@
       <ol class="steps">
         <li>Tap "Export backup" above — the file downloads to your phone.</li>
         <li>Open the Google Drive app, tap the <b>+</b> button, then "Upload".</li>
-        <li>Select the downloaded file (named like <i>iron-log-backup-2026-08-16.json</i>).</li>
+        <li>Select the downloaded file (named like <i>relvoos-backup-2026-08-16.json</i>).</li>
         <li>It's now safely stored in your Drive, separate from your phone.</li>
       </ol>
     </div>
 
     <div class="section-title">Restore data</div>
     <div class="card">
-      <p class="backup-note">Importing a file <b>completely replaces</b> everything currently on this device — old categories, sessions, or entries are wiped first so nothing from before can reappear. Backups from the older gym-only version of Iron Log also import fine — they'll land in your Gym / Fitness area.</p>
+      <p class="backup-note">Importing a file <b>completely replaces</b> everything currently on this device — old categories, sessions, or entries are wiped first so nothing from before can reappear. Backups from older gym-only versions also import fine — they'll land in your Gym / Fitness area.</p>
       <div class="btn-row" style="margin-top:12px;">
         <div class="file-input-wrap" style="flex:1;">
           <button class="btn btn-ghost">Choose file…</button>
@@ -1100,9 +1085,9 @@
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSnapshot, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 (function(){
   "use strict";
@@ -1116,16 +1101,35 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     messagingSenderId: "473032385244",
     appId: "1:473032385244:web:75f6c594543c3c55ba4a19",
     measurementId: "G-4WEV2M2XGB"
-  };
+};
   const firebaseApp = initializeApp(firebaseConfig);
   const auth = getAuth(firebaseApp);
   const db = getFirestore(firebaseApp);
 
+  // Creating a Firebase Auth user via createUserWithEmailAndPassword automatically signs in as that
+  // new user on whatever app instance it's called on. Running it on a throwaway secondary app instance
+  // (then deleting that instance immediately after) means the Admin's own session is never touched.
+  async function createStaffFirebaseAccount(email, password){
+    var secondaryApp = initializeApp(firebaseConfig, "staffCreation_" + Date.now());
+    var secondaryAuth = getAuth(secondaryApp);
+    try{
+      var cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+      return cred.user.uid;
+    }finally{
+      try{ await signOut(secondaryAuth); }catch(e){}
+      try{ await deleteApp(secondaryApp); }catch(e){}
+    }
+  }
+
   const APP_STATE_REF = doc(db, "ironLogState", "main");
   const SYNC_META_REF = doc(db, "ironLogMeta", "sync");
+  const STAFF_ROSTER_REF = doc(db, "ironLogMeta", "staffRoster");
   const TASKS_COL = collection(db, "ironLogTasks");
   const PAPERWORK_COL = collection(db, "ironLogPaperwork");
   const GYM_PLANS_COL = collection(db, "ironLogGymPlans");
+  const ATTENDANCE_COL = collection(db, "ironLogAttendance");
+  const DEVICE_BINDING_COL = collection(db, "ironLogDeviceBindings");
+  const LEAVES_COL = collection(db, "ironLogLeaves");
 
   var firebaseUser = null;
   var firebaseProfile = null;
@@ -1136,6 +1140,9 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   var knownTaskDocs = new Map();
   var knownPaperworkDocs = new Map();
   var knownGymPlanDocs = new Map();
+  var knownAttendanceDocs = new Map();
+  var knownDeviceBindingDocs = new Map();
+  var knownLeaveDocs = new Map();
   var authBooted = false;
 
   var STORAGE_KEY = "ironLogData_v2";
@@ -1466,6 +1473,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     return {
       id: uid(), name: name || "New Staff", staffId: staffId || "", createdAt: new Date().toISOString(),
       baseSalary: 15000, allowedBusinessIds: null, // null = no restriction, staff can tag any company
+      mobileNumber: "", deviceId: null, deviceRegisteredAt: null,
       tasks: [], workflowItems: [], attendance: [], leaves: []
     };
   }
@@ -1535,7 +1543,6 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       modules: freshModules(),
       deletedDefaults: [],
       role: "admin",
-      adminPin: "",
       globalAsset: {assets:[], liabilities:[]},
       globalEmi: {loans:[]},
       driverPickup: {drivers:[], yards:[], pickups:[], advances:[]}
@@ -1552,50 +1559,74 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   function setLoginState(val){
     try{ if(val) localStorage.setItem(LOGIN_STATE_KEY, val); else localStorage.removeItem(LOGIN_STATE_KEY); }catch(e){}
   }
+  function hideBootLoader(){
+    var el = document.getElementById("bootLoader");
+    if(el) el.style.display = "none";
+  }
   function showLoginGate(){
+    hideBootLoader();
     document.getElementById("loginGate").style.display = "flex";
     document.querySelector(".app").style.display = "none";
+    hideLoginSpinner();
   }
   function hideLoginGate(){
+    hideBootLoader();
     document.getElementById("loginGate").style.display = "none";
     document.querySelector(".app").style.display = "";
   }
-  function showLoginError(role, msg){
-    var el = document.getElementById(role === "admin" ? "loginAdminError" : "loginStaffError");
+  function showLoginError(msg){
+    var el = document.getElementById("loginError");
     if(el) el.textContent = msg || "";
   }
   function friendlyAuthError(err){
     var code = (err && err.code) || "";
-    if(code.indexOf("invalid-credential") !== -1 || code.indexOf("wrong-password") !== -1 || code.indexOf("user-not-found") !== -1) return "Incorrect email or password";
+    if(code.indexOf("invalid-credential") !== -1 || code.indexOf("wrong-password") !== -1 || code.indexOf("user-not-found") !== -1) return "Incorrect email/Staff ID or password";
     if(code.indexOf("too-many-requests") !== -1) return "Too many attempts. Try again later.";
     if(code.indexOf("network") !== -1) return "Network error. Check your internet connection.";
     return (err && err.message) ? err.message.replace(/^Firebase:\s*/i, "") : "Unable to sign in";
   }
+  // Staff sign in with a plain Staff ID rather than a full email — Firebase's email/password provider
+  // still needs an email shape under the hood, so a Staff ID is transparently mapped to a synthetic
+  // address. A real email (containing "@") is always used exactly as typed — that's the Admin path.
+  var STAFF_LOGIN_DOMAIN = "ironlog.staff";
+  function resolveLoginEmail(identifier){
+    var trimmed = (identifier || "").trim();
+    if(trimmed.indexOf("@") !== -1) return trimmed;
+    return trimmed.toLowerCase().replace(/\s+/g, "") + "@" + STAFF_LOGIN_DOMAIN;
+  }
   async function fetchFirebaseProfile(user){
     var snap = await getDoc(doc(db, "users", user.uid));
-    if(!snap.exists()) throw new Error("No Iron Log role profile exists for this Firebase user.");
+    if(!snap.exists()) throw new Error("No role profile exists for this account.");
     var profile = snap.data() || {};
     if(profile.active === false) throw new Error("This account is disabled.");
     if(profile.role !== "admin" && profile.role !== "staff") throw new Error("Invalid account role.");
     if(profile.role === "staff" && !profile.staffId) throw new Error("Staff profile is missing staffId.");
     return profile;
   }
-  async function doFirebaseLogin(role){
-    var emailEl = document.getElementById(role === "admin" ? "loginAdminEmail" : "loginStaffEmail");
-    var passEl = document.getElementById(role === "admin" ? "loginAdminPassword" : "loginStaffPassword");
-    var email = emailEl ? emailEl.value.trim() : "";
+  function showLoginSpinner(){
+    var el = document.getElementById("loginSpinnerOverlay");
+    if(el) el.style.display = "flex";
+  }
+  function hideLoginSpinner(){
+    var el = document.getElementById("loginSpinnerOverlay");
+    if(el) el.style.display = "none";
+  }
+  async function doFirebaseLogin(){
+    var idEl = document.getElementById("loginIdentifier");
+    var passEl = document.getElementById("loginPassword");
+    var identifier = idEl ? idEl.value.trim() : "";
     var password = passEl ? passEl.value : "";
-    showLoginError(role, "");
-    if(!email || !password){ showLoginError(role, "Enter email and password"); return; }
+    showLoginError("");
+    if(!identifier || !password){ showLoginError("Enter your User ID and password"); return; }
+    showLoginSpinner();
     try{
-      var cred = await signInWithEmailAndPassword(auth, email, password);
-      var p = await fetchFirebaseProfile(cred.user);
-      if(p.role !== role){
-        await signOut(auth);
-        showLoginError(role, "This account is registered as " + p.role + ", not " + role + ".");
-      }
+      await signInWithEmailAndPassword(auth, resolveLoginEmail(identifier), password);
+      // onAuthStateChanged picks this up: fetches the role profile, sets data.role, and completes login.
+      // The spinner stays visible through that whole chain and is hidden either by hideLoginGate() on
+      // success or by the catch block in onAuthStateChanged if the profile fetch fails.
     }catch(err){
-      showLoginError(role, friendlyAuthError(err));
+      hideLoginSpinner();
+      showLoginError(friendlyAuthError(err));
     }
   }
   function completeLogin(){
@@ -1603,26 +1634,14 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     runAppInit();
   }
   function wireLoginGate(){
-    document.getElementById("loginTabAdmin").addEventListener("click", function(){
-      document.getElementById("loginTabAdmin").classList.add("active");
-      document.getElementById("loginTabStaff").classList.remove("active");
-      document.getElementById("loginAdminPane").style.display = "block";
-      document.getElementById("loginStaffPane").style.display = "none";
-    });
-    document.getElementById("loginTabStaff").addEventListener("click", function(){
-      document.getElementById("loginTabStaff").classList.add("active");
-      document.getElementById("loginTabAdmin").classList.remove("active");
-      document.getElementById("loginStaffPane").style.display = "block";
-      document.getElementById("loginAdminPane").style.display = "none";
-    });
-    document.getElementById("btnLoginAdmin").addEventListener("click", function(){ doFirebaseLogin("admin"); });
-    document.getElementById("btnLoginStaff").addEventListener("click", function(){ doFirebaseLogin("staff"); });
-    ["loginAdminPassword","loginStaffPassword"].forEach(function(id){
+    document.getElementById("btnLogin").addEventListener("click", doFirebaseLogin);
+    ["loginIdentifier","loginPassword"].forEach(function(id){
       var el = document.getElementById(id);
-      if(el) el.addEventListener("keydown", function(e){ if(e.key === "Enter") doFirebaseLogin(id.indexOf("Admin") !== -1 ? "admin" : "staff"); });
+      if(el) el.addEventListener("keydown", function(e){ if(e.key === "Enter") doFirebaseLogin(); });
     });
     document.getElementById("btnLogOut").addEventListener("click", async function(){
       if(!confirm("Log out?")) return;
+      document.getElementById("bootLoader").style.display = "flex";
       stopCloudSync();
       saveStaffProfile(null);
       setLoginState(null);
@@ -1986,6 +2005,9 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
           if(!s.createdAt) s.createdAt = new Date().toISOString();
           if(typeof s.baseSalary !== "number") s.baseSalary = 15000;
           if(typeof s.allowedBusinessIds === "undefined") s.allowedBusinessIds = null;
+          if(typeof s.mobileNumber !== "string") s.mobileNumber = "";
+          if(typeof s.deviceId === "undefined") s.deviceId = null;
+          if(typeof s.deviceRegisteredAt === "undefined") s.deviceRegisteredAt = null;
           if(!Array.isArray(s.tasks)) s.tasks = [];
           if(!Array.isArray(s.workflowItems)) s.workflowItems = [];
           if(!Array.isArray(s.attendance)) s.attendance = [];
@@ -1995,6 +2017,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
             if(!a.id) a.id = uid();
             if(typeof a.fine === "undefined") a.fine = 0;
             if(typeof a.punchOutAdminSet === "undefined") a.punchOutAdminSet = false;
+            if(typeof a.punchInAdminSet === "undefined") a.punchInAdminSet = false;
           });
           s.leaves.forEach(function(l){ if(!l.id) l.id = uid(); if(!l.status) l.status = "pending"; });
         });
@@ -2010,7 +2033,6 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     if(typeof d.unit !== "string") d.unit = "kg";
     if(typeof d.lastExportAt === "undefined") d.lastExportAt = null;
     if(d.role !== "admin" && d.role !== "staff") d.role = "admin";
-    if(typeof d.adminPin !== "string") d.adminPin = "";
     return d;
   }
   function persist(d){
@@ -2021,7 +2043,6 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     var clone = JSON.parse(JSON.stringify(data));
     // Authentication/authorization is per Firebase user, never shared through the app-state document.
     delete clone.role;
-    delete clone.adminPin;
     return clone;
   }
   function scheduleCloudSave(){
@@ -2108,6 +2129,129 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     });
   }
 
+  // Attendance lives per staff member per day. This exists as its own granular collection (rather than
+  // only inside the big app-state document) specifically so a staff member's own punch can be written
+  // to Firestore by that staff member — the app-state document itself can only be written by Admin.
+  function flattenAttendanceDocs(){
+    var out = new Map();
+    var staffModule = findStaffModuleAny();
+    if(staffModule){
+      (staffModule.staffMembers || []).forEach(function(m){
+        (m.attendance || []).forEach(function(a){
+          var docId = m.id + "_" + a.date;
+          out.set(docId, Object.assign({}, JSON.parse(JSON.stringify(a)), {staffMemberId:m.id, moduleId:staffModule.id}));
+        });
+      });
+    }
+    return out;
+  }
+  function mergeAttendanceDocsIntoData(attendanceDocs){
+    if(!attendanceDocs || attendanceDocs.size === 0) return;
+    var staffModule = findStaffModuleAny();
+    if(!staffModule) return;
+    (staffModule.staffMembers || []).forEach(function(m){ m.attendance = []; });
+    attendanceDocs.forEach(function(raw){
+      var m = findStaffMember(staffModule, raw.staffMemberId);
+      if(!m) return;
+      var a = JSON.parse(JSON.stringify(raw));
+      delete a.staffMemberId; delete a.moduleId; delete a.updatedAt; delete a.updatedBy;
+      m.attendance.push(a);
+    });
+  }
+
+  // Device binding: set automatically by a staff member's own first punch (executePunch), so it has
+  // the exact same "staff-writable but blob is admin-only" problem attendance had. One doc per staff
+  // member (not an array) since a member has at most one bound device at a time.
+  function flattenDeviceBindingDocs(){
+    var out = new Map();
+    var staffModule = findStaffModuleAny();
+    if(staffModule){
+      (staffModule.staffMembers || []).forEach(function(m){
+        if(m.deviceId) out.set(m.id, {staffMemberId:m.id, moduleId:staffModule.id, deviceId:m.deviceId, deviceRegisteredAt:m.deviceRegisteredAt});
+      });
+    }
+    return out;
+  }
+  function mergeDeviceBindingDocsIntoData(deviceDocs){
+    if(!deviceDocs || deviceDocs.size === 0) return;
+    var staffModule = findStaffModuleAny();
+    if(!staffModule) return;
+    (staffModule.staffMembers || []).forEach(function(m){ m.deviceId = null; m.deviceRegisteredAt = null; });
+    deviceDocs.forEach(function(raw, id){
+      var m = findStaffMember(staffModule, id);
+      if(m){ m.deviceId = raw.deviceId; m.deviceRegisteredAt = raw.deviceRegisteredAt; }
+    });
+  }
+
+  // Leave requests: staff submit their own (member.leaves.push in the staff dashboard), same bug class.
+  function flattenLeaveDocs(){
+    var out = new Map();
+    var staffModule = findStaffModuleAny();
+    if(staffModule){
+      (staffModule.staffMembers || []).forEach(function(m){
+        (m.leaves || []).forEach(function(l){
+          out.set(l.id, Object.assign({}, JSON.parse(JSON.stringify(l)), {staffMemberId:m.id, moduleId:staffModule.id}));
+        });
+      });
+    }
+    return out;
+  }
+  function mergeLeaveDocsIntoData(leaveDocs){
+    if(!leaveDocs || leaveDocs.size === 0) return;
+    var staffModule = findStaffModuleAny();
+    if(!staffModule) return;
+    (staffModule.staffMembers || []).forEach(function(m){ m.leaves = []; });
+    leaveDocs.forEach(function(raw){
+      var m = findStaffMember(staffModule, raw.staffMemberId);
+      if(!m) return;
+      var l = JSON.parse(JSON.stringify(raw));
+      delete l.staffMemberId; delete l.moduleId; delete l.updatedAt; delete l.updatedBy;
+      m.leaves.push(l);
+    });
+  }
+
+  // Staff roster: a deliberately safe, non-sensitive mirror of the staff module's basic structure
+  // (who exists, their names/IDs, office geofence, holidays) that ANY authenticated user can read —
+  // unlike APP_STATE_REF, which correctly should be restricted to Admin since it also contains
+  // financial ledgers and other people's data. Without this, a staff member's very first render
+  // (finding their own name/module) depends entirely on APP_STATE_REF succeeding, which breaks
+  // staff logins completely if that document is ever properly locked down to Admin-only.
+  function flattenStaffRoster(){
+    var sm = findStaffModuleAny();
+    if(!sm) return null;
+    return {
+      moduleId: sm.id,
+      office: sm.office || {lat:null, lng:null, radius:75},
+      holidays: sm.holidays || [],
+      members: (sm.staffMembers || []).map(function(m){
+        return {id:m.id, name:m.name, staffId:m.staffId || "", baseSalary:m.baseSalary, allowedBusinessIds:m.allowedBusinessIds, mobileNumber:m.mobileNumber || ""};
+      })
+    };
+  }
+  function mergeStaffRosterIntoData(roster){
+    if(!roster) return;
+    if(!data.modules.staff || data.modules.staff.type !== "staff"){
+      data.modules.staff = freshStaffModule();
+    }
+    var sm = data.modules.staff;
+    if(roster.office) sm.office = roster.office;
+    if(roster.holidays) sm.holidays = roster.holidays;
+    var existingById = {};
+    (sm.staffMembers || []).forEach(function(m){ existingById[m.id] = m; });
+    sm.staffMembers = (roster.members || []).map(function(r){
+      var existing = existingById[r.id];
+      // Fields owned by their own dedicated collections (tasks/attendance/leaves/deviceId) are
+      // preserved from whatever's already local, never overwritten by the roster itself.
+      return {
+        id:r.id, name:r.name, staffId:r.staffId, createdAt:(existing ? existing.createdAt : new Date().toISOString()),
+        baseSalary:r.baseSalary, allowedBusinessIds:r.allowedBusinessIds, mobileNumber:r.mobileNumber,
+        deviceId:(existing ? existing.deviceId : null), deviceRegisteredAt:(existing ? existing.deviceRegisteredAt : null),
+        tasks:(existing ? existing.tasks : []), workflowItems:(existing ? existing.workflowItems : []),
+        attendance:(existing ? existing.attendance : []), leaves:(existing ? existing.leaves : [])
+      };
+    });
+  }
+
   function flattenPaperworkDocs(){
     var out = new Map();
     var bizModule = data.modules && data.modules.business;
@@ -2168,6 +2312,9 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     mergeTaskDocsIntoData(knownTaskDocs);
     mergePaperworkDocsIntoData(knownPaperworkDocs);
     mergeGymPlanDocsIntoData(knownGymPlanDocs);
+    mergeAttendanceDocsIntoData(knownAttendanceDocs);
+    mergeDeviceBindingDocsIntoData(knownDeviceBindingDocs);
+    mergeLeaveDocsIntoData(knownLeaveDocs);
   }
 
   function rerenderAfterRemote(){
@@ -2207,6 +2354,45 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       plans.forEach(function(gp,id){ writes.push(setDoc(doc(db,"ironLogGymPlans",id), Object.assign({}, gp, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true})); });
       knownGymPlanDocs.forEach(function(remote,id){ if(!plans.has(id)) writes.push(deleteDoc(doc(db,"ironLogGymPlans",id))); });
     }
+
+    var attendance = flattenAttendanceDocs();
+    attendance.forEach(function(a, id){
+      var canWrite = isFirebaseAdmin() || (staffId && a.staffMemberId === staffId);
+      if(canWrite) writes.push(setDoc(doc(db,"ironLogAttendance",id), Object.assign({}, a, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true}));
+    });
+    knownAttendanceDocs.forEach(function(remote, id){
+      if(attendance.has(id)) return;
+      var canDelete = isFirebaseAdmin() || (staffId && remote.staffMemberId === staffId);
+      if(canDelete) writes.push(deleteDoc(doc(db,"ironLogAttendance",id)));
+    });
+
+    var deviceBindings = flattenDeviceBindingDocs();
+    deviceBindings.forEach(function(d, id){
+      var canWrite = isFirebaseAdmin() || (staffId && id === staffId);
+      if(canWrite) writes.push(setDoc(doc(db,"ironLogDeviceBindings",id), Object.assign({}, d, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true}));
+    });
+    knownDeviceBindingDocs.forEach(function(remote, id){
+      if(deviceBindings.has(id)) return;
+      var canDelete = isFirebaseAdmin() || (staffId && id === staffId);
+      if(canDelete) writes.push(deleteDoc(doc(db,"ironLogDeviceBindings",id)));
+    });
+
+    var leaves = flattenLeaveDocs();
+    leaves.forEach(function(l, id){
+      var canWrite = isFirebaseAdmin() || (staffId && l.staffMemberId === staffId);
+      if(canWrite) writes.push(setDoc(doc(db,"ironLogLeaves",id), Object.assign({}, l, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true}));
+    });
+    knownLeaveDocs.forEach(function(remote, id){
+      if(leaves.has(id)) return;
+      var canDelete = isFirebaseAdmin() || (staffId && remote.staffMemberId === staffId);
+      if(canDelete) writes.push(deleteDoc(doc(db,"ironLogLeaves",id)));
+    });
+
+    if(isFirebaseAdmin()){
+      var roster = flattenStaffRoster();
+      if(roster) writes.push(setDoc(STAFF_ROSTER_REF, Object.assign({}, roster, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid})));
+    }
+
     await Promise.allSettled(writes);
   }
 
@@ -2226,10 +2412,25 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   async function ensureInitialMigration(){
     if(!isFirebaseAdmin()) return;
     var meta = await getDoc(SYNC_META_REF);
-    if(meta.exists() && meta.data().domainsMigrated) return;
-    await setDoc(APP_STATE_REF, {payload:cloudSafeData(), updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}, {merge:true});
+    var metaData = meta.exists() ? meta.data() : {};
+    var alreadyDone = !!metaData.domainsMigrated;
+    var attendanceAlreadyDone = !!metaData.attendanceMigrated;
+    var deviceAlreadyDone = !!metaData.deviceBindingsMigrated;
+    var leavesAlreadyDone = !!metaData.leavesMigrated;
+    if(alreadyDone && attendanceAlreadyDone && deviceAlreadyDone && leavesAlreadyDone) return;
+    if(!alreadyDone){
+      await setDoc(APP_STATE_REF, {payload:cloudSafeData(), updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}, {merge:true});
+    }
+    // writeDomainCollections() covers every domain collection at once; each has its own independent
+    // migration flag so adding a new collection later can never be silently skipped by an older flag
+    // that's already true from a previous migration round.
     await writeDomainCollections();
-    await setDoc(SYNC_META_REF, {domainsMigrated:true, migratedAt:serverTimestamp(), migratedBy:firebaseUser.uid}, {merge:true});
+    var metaUpdate = {migratedAt:serverTimestamp(), migratedBy:firebaseUser.uid};
+    if(!alreadyDone) metaUpdate.domainsMigrated = true;
+    if(!attendanceAlreadyDone) metaUpdate.attendanceMigrated = true;
+    if(!deviceAlreadyDone) metaUpdate.deviceBindingsMigrated = true;
+    if(!leavesAlreadyDone) metaUpdate.leavesMigrated = true;
+    await setDoc(SYNC_META_REF, metaUpdate, {merge:true});
   }
 
   function stopCloudSync(){
@@ -2238,41 +2439,81 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     clearTimeout(cloudWriteTimer);
     cloudUnsubs.forEach(function(fn){ try{ fn(); }catch(e){} });
     cloudUnsubs = [];
-    knownTaskDocs = new Map(); knownPaperworkDocs = new Map(); knownGymPlanDocs = new Map();
+    knownTaskDocs = new Map(); knownPaperworkDocs = new Map(); knownGymPlanDocs = new Map(); knownAttendanceDocs = new Map();
+    knownDeviceBindingDocs = new Map(); knownLeaveDocs = new Map();
   }
 
   async function startCloudSync(){
     stopCloudSync();
     if(!firebaseUser) return;
-    var localRole = data.role;
-    var localPin = data.adminPin;
 
-    var baseSnap = await getDoc(APP_STATE_REF);
-    if(baseSnap.exists() && baseSnap.data().payload){
-      cloudApplying = true;
-      data = ensureModuleDefaults(baseSnap.data().payload);
-      data.role = firebaseProfile.role;
-      data.adminPin = localPin || "";
-      persist(data);
+    // The shared app-state document can legitimately fail to read (a permissions restriction on a
+    // sensitive admin-only document, a network blip, going offline) without that being a reason to
+    // sign anyone out. Isolate this specific read so a failure here degrades gracefully — falling
+    // back to whatever's already cached locally — instead of cascading into a forced logout that
+    // would make the whole app appear to have "lost" all of its data.
+    try{
+      var baseSnap = await getDoc(APP_STATE_REF);
+      if(baseSnap.exists() && baseSnap.data().payload){
+        cloudApplying = true;
+        data = ensureModuleDefaults(baseSnap.data().payload);
+        data.role = firebaseProfile.role;
+        persist(data);
+        cloudApplying = false;
+      }else if(isFirebaseAdmin()){
+        await setDoc(APP_STATE_REF, {payload:cloudSafeData(), updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid});
+      }
+    }catch(err){
+      console.error("App-state initial read failed — continuing with locally cached data", err);
       cloudApplying = false;
-    }else if(isFirebaseAdmin()){
-      await setDoc(APP_STATE_REF, {payload:cloudSafeData(), updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid});
     }
 
-    // First-time migration of the existing nested local data into granular real-time collections.
-    await ensureInitialMigration();
+    // Staff roster: read independently of the app-state document above, specifically so a staff
+    // member's own module/directory data loads even when APP_STATE_REF is correctly restricted to
+    // Admin. This is the actual fix for staff being unable to identify themselves at all if that
+    // restriction is in place — not just a resilience fallback, but a genuine alternate data path.
+    try{
+      var rosterSnap = await getDoc(STAFF_ROSTER_REF);
+      if(rosterSnap.exists()){
+        cloudApplying = true;
+        mergeStaffRosterIntoData(rosterSnap.data());
+        persist(data);
+        cloudApplying = false;
+      }
+    }catch(err){
+      console.error("Staff roster initial read failed", err);
+      cloudApplying = false;
+    }
+
+    // Likewise, migration is admin-only and best-effort — a failure here shouldn't block the rest
+    // of sync (the granular collection listeners below) from attaching.
+    try{
+      await ensureInitialMigration();
+    }catch(err){
+      console.error("Initial migration failed — continuing without it", err);
+    }
+
+    cloudUnsubs.push(onSnapshot(STAFF_ROSTER_REF, function(snap){
+      if(!snap.exists()) return;
+      cloudApplying = true;
+      try{
+        mergeStaffRosterIntoData(snap.data());
+        persist(data);
+      }catch(err){ console.error("Staff roster merge failed", err); }
+      finally{ cloudApplying = false; }
+      rerenderAfterRemote();
+    }, function(err){ console.error("Staff roster listener", err); }));
 
     cloudUnsubs.push(onSnapshot(APP_STATE_REF, function(snap){
       if(!snap.exists() || !snap.data().payload) return;
       cloudApplying = true;
-      var role = firebaseProfile ? firebaseProfile.role : localRole;
-      var pin = data.adminPin || localPin || "";
-      data = ensureModuleDefaults(snap.data().payload);
-      data.role = role;
-      data.adminPin = pin;
-      applyKnownDomainOverlays();
-      persist(data);
-      cloudApplying = false;
+      try{
+        data = ensureModuleDefaults(snap.data().payload);
+        data.role = firebaseProfile.role;
+        applyKnownDomainOverlays();
+        persist(data);
+      }catch(err){ console.error("App-state merge failed", err); }
+      finally{ cloudApplying = false; }
       rerenderAfterRemote();
     }, function(err){ console.error("App-state listener", err); }));
 
@@ -2280,7 +2521,10 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       var map = new Map();
       snap.forEach(function(d){ map.set(d.id, Object.assign({id:d.id}, d.data())); });
       knownTaskDocs = map;
-      cloudApplying = true; mergeTaskDocsIntoData(map); persist(data); cloudApplying = false;
+      cloudApplying = true;
+      try{ mergeTaskDocsIntoData(map); persist(data); }
+      catch(err){ console.error("Tasks merge failed", err); }
+      finally{ cloudApplying = false; }
       rerenderAfterRemote();
     }, function(err){ console.error("Tasks listener", err); }));
 
@@ -2288,7 +2532,10 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       var map = new Map();
       snap.forEach(function(d){ map.set(d.id, d.data()); });
       knownPaperworkDocs = map;
-      cloudApplying = true; mergePaperworkDocsIntoData(map); persist(data); cloudApplying = false;
+      cloudApplying = true;
+      try{ mergePaperworkDocsIntoData(map); persist(data); }
+      catch(err){ console.error("Paperwork merge failed", err); }
+      finally{ cloudApplying = false; }
       rerenderAfterRemote();
     }, function(err){ console.error("Paperwork listener", err); }));
 
@@ -2296,16 +2543,54 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       var map = new Map();
       snap.forEach(function(d){ map.set(d.id, d.data()); });
       knownGymPlanDocs = map;
-      cloudApplying = true; mergeGymPlanDocsIntoData(map); persist(data); cloudApplying = false;
+      cloudApplying = true;
+      try{ mergeGymPlanDocsIntoData(map); persist(data); }
+      catch(err){ console.error("Gym-plan merge failed", err); }
+      finally{ cloudApplying = false; }
       rerenderAfterRemote();
     }, function(err){ console.error("Gym-plan listener", err); }));
+
+    cloudUnsubs.push(onSnapshot(ATTENDANCE_COL, function(snap){
+      var map = new Map();
+      snap.forEach(function(d){ map.set(d.id, d.data()); });
+      knownAttendanceDocs = map;
+      cloudApplying = true;
+      try{ mergeAttendanceDocsIntoData(map); persist(data); }
+      catch(err){ console.error("Attendance merge failed", err); }
+      finally{ cloudApplying = false; }
+      rerenderAfterRemote();
+    }, function(err){ console.error("Attendance listener", err); }));
+
+    cloudUnsubs.push(onSnapshot(DEVICE_BINDING_COL, function(snap){
+      var map = new Map();
+      snap.forEach(function(d){ map.set(d.id, d.data()); });
+      knownDeviceBindingDocs = map;
+      cloudApplying = true;
+      try{ mergeDeviceBindingDocsIntoData(map); persist(data); }
+      catch(err){ console.error("Device-binding merge failed", err); }
+      finally{ cloudApplying = false; }
+      rerenderAfterRemote();
+    }, function(err){ console.error("Device-binding listener", err); }));
+
+    cloudUnsubs.push(onSnapshot(LEAVES_COL, function(snap){
+      var map = new Map();
+      snap.forEach(function(d){ map.set(d.id, d.data()); });
+      knownLeaveDocs = map;
+      cloudApplying = true;
+      try{ mergeLeaveDocsIntoData(map); persist(data); }
+      catch(err){ console.error("Leaves merge failed", err); }
+      finally{ cloudApplying = false; }
+      rerenderAfterRemote();
+    }, function(err){ console.error("Leaves listener", err); }));
 
     var draftRef = doc(db, "ironLogGymDrafts", firebaseUser.uid);
     cloudUnsubs.push(onSnapshot(draftRef, function(snap){
       cloudApplying = true;
-      gymDraft = snap.exists() && snap.data().payload ? snap.data().payload : null;
-      try{ if(gymDraft) localStorage.setItem(DRAFT_KEY, JSON.stringify(gymDraft)); else localStorage.removeItem(DRAFT_KEY); }catch(e){}
-      cloudApplying = false;
+      try{
+        gymDraft = snap.exists() && snap.data().payload ? snap.data().payload : null;
+        if(gymDraft) localStorage.setItem(DRAFT_KEY, JSON.stringify(gymDraft)); else localStorage.removeItem(DRAFT_KEY);
+      }catch(err){ console.error("Gym-draft merge failed", err); }
+      finally{ cloudApplying = false; }
       if(activeTab === "home" && homeView === "gym") rerenderAfterRemote();
     }, function(err){ console.error("Gym-draft listener", err); }));
 
@@ -2573,18 +2858,17 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     var all = getAllPrepItemsForHub();
     var incomplete = all.filter(function(e){ return !isPrepItemDone(e); });
     var completed = all.filter(isPrepItemDone);
+    var filterKey = "tasksHubPrep";
+    var showing = getStaffListFilter(filterKey) === "completed" ? completed : incomplete;
     var html = '<div class="section-title">🔧 Vehicle Prep Items</div>';
-    html += '<div class="section-title" style="margin-top:0;color:var(--danger);">Incomplete</div>';
-    html += incomplete.length === 0
-      ? '<div class="empty-state"><div class="big">✅</div><p>Nothing incomplete.</p></div>'
-      : incomplete.map(prepHubCardHTML).join("");
-    html += '<div class="section-title" style="color:var(--up);">Completed</div>';
-    html += completed.length === 0
-      ? '<div class="empty-state"><div class="big">📋</div><p>Nothing completed yet.</p></div>'
-      : completed.map(prepHubCardHTML).join("");
+    html += pendingCompletedTabsHTML(filterKey, incomplete.length, completed.length);
+    html += showing.length === 0
+      ? '<div class="empty-state"><div class="big">' + (getStaffListFilter(filterKey) === "completed" ? "📋" : "✅") + '</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "Nothing completed yet." : "Nothing incomplete.") + '</p></div>'
+      : showing.map(prepHubCardHTML).join("");
     return html;
   }
   function wirePrepHubSection(wrap){
+    wirePendingCompletedTabs(wrap, "tasksHubPrep", renderTasksHub);
     wrap.querySelectorAll(".hub-prep-done").forEach(function(cb){
       cb.addEventListener("change", function(){
         var itemId = cb.getAttribute("data-hub-item-id");
@@ -2623,7 +2907,8 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   }
 
   function renderHeader(){
-    document.getElementById("headerTotalCount").textContent = totalLoggedCount();
+    // The gym-era "Total Logged" counter has been removed. renderHeader stays as a safe no-op
+    // hook (called throughout the app) so header-related updates have one clear place to live.
   }
 
   /* =========================================================
@@ -4682,13 +4967,50 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     });
   }
 
+  // High-level, all-drivers-at-once view — every driver's totals side by side plus a grand total,
+  // distinct from the per-driver Statement above which drills into one driver's individual transactions.
+  function renderAllDriversReportBody(){
+    var dp = data.driverPickup;
+    var rows = dp.drivers.map(function(d){
+      var t = driverTotals(d.id);
+      return {name: d.name, generated: t.generated, paid: t.paid, outstanding: t.outstanding};
+    }).sort(function(a, b){ return b.outstanding - a.outstanding; });
+    var totalGen = rows.reduce(function(s, r){ return s + r.generated; }, 0);
+    var totalPaid = rows.reduce(function(s, r){ return s + r.paid; }, 0);
+    var totalOut = rows.reduce(function(s, r){ return s + r.outstanding; }, 0);
+
+    var html = '<div class="modal-header"><h3 class="modal-title">📊 Full Driver Pickup Report</h3><button class="modal-close-btn" id="modalCloseBtn">✕</button></div>';
+    html += '<div class="modal-body">';
+    if(rows.length === 0){
+      html += '<div class="empty-state"><div class="big">🧑‍✈️</div><p>No drivers yet.</p></div>';
+    }else{
+      html += '<div class="sheet-scroll"><table class="sheet-table statement-table"><thead><tr><th>Driver</th><th>Generated</th><th>Paid</th><th>Outstanding</th></tr></thead><tbody>' +
+        rows.map(function(r){
+          return '<tr><td>' + esc(r.name) + '</td><td>₹' + fmtMoney(r.generated) + '</td><td>₹' + fmtMoney(r.paid) + '</td>' +
+            '<td style="color:' + (r.outstanding > 0 ? "var(--danger)" : "var(--up)") + ';font-weight:700;">₹' + fmtMoney(r.outstanding) + '</td></tr>';
+        }).join("") +
+      '</tbody></table></div>';
+    }
+    html += '<div class="biz-stats-grid" style="grid-template-columns:repeat(3,1fr);margin-top:14px;">' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Total Generated</div><div class="bsc-value">₹' + fmtMoney(totalGen) + '</div></div>' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Total Paid</div><div class="bsc-value" style="color:var(--up);">₹' + fmtMoney(totalPaid) + '</div></div>' +
+      '<div class="biz-stat-cell"><div class="bsc-label">Total Outstanding</div><div class="bsc-value" style="color:' + (totalOut > 0 ? "var(--danger)" : "var(--up)") + ';">₹' + fmtMoney(totalOut) + '</div></div>' +
+    '</div>';
+    html += '</div>';
+    return html;
+  }
+  function openAllDriversReportModal(){
+    showModal(renderAllDriversReportBody());
+  }
+
   function renderSummaryDriverPanel(){
     var wrap = document.getElementById("summaryDriverInner");
     if(!wrap) return;
     var dp = data.driverPickup;
 
     var html = '<div class="sheet-table-card">';
-    html += '<div class="section-title" style="margin-top:0;">Driver Ledger</div>';
+    html += '<div class="sheet-table-header"><span class="sheet-table-title">Driver Ledger</span>' +
+      '<button class="btn btn-ghost btn-header-action" id="btnExpandFullReport">📊 Expand Full Report</button></div>';
     html += '<p class="backup-note">Global running balance per driver — generated across all vehicle pickups, total paid (including direct advances), and what\'s still outstanding.</p>';
     html += driverLedgerListHTML();
     html += '</div>';
@@ -4720,6 +5042,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     document.getElementById("btnToggleNewPickup").addEventListener("click", function(){ newPickupFormOpen = !newPickupFormOpen; renderSummaryDriverPanel(); });
     document.getElementById("btnToggleNewAdvance").addEventListener("click", function(){ newAdvanceFormOpen = !newAdvanceFormOpen; renderSummaryDriverPanel(); });
     document.getElementById("btnToggleDriverManage").addEventListener("click", function(){ driverManageOpen = !driverManageOpen; renderSummaryDriverPanel(); });
+    document.getElementById("btnExpandFullReport").addEventListener("click", function(){ openAllDriversReportModal(); });
 
     wrap.querySelectorAll(".driver-statement-btn").forEach(function(btn){
       btn.addEventListener("click", function(){ openDriverStatementModal(btn.getAttribute("data-driver-id")); });
@@ -5017,15 +5340,22 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   var staffView = "directory"; // "directory" | a staffMember.id
   var staffAddFormOpen = false;
   var staffOfficeConfigOpen = false;
+  var staffLoginFormOpen = false;
   var staffRulebookOpen = false;
   var staffTaskConfirm = {}; // taskId -> bool, transient
   var STAFF_PROFILE_KEY = "ironLogStaffProfile";
-  var DEVICE_AUTH_KEY = "ironLogAuthorizedDevice";
-  function isDeviceAuthorized(){
-    try{ return localStorage.getItem(DEVICE_AUTH_KEY) === "true"; }catch(e){ return false; }
-  }
-  function setDeviceAuthorized(val){
-    try{ localStorage.setItem(DEVICE_AUTH_KEY, val ? "true" : "false"); }catch(e){}
+  // A persistent random token identifying THIS specific browser/device. Used to bind attendance
+  // punching to each staff member's own dedicated phone, rather than one shared office device.
+  var THIS_DEVICE_ID_KEY = "ironLogThisDeviceId";
+  function getThisDeviceId(){
+    try{
+      var id = localStorage.getItem(THIS_DEVICE_ID_KEY);
+      if(!id){
+        id = "dev_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+        localStorage.setItem(THIS_DEVICE_ID_KEY, id);
+      }
+      return id;
+    }catch(e){ return "dev_unknown"; }
   }
 
   function findStaffMember(module, id){ return (module.staffMembers || []).find(function(s){ return s.id === id; }); }
@@ -5040,6 +5370,172 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   }
   function findStaffModuleAny(){ return moduleList().find(function(m){ return m.type === "staff"; }); }
 
+  async function staffAlreadyHasLogin(staffMember){
+    var q = query(collection(db, "users"), where("staffId", "==", staffMember.id));
+    var snap = await getDocs(q);
+    return !snap.empty;
+  }
+
+  function renderStaffLoginsList(module){
+    var wrap = document.getElementById("staffLoginsListWrap");
+    if(!wrap) return;
+    wrap.innerHTML = '<p class="backup-note">Loading…</p>';
+    var q = query(collection(db, "users"), where("moduleId", "==", module.id), where("role", "==", "staff"));
+    getDocs(q).then(function(snap){
+      var rows = [];
+      snap.forEach(function(docSnap){ rows.push({uid: docSnap.id, data: docSnap.data()}); });
+      rows.sort(function(a, b){
+        var ta = (a.data.createdAt && a.data.createdAt.toMillis) ? a.data.createdAt.toMillis() : 0;
+        var tb = (b.data.createdAt && b.data.createdAt.toMillis) ? b.data.createdAt.toMillis() : 0;
+        return tb - ta;
+      });
+      if(rows.length === 0){
+        wrap.innerHTML = '<p class="backup-note">No staff logins created yet.</p>';
+        return;
+      }
+      wrap.innerHTML = rows.map(function(r){
+        var member = findStaffMember(module, r.data.staffId);
+        var created = (r.data.createdAt && r.data.createdAt.toDate) ? fmtDate(r.data.createdAt.toDate().toISOString()) : "—";
+        var active = r.data.active !== false;
+        return '<div class="card card-tight">' +
+          '<div class="hist-row" style="border:none;padding:0;">' +
+            '<div class="left"><div class="date" style="font-weight:600;">' + esc(member ? member.name : "Unknown staff member") + (member && member.staffId ? (' — <span style="font-family:var(--font-mono);">' + esc(member.staffId) + '</span>') : '') + '</div>' +
+            '<div class="sess">Created ' + created + (active ? '' : ' · <span style="color:var(--danger);font-weight:700;">Deactivated</span>') + '</div></div>' +
+            (active && member ? '<button class="link-btn staff-login-reset" data-uid="' + r.uid + '" data-memberid="' + member.id + '" style="padding:0;">Reset Login</button>' : '') +
+          '</div>' +
+        '</div>';
+      }).join("");
+      wrap.querySelectorAll(".staff-login-reset").forEach(function(btn){
+        btn.addEventListener("click", function(){
+          openResetLoginModal(module, btn.getAttribute("data-uid"), btn.getAttribute("data-memberid"));
+        });
+      });
+    }).catch(function(err){
+      wrap.innerHTML = '<p class="backup-note">Couldn\'t load logins: ' + esc(err.message || "") + '</p>';
+    });
+  }
+
+  // Password can't be edited in place — Firebase's client SDK only lets a user change their own
+  // credentials, never another user's. Resetting deactivates the old login immediately (it stops working
+  // right away) and issues a fresh Staff ID + password, since the old account's email can't be reused
+  // until that account itself is deleted, which also requires privileged server-side access this app doesn't have.
+  function openResetLoginModal(module, oldUid, memberId){
+    var member = findStaffMember(module, memberId);
+    if(!member) return;
+    showModal(
+      '<div class="modal-header"><h3 class="modal-title">Reset Login — ' + esc(member.name) + '</h3><button class="modal-close-btn" id="modalCloseBtn">✕</button></div>' +
+      '<div class="modal-body">' +
+        '<p class="backup-note" style="margin-top:0;">Their current login stops working immediately. Set a new Staff ID and password below.</p>' +
+        '<div class="field" style="margin-bottom:10px;"><label>New Staff ID</label><input class="input" id="resetStaffId" placeholder="e.g. EMP001-2"></div>' +
+        '<div class="row-2">' +
+          '<div class="field" style="margin-bottom:10px;"><label>New Password</label><input class="input" type="password" id="resetPassword" placeholder="At least 6 characters"></div>' +
+          '<div class="field" style="margin-bottom:10px;"><label>Confirm</label><input class="input" type="password" id="resetPasswordConfirm"></div>' +
+        '</div>' +
+        '<button class="btn btn-primary" id="btnConfirmReset" style="width:100%;">Reset Login</button>' +
+        '<div id="resetLoginError" class="login-error"></div>' +
+      '</div>'
+    );
+    document.getElementById("btnConfirmReset").addEventListener("click", async function(){
+      var errEl = document.getElementById("resetLoginError");
+      errEl.textContent = "";
+      var newId = document.getElementById("resetStaffId").value.trim();
+      var pw = document.getElementById("resetPassword").value;
+      var pwConfirm = document.getElementById("resetPasswordConfirm").value;
+      if(!newId){ errEl.textContent = "Enter a Staff ID"; return; }
+      if(pw.length < 6){ errEl.textContent = "Password must be at least 6 characters"; return; }
+      if(pw !== pwConfirm){ errEl.textContent = "Passwords don't match"; return; }
+      var btn = document.getElementById("btnConfirmReset");
+      btn.disabled = true; btn.textContent = "Resetting…";
+      try{
+        await setDoc(doc(db, "users", oldUid), {active:false}, {merge:true});
+        var email = resolveLoginEmail(newId);
+        var newUid = await createStaffFirebaseAccount(email, pw);
+        await setDoc(doc(db, "users", newUid), {role:"staff", staffId: member.id, moduleId: module.id, active:true, createdAt: serverTimestamp()});
+        member.staffId = newId;
+        saveData();
+        closeModal();
+        renderStaffLoginsList(module);
+        toast(member.name + "'s login has been reset — new Staff ID: " + newId);
+      }catch(err){
+        errEl.textContent = friendlyAuthError(err);
+        btn.disabled = false; btn.textContent = "Reset Login";
+      }
+    });
+  }
+
+  function renderCreateStaffLoginForm(module){
+    var wrap = document.getElementById("createStaffLoginWrap");
+    if(!wrap) return;
+    if(!staffLoginFormOpen){ wrap.innerHTML = ""; return; }
+    var members = module.staffMembers || [];
+    if(members.length === 0){
+      wrap.innerHTML = '<p class="backup-note">Add someone to the Staff Directory above first, then come back here to create their login.</p>';
+      return;
+    }
+    wrap.innerHTML = '<div class="quickadd">' +
+      '<div class="field" style="margin-bottom:10px;"><label>Staff Member</label><select class="input" id="newLoginMemberSelect">' +
+        members.map(function(m){ return '<option value="' + m.id + '">' + esc(m.name) + (m.staffId ? (" (" + esc(m.staffId) + ")") : "") + '</option>'; }).join("") +
+      '</select></div>' +
+      '<div class="field" style="margin-bottom:10px;"><label>Staff ID <span style="text-transform:none;letter-spacing:0;">(what they\'ll type to sign in)</span></label><input class="input" id="newLoginStaffId" placeholder="e.g. EMP001"></div>' +
+      '<div class="row-2">' +
+        '<div class="field" style="margin-bottom:10px;"><label>Password</label><input class="input" type="password" id="newLoginPassword" placeholder="At least 6 characters"></div>' +
+        '<div class="field" style="margin-bottom:10px;"><label>Confirm</label><input class="input" type="password" id="newLoginPasswordConfirm" placeholder="Re-enter password"></div>' +
+      '</div>' +
+      '<button class="btn btn-primary" id="btnCreateStaffLogin" style="width:100%;">Create Login</button>' +
+      '<div id="newLoginError" class="login-error"></div>' +
+    '</div>';
+
+    function selectedMember(){
+      var id = document.getElementById("newLoginMemberSelect").value;
+      return members.find(function(m){ return m.id === id; });
+    }
+    var idField = document.getElementById("newLoginStaffId");
+    var initial = selectedMember();
+    if(initial && initial.staffId) idField.value = initial.staffId;
+    document.getElementById("newLoginMemberSelect").addEventListener("change", function(){
+      var m = selectedMember();
+      idField.value = (m && m.staffId) ? m.staffId : "";
+    });
+
+    document.getElementById("btnCreateStaffLogin").addEventListener("click", async function(){
+      var errEl = document.getElementById("newLoginError");
+      errEl.textContent = "";
+      var member = selectedMember();
+      var staffIdVal = idField.value.trim();
+      var pw = document.getElementById("newLoginPassword").value;
+      var pwConfirm = document.getElementById("newLoginPasswordConfirm").value;
+      if(!member){ errEl.textContent = "Select a staff member"; return; }
+      if(!staffIdVal){ errEl.textContent = "Enter a Staff ID"; return; }
+      if(pw.length < 6){ errEl.textContent = "Password must be at least 6 characters"; return; }
+      if(pw !== pwConfirm){ errEl.textContent = "Passwords don't match"; return; }
+
+      var btn = document.getElementById("btnCreateStaffLogin");
+      btn.disabled = true;
+      btn.textContent = "Creating…";
+      try{
+        var alreadyHas = await staffAlreadyHasLogin(member);
+        if(alreadyHas){
+          errEl.textContent = member.name + " already has a login. Remove it in Firebase Console first if you need to replace it.";
+          btn.disabled = false; btn.textContent = "Create Login";
+          return;
+        }
+        var email = resolveLoginEmail(staffIdVal);
+        var newUserUid = await createStaffFirebaseAccount(email, pw);
+        await setDoc(doc(db, "users", newUserUid), {
+          role: "staff", staffId: member.id, moduleId: module.id, active: true, createdAt: serverTimestamp()
+        });
+        if(!member.staffId){ member.staffId = staffIdVal; saveData(); }
+        staffLoginFormOpen = false;
+        renderStaffModuleBody(module);
+        toast(member.name + "'s login is ready — they can sign in with Staff ID " + staffIdVal);
+      }catch(err){
+        errEl.textContent = friendlyAuthError(err);
+        btn.disabled = false;
+        btn.textContent = "Create Login";
+      }
+    });
+  }
+
   function renderStaffModuleBody(module){
     var body = document.getElementById("moduleBody");
     if(staffView === "directory" || !findStaffMember(module, staffView)){
@@ -5053,14 +5549,25 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         '<div id="staffOfficeConfigWrap"></div>' +
         '<div class="section-title">Staff Directory</div>' +
         '<div class="tile-grid" id="staffGrid"></div>' +
-        '<div id="addStaffFormWrap"></div>';
+        '<div id="addStaffFormWrap"></div>' +
+        '<div class="section-title">🔑 Staff Logins</div>' +
+        '<p class="backup-note">Create a sign-in for someone already in the Staff Directory above. They\'ll sign in with the Staff ID and password you set here — no email needed.</p>' +
+        '<button class="btn btn-primary btn-header-action" id="btnToggleCreateLogin">' + (staffLoginFormOpen ? "Close" : "+ Create Login") + '</button>' +
+        '<div id="createStaffLoginWrap"></div>' +
+        '<div id="staffLoginsListWrap" style="margin-top:12px;"></div>';
       document.getElementById("btnToggleOfficeConfig").addEventListener("click", function(){
         staffOfficeConfigOpen = !staffOfficeConfigOpen;
+        renderStaffModuleBody(module);
+      });
+      document.getElementById("btnToggleCreateLogin").addEventListener("click", function(){
+        staffLoginFormOpen = !staffLoginFormOpen;
         renderStaffModuleBody(module);
       });
       renderStaffOfficeConfig(module);
       renderStaffGrid(module);
       renderAddStaffForm(module);
+      renderCreateStaffLoginForm(module);
+      renderStaffLoginsList(module);
     }else{
       var staff = findStaffMember(module, staffView);
       body.innerHTML =
@@ -5074,6 +5581,9 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         '<div class="section-title">🏢 Company Access</div>' +
         '<p class="backup-note">Control which companies ' + esc(staff.name) + ' can tag when creating their own tasks. Leave none checked to allow all companies.</p>' +
         '<div id="staffCompanyAccessWrap"></div>' +
+        '<div class="section-title">📱 Mobile &amp; Device</div>' +
+        '<div class="field" style="margin-bottom:10px;"><label>Mobile Number</label><input class="input" id="staffMobileInput" placeholder="e.g. +91 98765 43210" value="' + esc(staff.mobileNumber || "") + '"></div>' +
+        '<div id="staffDeviceStatusWrap"></div>' +
         '<p class="backup-note">To assign work to ' + esc(staff.name) + ', open any Business → Tasks or Workflow → and pick them from the "Assign To" list, or tap "+ New Task" below.</p>' +
         '<div class="section-title" style="margin-top:0;">📥 Incoming Tasks</div>' +
         '<div id="staffTaskList"></div>' +
@@ -5094,9 +5604,15 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       document.getElementById("btnOpenNewTaskModal").addEventListener("click", function(){
         openStaffNewTaskModal(module, staff, true);
       });
+      document.getElementById("staffMobileInput").addEventListener("change", function(){
+        staff.mobileNumber = this.value.trim();
+        saveData();
+        toast("Mobile number saved");
+      });
       renderStaffSalaryCard(module, staff, true);
       renderStaffEfficiencyCard(module, staff);
       renderStaffCompanyAccess(module, staff);
+      renderStaffDeviceStatus(module, staff);
       renderStaffTaskList(module, staff, true);
       renderStaffOutgoingList(module, staff);
       renderStaffWorkflowList(module, staff);
@@ -5111,11 +5627,14 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     (module.staffMembers || []).forEach(function(s){
       var pending = (s.tasks || []).filter(function(t){ return t.status !== "completed"; }).length +
         getAssignedTasksForStaff(s.id).filter(function(e){ return e.task.status !== "completed"; }).length;
+      var taskLine = pending > 0 ? (pending + " pending task" + (pending===1?"":"s")) : "All caught up";
+      var deviceLine = s.mobileNumber ? ("📱 " + s.mobileNumber) : "📱 No mobile set";
+      var deviceStatus = s.deviceId ? " · ✅ Device linked" : " · ⚠️ No device yet";
       var tile = document.createElement("button");
       tile.className = "tile";
       tile.style.setProperty("--tile-accent", module.accent);
       tile.style.setProperty("--tile-accent-soft", hexToRgba(module.accent, .16));
-      tile.innerHTML = '<div class="t-icon">👤</div><div class="t-name">' + esc(s.name) + '</div><div class="t-meta">' + (pending > 0 ? (pending + " pending task" + (pending===1?"":"s")) : "All caught up") + '</div>';
+      tile.innerHTML = '<div class="t-icon">👤</div><div class="t-name">' + esc(s.name) + '</div><div class="t-meta">' + taskLine + '</div><div class="t-meta" style="opacity:.75;">' + esc(deviceLine) + deviceStatus + '</div>';
       tile.addEventListener("click", function(){ staffView = s.id; renderStaffModuleBody(module); });
       wrap.appendChild(tile);
     });
@@ -5182,6 +5701,28 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     });
   }
 
+  function renderStaffDeviceStatus(module, staff){
+    var wrap = document.getElementById("staffDeviceStatusWrap");
+    if(!wrap) return;
+    if(!staff.deviceId){
+      wrap.innerHTML = '<p class="backup-note">No device registered yet — it will bind automatically the first time ' + esc(staff.name) + ' punches in.</p>';
+      return;
+    }
+    wrap.innerHTML =
+      '<div class="hist-row" style="border:none;padding:0;">' +
+        '<div class="left"><div class="date" style="font-weight:600;">✅ Device registered</div><div class="sess">Since ' + fmtDate(staff.deviceRegisteredAt) + '</div></div>' +
+        '<button class="link-btn" id="btnResetStaffDevice" style="padding:0;color:var(--danger);">Reset Device</button>' +
+      '</div>';
+    document.getElementById("btnResetStaffDevice").addEventListener("click", function(){
+      if(!confirm("Reset " + staff.name + "'s registered device? They'll be able to punch from a new phone the next time they punch in.")) return;
+      staff.deviceId = null;
+      staff.deviceRegisteredAt = null;
+      saveData();
+      renderStaffDeviceStatus(module, staff);
+      toast("Device reset — " + staff.name + " can register a new one on their next punch");
+    });
+  }
+
   function renderStaffOfficeConfig(module){
     var wrap = document.getElementById("staffOfficeConfigWrap");
     if(!wrap) return;
@@ -5195,13 +5736,6 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         '</div></div></div>' +
         '<button class="btn btn-primary" id="btnCaptureOffice">📍 Use My Current Location</button>' +
         '<div class="field" style="margin-top:12px;margin-bottom:0;"><label>Allowed radius (meters)</label><input class="input input-mono" type="number" min="10" max="500" id="officeRadius" value="' + office.radius + '"></div>' +
-      '</div>' +
-      '<div class="card">' +
-        '<p class="backup-note"><b>Authorized device lock</b> — punching is blocked on any device except the one(s) you authorize here. This is a per-device setting stored on this browser only, not a hardware-level lock — it stops casual punching from a personal phone, but a technically determined person could still clear it. Tap this on the physical office phone/tablet.</p>' +
-        '<div class="hist-row" style="border:none;padding:10px 0;"><div class="left"><div class="date" style="font-weight:600;">This device</div><div class="sess">' +
-          (isDeviceAuthorized() ? "✅ Authorized for punching" : "🚫 Not authorized") +
-        '</div></div></div>' +
-        '<button class="btn ' + (isDeviceAuthorized() ? "btn-ghost" : "btn-primary") + '" id="btnToggleDeviceAuth">' + (isDeviceAuthorized() ? "Revoke authorization" : "🔓 Authorize This Device") + '</button>' +
       '</div>' +
       '<div class="card">' +
         '<p class="backup-note">Sundays are automatically treated as non-working. Mark additional Official Holidays here so salary is never deducted for them.</p>' +
@@ -5246,11 +5780,6 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       office.radius = (isNaN(v) || v < 10) ? 75 : Math.min(500, v);
       this.value = office.radius;
       saveData();
-    });
-    document.getElementById("btnToggleDeviceAuth").addEventListener("click", function(){
-      setDeviceAuthorized(!isDeviceAuthorized());
-      renderStaffOfficeConfig(module);
-      toast(isDeviceAuthorized() ? "This device is now authorized" : "Authorization revoked");
     });
   }
 
@@ -5958,32 +6487,51 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     var wrap = document.getElementById("staffAttendanceList");
     if(!wrap) return;
     var records = staff.attendance.slice().sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+    var listHtml = "";
     if(records.length === 0){
-      wrap.innerHTML = '<div class="empty-state"><div class="big">📍</div><p>No attendance recorded yet.</p></div>';
-      return;
-    }
-    function timeLabel(iso){ return new Date(iso).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}); }
-    var statusMeta = {present:{label:"Present", cls:"completed"}, halfday:{label:"Half Day", cls:""}, leave:{label:"Leave", cls:"pending-red"}};
-    wrap.innerHTML = expandableListHTML(records, "staffAtt:" + staff.id, LIST_LIMIT, function(r){
-      var info = computeDayAttendance(r);
-      var meta = statusMeta[info.status];
-      var inBadge = r.punchInAt ? ('<span class="badge-pill ' + (r.punchInValid ? "completed" : "pending-red") + '">In ' + timeLabel(r.punchInAt) + (r.punchInValid ? "" : " (off-site)") + '</span>') : '<span class="badge-pill">No punch-in</span>';
-      var outBadge = r.punchOutAt ? ('<span class="badge-pill ' + (r.punchOutValid ? "completed" : "pending-red") + '">Out ' + timeLabel(r.punchOutAt) + (r.punchOutValid ? "" : " (off-site)") + (r.punchOutAdminSet ? " · admin-set" : "") + '</span>') : '<span class="badge-pill">No punch-out</span>';
-      var html = '<div class="card card-tight"><div class="hist-row" style="border:none;padding:0 0 6px;">' +
-        '<div class="left"><div class="date" style="font-weight:600;">' + fmtDate(r.date) + '</div></div>' +
-        '<div class="right"><span class="badge-pill ' + meta.cls + '">' + meta.label + '</span>' + (info.fine > 0 ? ' <span class="badge-pill pending-red">₹' + info.fine + ' fine</span>' : '') + '</div>' +
-      '</div>' +
-        '<div style="display:flex;gap:6px;flex-wrap:wrap;">' + inBadge + outBadge + '</div>';
-      if(isAdminView){
-        html += '<button class="link-btn" style="padding-left:0;margin-top:6px;" data-fix-id="' + r.id + '">' + (staffPunchFixOpen[r.id] ? "Hide" : "Fix punch-out time") + '</button>';
-        if(staffPunchFixOpen[r.id]){
-          html += '<div class="row-2" style="margin-top:6px;"><input class="input" type="time" id="fixTime-' + r.id + '"><button class="btn btn-primary btn-sm" data-save-fix="' + r.id + '">Save</button></div>' +
-            '<p class="backup-note" style="margin-top:4px;">Setting a punch-out time lets salary be credited normally — the ₹50 missed-punch fine still applies.</p>';
+      listHtml = '<div class="empty-state"><div class="big">📍</div><p>No attendance recorded yet.</p></div>';
+    }else{
+      function timeLabel(iso){ return new Date(iso).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}); }
+      var statusMeta = {present:{label:"Present", cls:"completed"}, halfday:{label:"Half Day", cls:""}, leave:{label:"Leave", cls:"pending-red"}};
+      listHtml = expandableListHTML(records, "staffAtt:" + staff.id, LIST_LIMIT, function(r){
+        var info = computeDayAttendance(r, r.date);
+        var meta = statusMeta[info.status];
+        var inBadge = r.punchInAt ? ('<span class="badge-pill ' + (r.punchInValid ? "completed" : "pending-red") + '">In ' + timeLabel(r.punchInAt) + (r.punchInValid ? "" : " (off-site)") + (r.punchInAdminSet ? " · admin-set" : "") + '</span>') : '<span class="badge-pill">No punch-in</span>';
+        var outBadge = r.punchOutAt ? ('<span class="badge-pill ' + (r.punchOutValid ? "completed" : "pending-red") + '">Out ' + timeLabel(r.punchOutAt) + (r.punchOutValid ? "" : " (off-site)") + (r.punchOutAdminSet ? " · admin-set" : "") + '</span>') : '<span class="badge-pill">No punch-out</span>';
+        var html = '<div class="card card-tight"><div class="hist-row" style="border:none;padding:0 0 6px;">' +
+          '<div class="left"><div class="date" style="font-weight:600;">' + fmtDate(r.date) + '</div></div>' +
+          '<div class="right"><span class="badge-pill ' + meta.cls + '">' + meta.label + '</span>' + (info.fine > 0 ? ' <span class="badge-pill pending-red">₹' + info.fine + ' fine</span>' : '') + '</div>' +
+        '</div>' +
+          '<div style="display:flex;gap:6px;flex-wrap:wrap;">' + inBadge + outBadge + '</div>';
+        if(isAdminView){
+          var curIn = r.punchInAt ? new Date(r.punchInAt).toTimeString().slice(0,5) : "";
+          var curOut = r.punchOutAt ? new Date(r.punchOutAt).toTimeString().slice(0,5) : "";
+          html += '<button class="link-btn" style="padding-left:0;margin-top:6px;" data-fix-id="' + r.id + '">' + (staffPunchFixOpen[r.id] ? "Hide" : "Fix punch times") + '</button>';
+          if(staffPunchFixOpen[r.id]){
+            html += '<div class="row-2" style="margin-top:6px;">' +
+                '<div class="field" style="margin-bottom:0;"><label>Punch In</label><input class="input" type="time" id="fixInTime-' + r.id + '" value="' + curIn + '"></div>' +
+                '<div class="field" style="margin-bottom:0;"><label>Punch Out</label><input class="input" type="time" id="fixOutTime-' + r.id + '" value="' + curOut + '"></div>' +
+              '</div>' +
+              '<button class="btn btn-primary btn-sm" data-save-fix="' + r.id + '" style="width:100%;margin-top:6px;">Save</button>' +
+              '<p class="backup-note" style="margin-top:4px;">Adjusting times recalculates status and fine automatically.</p>';
+          }
         }
-      }
-      html += '</div>';
-      return html;
-    });
+        html += '</div>';
+        return html;
+      });
+    }
+    var html = isAdminView
+      ? ('<button class="btn btn-ghost btn-sm" id="btnAddAttendanceDate" style="margin-bottom:10px;">' + (attendanceBackfillOpen ? "Close" : "+ Add / Fix attendance for a date") + '</button><div id="addAttendanceDateWrap"></div>' + listHtml)
+      : listHtml;
+    wrap.innerHTML = html;
+
+    if(isAdminView){
+      document.getElementById("btnAddAttendanceDate").addEventListener("click", function(){
+        attendanceBackfillOpen = !attendanceBackfillOpen;
+        renderStaffAttendanceList(module, staff, isAdminView);
+      });
+      if(attendanceBackfillOpen) renderAttendanceBackfillForm(module, staff);
+    }
     wireViewMoreButtons(wrap, function(){ renderStaffAttendanceList(module, staff, isAdminView); });
     if(isAdminView){
       wrap.querySelectorAll("[data-fix-id]").forEach(function(btn){
@@ -5996,21 +6544,49 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       wrap.querySelectorAll("[data-save-fix]").forEach(function(btn){
         btn.addEventListener("click", function(){
           var id = btn.getAttribute("data-save-fix");
-          var timeVal = document.getElementById("fixTime-" + id).value;
-          if(!timeVal){ toast("Pick a time", true); return; }
+          var inVal = document.getElementById("fixInTime-" + id).value;
+          var outVal = document.getElementById("fixOutTime-" + id).value;
           var rec = staff.attendance.find(function(a){ return a.id === id; });
           if(rec){
-            rec.punchOutAt = rec.date + "T" + timeVal + ":00";
-            rec.punchOutAdminSet = true;
-            rec.punchOutValid = true;
+            if(inVal){ rec.punchInAt = rec.date + "T" + inVal + ":00"; rec.punchInAdminSet = true; rec.punchInValid = true; }
+            if(outVal){ rec.punchOutAt = rec.date + "T" + outVal + ":00"; rec.punchOutAdminSet = true; rec.punchOutValid = true; }
             saveData();
           }
           staffPunchFixOpen[id] = false;
           renderStaffAttendanceList(module, staff, isAdminView);
-          toast("Punch-out time updated");
+          toast("Punch times updated");
         });
       });
     }
+  }
+  var attendanceBackfillOpen = false;
+  // For a day the staff member never punched at all — no existing record to "fix" — Admin can create
+  // one directly for any date, rather than being limited to editing days that already have a record.
+  function renderAttendanceBackfillForm(module, staff){
+    var wrap = document.getElementById("addAttendanceDateWrap");
+    if(!wrap) return;
+    wrap.innerHTML = '<div class="quickadd" style="margin-bottom:10px;">' +
+      '<div class="field" style="margin-bottom:10px;"><label>Date</label><input class="input" type="date" id="backfillDate" value="' + todayDateInputValue() + '"></div>' +
+      '<div class="row-2">' +
+        '<div class="field" style="margin-bottom:10px;"><label>Punch In</label><input class="input" type="time" id="backfillInTime"></div>' +
+        '<div class="field" style="margin-bottom:10px;"><label>Punch Out</label><input class="input" type="time" id="backfillOutTime"></div>' +
+      '</div>' +
+      '<button class="btn btn-primary" id="btnSaveBackfill" style="width:100%;">Save</button>' +
+    '</div>';
+    document.getElementById("btnSaveBackfill").addEventListener("click", function(){
+      var dateVal = document.getElementById("backfillDate").value;
+      var inVal = document.getElementById("backfillInTime").value;
+      var outVal = document.getElementById("backfillOutTime").value;
+      if(!dateVal){ toast("Pick a date", true); return; }
+      if(!inVal && !outVal){ toast("Enter at least one punch time", true); return; }
+      var rec = getOrCreateAttendanceRecord(staff, dateVal);
+      if(inVal){ rec.punchInAt = dateVal + "T" + inVal + ":00"; rec.punchInAdminSet = true; rec.punchInValid = true; }
+      if(outVal){ rec.punchOutAt = dateVal + "T" + outVal + ":00"; rec.punchOutAdminSet = true; rec.punchOutValid = true; }
+      saveData();
+      attendanceBackfillOpen = false;
+      renderStaffAttendanceList(module, staff, true);
+      toast("Attendance saved for " + fmtDate(dateVal));
+    });
   }
 
   function renderStaffLeaveList(module, staff, isAdminView){
@@ -6051,13 +6627,18 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   }
 
   /* ---------- Staff-facing dashboard (rendered on Home when role = staff) ---------- */
-  /* ---------- Attendance rules, fines, and salary calculation (pure functions) ---------- */
-  var PUNCH_WINDOW_START_MIN = 8 * 60;        // 8:00 AM
-  var PUNCH_WINDOW_END_MIN = 19 * 60;         // 7:00 PM
-  var PRESENT_CUTOFF_MIN = 10 * 60 + 45;      // 10:45 AM
-  var HALFDAY_ARRIVE_START_MIN = 13 * 60;     // 1:00 PM
-  var HALFDAY_ARRIVE_END_MIN = 17 * 60 + 20;  // 5:20 PM
-  var EARLY_LEAVE_CUTOFF_MIN = 13 * 60;       // 1:00 PM
+  /* ---------- Attendance rules, fines, and salary calculation (pure functions) ----------
+     Work hours: 9:00 AM - 6:00 PM. First half 9:00-1:00, second half 1:00-6:00.
+     Punch window is intentionally a bit wider than work hours (7:00 AM - 7:00 PM) so staff can
+     punch in a little early or punch out right up to the fine deadline. */
+  var PUNCH_WINDOW_START_MIN = 7 * 60;          // 7:00 AM
+  var PUNCH_WINDOW_END_MIN = 19 * 60;           // 7:00 PM
+  var NORMAL_CUTOFF_MIN = 10 * 60 + 45;         // 10:45 AM — punch in by this time to be "on time"
+  var FIRST_HALF_END_MIN = 13 * 60;             // 1:00 PM
+  var SECOND_HALF_START_MIN = 13 * 60;          // 1:00 PM
+  var SECOND_HALF_LATE_CUTOFF_MIN = 13 * 60 + 30; // 1:30 PM — latest punch-in that can still earn a half-day
+  var FULL_PRESENCE_OUT_MIN = 17 * 60 + 20;     // 5:20 PM — punch-out must be at/after this for full or half-day credit
+  var FINE_DEADLINE_MIN = 19 * 60;              // 7:00 PM — missed punch-out fine trigger
   var MISSED_PUNCHOUT_FINE = 50;
 
   function minutesOfDay(iso){ var d = new Date(iso); return d.getHours() * 60 + d.getMinutes(); }
@@ -6071,23 +6652,34 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     if(d.getDay() === 0) return true; // Sunday, automatic
     return (module.holidays || []).some(function(h){ return h.date === dateStr; });
   }
-  // Given an attendance record (or none), determines the day's status and any fine — purely derived,
-  // so fixing a punch-out later (by staff or Admin) automatically recalculates everything downstream.
-  function computeDayAttendance(rec){
+  // Given an attendance record (or none) and the date it's for, determines the day's status and any
+  // fine — purely derived, so fixing a punch-in/out later (by staff or Admin) automatically recalculates
+  // everything downstream. dateStr lets today's still-open record be treated differently from a closed
+  // past day: a missing punch-out only fines once the day is actually over (past, or today past 7pm).
+  function computeDayAttendance(rec, dateStr){
     if(!rec || !rec.punchInAt) return {status:"leave", fine:0};
     var inMin = minutesOfDay(rec.punchInAt);
+    var outMin = rec.punchOutAt ? minutesOfDay(rec.punchOutAt) : null;
     var status;
-    if(inMin < PRESENT_CUTOFF_MIN) status = "present";
-    else if(inMin >= HALFDAY_ARRIVE_START_MIN && inMin <= HALFDAY_ARRIVE_END_MIN) status = "halfday";
-    else status = "leave"; // arrived in the 10:45am–1pm gap, or after 5:20pm — neither qualifies
+
+    if(inMin > NORMAL_CUTOFF_MIN && outMin !== null && outMin < FIRST_HALF_END_MIN){
+      status = "leave"; // late in, and left before completing even the first half
+    }else if(inMin <= NORMAL_CUTOFF_MIN){
+      if(outMin === null) status = "present"; // on time in; missing punch-out handled via the fine below
+      else if(outMin >= FULL_PRESENCE_OUT_MIN) status = "present";
+      else if(outMin >= FIRST_HALF_END_MIN) status = "halfday"; // on time in, left during the second half but before 5:20
+      else status = "leave"; // on time in, but left before 1pm
+    }else if(inMin >= SECOND_HALF_START_MIN && inMin <= SECOND_HALF_LATE_CUTOFF_MIN){
+      status = (outMin !== null && outMin >= FULL_PRESENCE_OUT_MIN) ? "halfday" : "leave";
+    }else{
+      status = "leave"; // arrived in the 10:45am–1:00pm gap, or after 1:30pm
+    }
+
     var fine = 0;
-    if(status !== "leave"){
-      if(!rec.punchOutAt){
-        fine = MISSED_PUNCHOUT_FINE;
-      }else{
-        var outMin = minutesOfDay(rec.punchOutAt);
-        if(outMin < EARLY_LEAVE_CUTOFF_MIN && status === "present") status = "halfday";
-      }
+    if(rec.punchInAt && !rec.punchOutAt){
+      var dayIsOver = dateStr ? (dateStr < todayDateInputValue()) : true;
+      var pastFineDeadlineToday = dateStr === todayDateInputValue() && nowMinutesOfDay() >= FINE_DEADLINE_MIN;
+      if(dayIsOver || pastFineDeadlineToday) fine = MISSED_PUNCHOUT_FINE;
     }
     return {status:status, fine:fine};
   }
@@ -6112,7 +6704,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       }
       workingDaysSoFar++;
       var rec = member.attendance.find(function(a){ return a.date === dateStr; });
-      var info = computeDayAttendance(rec);
+      var info = computeDayAttendance(rec, dateStr);
       totalFines += info.fine;
       if(info.status === "present") daysWorked++;
       else if(info.status === "halfday") halfDays++;
@@ -6152,18 +6744,23 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     return Math.max(0, bank);
   }
 
-  function getTodayAttendanceRecord(member){
-    var todayStr = todayDateInputValue();
-    var rec = member.attendance.find(function(a){ return a.date === todayStr; });
+  function getOrCreateAttendanceRecord(member, dateStr){
+    var rec = member.attendance.find(function(a){ return a.date === dateStr; });
     if(!rec){
-      rec = {id: uid(), date:todayStr, punchInAt:null, punchInLat:null, punchInLng:null, punchInValid:null, punchOutAt:null, punchOutLat:null, punchOutLng:null, punchOutValid:null, fine:0, punchOutAdminSet:false};
+      rec = {id: uid(), date:dateStr, punchInAt:null, punchInLat:null, punchInLng:null, punchInValid:null, punchInAdminSet:false, punchOutAt:null, punchOutLat:null, punchOutLng:null, punchOutValid:null, fine:0, punchOutAdminSet:false};
       member.attendance.push(rec);
     }
     return rec;
   }
+  function getTodayAttendanceRecord(member){
+    return getOrCreateAttendanceRecord(member, todayDateInputValue());
+  }
   function doPunch(module, member, type){
-    if(!isDeviceAuthorized()){ toast("Attendance can only be punched from the authorized office device.", true); return; }
-    if(!isWithinPunchWindow()){ toast("Punching is only allowed between 8:00 AM and 7:00 PM.", true); return; }
+    if(member.deviceId && member.deviceId !== getThisDeviceId()){
+      toast("Attendance can only be punched from your registered device. Contact your Admin if you've switched phones.", true);
+      return;
+    }
+    if(!isWithinPunchWindow()){ toast("Punching is only allowed between 7:00 AM and 7:00 PM.", true); return; }
     var rec = getTodayAttendanceRecord(member);
     if(type === "in" && rec.punchInAt){ toast("You've already punched in today.", true); return; }
     if(type === "out" && !rec.punchInAt){ toast("Punch in first.", true); return; }
@@ -6194,6 +6791,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       var rec = getTodayAttendanceRecord(member);
       if(type === "in"){ rec.punchInAt = new Date().toISOString(); rec.punchInLat = lat; rec.punchInLng = lng; rec.punchInValid = valid; }
       else{ rec.punchOutAt = new Date().toISOString(); rec.punchOutLat = lat; rec.punchOutLng = lng; rec.punchOutValid = valid; }
+      if(!member.deviceId){ member.deviceId = getThisDeviceId(); member.deviceRegisteredAt = new Date().toISOString(); }
       saveData();
       renderStaffDashboard(module, member);
       if(!valid) toast("You are not at the office.", true);
@@ -6209,11 +6807,11 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     if(!staffRulebookOpen){ wrap.innerHTML = ""; return; }
     wrap.innerHTML =
       '<div style="margin-top:10px;">' +
-        '<p class="backup-note"><b>Punching window:</b> 8:00 AM – 7:00 PM only. One punch-in and one punch-out per day.</p>' +
-        '<p class="backup-note"><b>Present:</b> Punch in before 10:45 AM.</p>' +
-        '<p class="backup-note"><b>Half Day:</b> Punch in between 1:00 PM – 5:20 PM, or punch out before 1:00 PM after a normal morning punch-in.</p>' +
-        '<p class="backup-note"><b>Full Day Leave:</b> No punch-in, or punch-in outside the Present/Half-Day windows.</p>' +
-        '<p class="backup-note"><b>Missed punch-out fine:</b> ₹50 is automatically deducted for any day you forget to punch out — even if Admin later fixes the time on your behalf, the fine stays as a reminder, though your attendance status is corrected so your salary isn\'t otherwise affected.</p>' +
+        '<p class="backup-note"><b>Work hours:</b> 9:00 AM – 6:00 PM. First half 9:00 AM–1:00 PM, second half 1:00 PM–6:00 PM. One punch-in and one punch-out per day.</p>' +
+        '<p class="backup-note"><b>Full-Day Present:</b> Punch in by 10:45 AM and punch out at or after 5:20 PM.</p>' +
+        '<p class="backup-note"><b>Half Day:</b> Punch in by 10:45 AM but punch out between 1:00 PM and 5:20 PM — or punch in between 1:00 PM and 1:30 PM and punch out at or after 5:20 PM.</p>' +
+        '<p class="backup-note"><b>Full-Day Leave:</b> No punch recorded, punch in after 10:45 AM with punch out before 1:00 PM, punching in with no valid punch-out by end of day, or arriving outside all the windows above.</p>' +
+        '<p class="backup-note"><b>Missed punch-out fine:</b> ₹50 is automatically applied if you haven\'t punched out by 7:00 PM — even on a day that otherwise counts as Full-Day Present. Admin fixing your time afterward keeps this fine as a reminder, though your attendance status is corrected so your salary isn\'t otherwise affected.</p>' +
         '<p class="backup-note"><b>Cash leave:</b> Your first leave day each month is fully paid. Taking a 2nd leave in the same month cancels that benefit for the whole month — both leave days become unpaid.</p>' +
         '<p class="backup-note" style="color:var(--danger);"><b>⚠️ Your responsibility:</b> Phone battery, charging, or connectivity issues are personal responsibility and will not be excused as a reason for a missed or late punch.</p>' +
       '</div>';
@@ -6235,7 +6833,6 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     html += '<div id="staffDashAttendancePanel" style="display:' + (staffDashboardTab === "attendance" ? "block" : "none") + ';"></div>';
     html += '<div id="staffDashWorkPanel" style="display:' + (staffDashboardTab === "work" ? "block" : "none") + ';"></div>';
     html += '<div id="staffDashPaperworkPanel" style="display:' + (staffDashboardTab === "paperwork" ? "block" : "none") + ';"></div>';
-    html += '<button class="link-btn" id="btnStaffSwitchProfile" style="margin-top:16px;padding-left:0;">Not you? Switch profile</button>';
 
     wrap.innerHTML = html;
 
@@ -6245,10 +6842,6 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         staffPaperworkView = null;
         renderStaffDashboard(module, member);
       });
-    });
-    document.getElementById("btnStaffSwitchProfile").addEventListener("click", function(){
-      saveStaffProfile(null);
-      renderHome();
     });
 
     if(staffDashboardTab === "attendance") renderStaffDashAttendanceTab(module, member);
@@ -6265,14 +6858,18 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     function timeLabel(iso){ return new Date(iso).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}); }
 
     var html = '<div class="sheet-table-card" style="text-align:center;"><div class="section-title" style="margin-top:0;">Punch In / Out</div>';
-    if(!isDeviceAuthorized()){
-      html += '<p class="backup-note" style="color:var(--danger);">🚫 This device isn\'t authorized for punching. Attendance can only be recorded from the designated office device.</p>';
+    var thisDevice = getThisDeviceId();
+    var deviceLocked = member.deviceId && member.deviceId !== thisDevice;
+    if(deviceLocked){
+      html += '<p class="backup-note" style="color:var(--danger);">🚫 This isn\'t your registered device. Attendance can only be punched from the phone you first punched in on. Contact your Admin if you\'ve switched phones.</p>';
+    }else if(!member.deviceId){
+      html += '<p class="backup-note">📱 Your first punch will register this device to your profile.</p>';
     }
     if(!punchedIn){
-      html += '<button class="btn btn-primary" id="btnPunchIn" style="padding:16px;font-size:16px;"' + (isDeviceAuthorized() ? '' : ' disabled') + '>📍 Punch In</button>';
+      html += '<button class="btn btn-primary" id="btnPunchIn" style="padding:16px;font-size:16px;"' + (deviceLocked ? ' disabled' : '') + '>📍 Punch In</button>';
     }else if(!punchedOut){
       html += '<p class="backup-note">Punched in at ' + timeLabel(rec.punchInAt) + (rec.punchInValid ? "" : " ⚠️ (outside office range)") + '</p>' +
-        '<button class="btn btn-finish" id="btnPunchOut" style="padding:16px;font-size:16px;"' + (isDeviceAuthorized() ? '' : ' disabled') + '>📍 Punch Out</button>';
+        '<button class="btn btn-finish" id="btnPunchOut" style="padding:16px;font-size:16px;"' + (deviceLocked ? ' disabled' : '') + '>📍 Punch Out</button>';
     }else{
       html += '<p class="backup-note">✅ Complete for today — In: ' + timeLabel(rec.punchInAt) + (rec.punchInValid?"":" ⚠️") + ' · Out: ' + timeLabel(rec.punchOutAt) + (rec.punchOutValid?"":" ⚠️") + '</p>';
     }
@@ -6351,26 +6948,11 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     document.getElementById("homeModuleScreen").style.display = "block";
     var wrap = document.getElementById("homeModuleScreen");
     var staffModule = findStaffModuleAny();
-    var profile = loadStaffProfile();
-    var member = (profile && staffModule && profile.moduleId === staffModule.id) ? findStaffMember(staffModule, profile.staffId) : null;
+    var staffId = currentFirebaseStaffId(); // strictly from the authenticated Firebase profile — never user-editable
+    var member = (staffModule && staffId) ? findStaffMember(staffModule, staffId) : null;
 
-    if(!staffModule || (staffModule.staffMembers || []).length === 0){
-      wrap.innerHTML = '<div class="empty-state"><div class="big">👥</div><p>No staff directory has been set up yet. Ask your Admin to add you.</p></div>';
-      return;
-    }
-    if(!member){
-      wrap.innerHTML = '<div class="section-title" style="margin-top:0;">Who are you?</div><div class="tile-grid" id="staffPickGrid"></div>';
-      var grid = document.getElementById("staffPickGrid");
-      staffModule.staffMembers.forEach(function(s){
-        var tile = document.createElement("button");
-        tile.className = "tile";
-        tile.innerHTML = '<div class="t-icon">👤</div><div class="t-name">' + esc(s.name) + '</div><div class="t-meta">ID: ' + esc(s.staffId || "—") + '</div>';
-        tile.addEventListener("click", function(){
-          saveStaffProfile({moduleId: staffModule.id, staffId: s.id});
-          renderHome();
-        });
-        grid.appendChild(tile);
-      });
+    if(!staffModule || !member){
+      wrap.innerHTML = '<div class="empty-state"><div class="big">⚠️</div><p>Your staff profile could not be found. Contact your Admin.</p></div>';
       return;
     }
     renderStaffDashboard(staffModule, member);
@@ -8855,49 +9437,25 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   function renderRoleStatus(){
     var wrap = document.getElementById("roleStatusWrap");
     if(!wrap) return;
+    var email = firebaseUser ? firebaseUser.email : "—";
     if(!isStaff()){
       wrap.innerHTML =
         '<div class="hist-row" style="border:none;padding:0;">' +
-          '<div class="left"><div class="date" style="font-weight:600;">Current role: Admin</div><div class="sess">Full access to everything</div></div>' +
-        '</div>' +
-        '<button class="btn btn-ghost" id="btnSwitchStaff" style="margin-top:10px;">Switch to Staff Mode</button>';
-      document.getElementById("btnSwitchStaff").addEventListener("click", function(){
-        if(!confirm("Switch to Staff Mode? Backups and ledgers will be hidden until you switch back with the Admin PIN.")) return;
-        data.role = "staff";
-        saveData();
-        homeView = "dashboard";
-        renderHeader();
-        syncRoleUI();
-        switchTab("home");
-        toast("Switched to Staff Mode");
-      });
+          '<div class="left"><div class="date" style="font-weight:600;">Signed in as Admin</div><div class="sess">' + esc(email) + ' · Full access to everything</div></div>' +
+        '</div>';
     }else{
+      var staffIdVal = currentFirebaseStaffId();
+      var staffModuleVal = findStaffModuleAny();
+      var member = (staffModuleVal && staffIdVal) ? findStaffMember(staffModuleVal, staffIdVal) : null;
       wrap.innerHTML =
         '<div class="hist-row" style="border:none;padding:0;">' +
-          '<div class="left"><div class="date" style="font-weight:600;">Current role: Staff</div><div class="sess">Backups and ledgers are hidden</div></div>' +
-        '</div>' +
-        '<div class="field" style="margin:10px 0 0;"><input class="input" type="password" id="switchBackPin" placeholder="Enter Admin PIN" inputmode="numeric"></div>' +
-        '<button class="btn btn-primary" id="btnSwitchAdmin" style="margin-top:10px;">Switch to Admin</button>';
-      document.getElementById("btnSwitchAdmin").addEventListener("click", function(){
-        var entered = document.getElementById("switchBackPin").value;
-        if(data.adminPin && entered !== data.adminPin){ toast("Incorrect PIN", true); return; }
-        data.role = "admin";
-        saveData();
-        renderHeader();
-        syncRoleUI();
-        renderBackup();
-        toast("Switched to Admin");
-      });
+          '<div class="left"><div class="date" style="font-weight:600;">Signed in as Staff' + (member ? (" — " + esc(member.name)) : "") + '</div><div class="sess">' + esc(email) + ' · Backups and ledgers are hidden</div></div>' +
+        '</div>';
     }
   }
 
   function renderBackup(){
     renderRoleStatus();
-    var pinCard = document.getElementById("adminPinInput");
-    if(pinCard){
-      pinCard.closest(".card").style.display = isStaff() ? "none" : "block";
-      pinCard.value = data.adminPin || "";
-    }
     var restrictedIds = ["btnExport","btnCopyBackup","importFile","gdriveCard"];
     if(isStaff()){
       restrictedIds.forEach(function(id){
@@ -8938,7 +9496,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     var a = document.createElement("a");
     var d = new Date();
     var stamp = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
-    a.href = url; a.download = "iron-log-backup-" + stamp + ".json";
+    a.href = url; a.download = "relvoos-backup-" + stamp + ".json";
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
     renderBackup();
@@ -8956,12 +9514,6 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         toast("Backup copied to clipboard");
       }, function(){ toast("Couldn't copy — try Export instead", true); });
     }else{ toast("Clipboard not available — use Export instead", true); }
-  });
-
-  document.getElementById("btnSavePin").addEventListener("click", function(){
-    data.adminPin = document.getElementById("adminPinInput").value;
-    saveData();
-    toast(data.adminPin ? "Admin PIN saved" : "Admin PIN cleared");
   });
 
   document.getElementById("importFile").addEventListener("change", function(e){
@@ -9035,13 +9587,16 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   // ---------- init ----------
   applyTheme(currentTheme());
   wireLoginGate();
-  showLoginGate();
+  // Do NOT show the login gate speculatively here — #bootLoader (visible by default in the HTML,
+  // before any JS even runs) covers the screen until onAuthStateChanged determines the real auth
+  // state below. Showing the gate first and correcting it afterward is what caused the login
+  // screen to visibly flash on every refresh, even for an already-authenticated user.
 
   onAuthStateChanged(auth, async function(user){
     if(!user){
       firebaseUser = null; firebaseProfile = null; stopCloudSync();
       setLoginState(null);
-      if(authBooted) showLoginGate();
+      showLoginGate();
       authBooted = true;
       return;
     }
@@ -9065,8 +9620,8 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       stopCloudSync();
       try{ await signOut(auth); }catch(e){}
       showLoginGate();
-      showLoginError("admin", err.message || "Unable to load account profile");
-      showLoginError("staff", err.message || "Unable to load account profile");
+      hideLoginSpinner();
+      showLoginError(err.message || "Unable to load account profile");
       authBooted = true;
     }
   });
