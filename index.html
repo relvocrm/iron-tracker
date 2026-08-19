@@ -102,6 +102,7 @@
     padding:8px 10px calc(8px + env(safe-area-inset-bottom));
     z-index:50;
   }
+  .sidebar-brand{display:none;}
   .tabbar-inner{max-width:var(--app-max-width);margin:0 auto;display:flex;justify-content:space-around;}
   .tab-btn{
     background:none;border:none;color:var(--text-faint);
@@ -822,12 +823,11 @@
       box-sizing:border-box;
       overflow-y:auto;
     }
-    .tabbar::before{
-      content:"⬤ RELVOCRM";
+    .sidebar-brand{
       display:block;
-      font-family:var(--font-display); font-weight:800; font-size:14px;
-      letter-spacing:1.2px; color:var(--accent);
-      padding:4px 12px 26px;
+      font-family:var(--font-body); font-weight:500; font-size:16px;
+      letter-spacing:.2px; color:var(--text);
+      padding:4px 12px 22px;
       white-space:nowrap;
     }
     .tabbar-inner{
@@ -887,7 +887,8 @@
     border-radius:var(--radius); padding:32px 26px; box-shadow:0 20px 60px rgba(0,0,0,.35);
     position:relative; overflow:hidden;
   }
-  .login-brand{font-family:var(--font-display);font-weight:800;font-size:16px;letter-spacing:1.5px;color:var(--accent);text-align:center;margin-bottom:6px;}
+  .login-brand{font-family:var(--font-body);font-weight:500;font-size:19px;letter-spacing:.2px;color:var(--text);text-align:center;margin-bottom:6px;}
+  .sidebar-brand-crm{font-weight:700;color:var(--accent);letter-spacing:.4px;}
   .login-title{font-size:14px;color:var(--text-dim);text-align:center;margin-bottom:22px;}
   .login-role-tabs{display:flex;gap:8px;margin-bottom:20px;background:var(--panel-2);border-radius:10px;padding:4px;}
   .login-role-btn{flex:1;padding:10px;border-radius:8px;border:none;background:transparent;color:var(--text-dim);font-weight:700;font-size:13px;}
@@ -932,7 +933,7 @@
 
 <div id="loginGate" class="login-gate" style="display:none;">
   <div class="login-card">
-    <div class="login-brand">⬤ RELVOCRM</div>
+    <div class="login-brand">Relvo<span class="sidebar-brand-crm">CRM</span></div>
     <div class="login-title">Sign in to continue</div>
     <div class="field" style="margin-bottom:10px;"><label>User ID</label><input class="input" type="text" id="loginIdentifier" autocomplete="username" placeholder="User ID"></div>
     <div class="field" style="margin-bottom:14px;"><label>Password</label><input class="input" type="password" id="loginPassword" autocomplete="current-password" placeholder="Password"></div>
@@ -1054,6 +1055,7 @@
 </div>
 
 <div class="tabbar">
+  <div class="sidebar-brand">Relvo<span class="sidebar-brand-crm">CRM</span></div>
   <div class="tabbar-inner">
     <button class="tab-btn active" data-tab="home">
       <svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7M5 10v10h5v-6h4v6h5V10"/></svg>
@@ -1094,13 +1096,13 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
 
   // ---------- Firebase ----------
   const firebaseConfig = {
-    apiKey: "AIzaSyAPnKoqqwd0I_8mwGbkLvTFwji8GwOoCzU",
-    authDomain: "iron-log-77971.firebaseapp.com",
-    projectId: "iron-log-77971",
-    storageBucket: "iron-log-77971.firebasestorage.app",
-    messagingSenderId: "473032385244",
-    appId: "1:473032385244:web:75f6c594543c3c55ba4a19",
-    measurementId: "G-4WEV2M2XGB"
+  apiKey: "AIzaSyAPnKoqqwd0I_8mwGbkLvTfwji8GwOoCzU",
+  authDomain: "iron-log-77971.firebaseapp.com",
+  projectId: "iron-log-77971",
+  storageBucket: "iron-log-77971.firebasestorage.app",
+  messagingSenderId: "473032385244",
+  appId: "1:473032385244:web:75f6c594543c3c55ba4a19",
+  measurementId: "G-4WEV2M2XGB"
 };
   const firebaseApp = initializeApp(firebaseConfig);
   const auth = getAuth(firebaseApp);
@@ -5341,6 +5343,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   var staffAddFormOpen = false;
   var staffOfficeConfigOpen = false;
   var staffLoginFormOpen = false;
+  var staffEditFormOpen = {}; // staffId -> bool, transient
   var staffRulebookOpen = false;
   var staffTaskConfirm = {}; // taskId -> bool, transient
   var STAFF_PROFILE_KEY = "ironLogStaffProfile";
@@ -5575,7 +5578,12 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
           '<button class="back-btn" id="btnBackToStaffDir"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>' +
           '<div class="m-icon" style="background:' + hexToRgba(module.accent,.16) + ';font-size:20px;">👤</div>' +
           '<div><div class="m-name" style="font-size:18px;">' + esc(staff.name) + '</div><div class="m-meta">ID: ' + esc(staff.staffId || "—") + '</div></div>' +
+          '<div style="margin-left:auto;display:flex;gap:2px;">' +
+            '<button class="icon-btn" id="btnEditStaffDetails" title="Edit details"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>' +
+            '<button class="icon-btn" id="btnDeleteStaff" title="Delete staff member" style="color:var(--danger);"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>' +
+          '</div>' +
         '</div>' +
+        '<div id="staffEditFormWrap"></div>' +
         '<div id="staffSalaryCard"></div>' +
         '<div id="staffEfficiencyCard"></div>' +
         '<div class="section-title">🏢 Company Access</div>' +
@@ -5601,6 +5609,13 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         staffView = "directory";
         renderStaffModuleBody(module);
       });
+      document.getElementById("btnEditStaffDetails").addEventListener("click", function(){
+        staffEditFormOpen[staff.id] = !staffEditFormOpen[staff.id];
+        renderStaffEditForm(module, staff);
+      });
+      document.getElementById("btnDeleteStaff").addEventListener("click", function(){
+        confirmDeleteStaffMember(module, staff);
+      });
       document.getElementById("btnOpenNewTaskModal").addEventListener("click", function(){
         openStaffNewTaskModal(module, staff, true);
       });
@@ -5609,6 +5624,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         saveData();
         toast("Mobile number saved");
       });
+      renderStaffEditForm(module, staff);
       renderStaffSalaryCard(module, staff, true);
       renderStaffEfficiencyCard(module, staff);
       renderStaffCompanyAccess(module, staff);
@@ -5721,6 +5737,55 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       renderStaffDeviceStatus(module, staff);
       toast("Device reset — " + staff.name + " can register a new one on their next punch");
     });
+  }
+
+  function renderStaffEditForm(module, staff){
+    var wrap = document.getElementById("staffEditFormWrap");
+    if(!wrap) return;
+    if(!staffEditFormOpen[staff.id]){ wrap.innerHTML = ""; return; }
+    wrap.innerHTML = '<div class="quickadd" style="margin-bottom:14px;">' +
+      '<div class="field" style="margin-bottom:10px;"><label>Name</label><input class="input" id="editStaffName" value="' + esc(staff.name) + '"></div>' +
+      '<div class="field" style="margin-bottom:6px;"><label>Staff ID <span style="text-transform:none;letter-spacing:0;">(directory label)</span></label><input class="input" id="editStaffId" value="' + esc(staff.staffId || "") + '"></div>' +
+      '<p class="backup-note" style="margin:0 0 10px;">This is a display label only. If they already have a login, changing it here does <b>not</b> change what they type to sign in — use "Reset Login" in 🔑 Staff Logins for that.</p>' +
+      '<button class="btn btn-primary" id="btnSaveStaffEdit" style="width:100%;">Save Changes</button>' +
+    '</div>';
+    document.getElementById("btnSaveStaffEdit").addEventListener("click", function(){
+      var name = document.getElementById("editStaffName").value.trim();
+      var sid = document.getElementById("editStaffId").value.trim();
+      if(!name){ toast("Name can't be empty", true); return; }
+      staff.name = name;
+      staff.staffId = sid;
+      saveData();
+      staffEditFormOpen[staff.id] = false;
+      renderStaffModuleBody(module);
+      toast("Staff details updated");
+    });
+  }
+
+  // Deleting removes them from the directory and deactivates any login they have. Their historical
+  // attendance/leave/task records aren't force-deleted here — they simply stop syncing once the staff
+  // member no longer exists locally, since the granular collections only keep docs for current members.
+  async function confirmDeleteStaffMember(module, staff){
+    var ok = confirm(
+      "Permanently delete " + staff.name + "?\n\n" +
+      "This removes them from the Staff Directory and disables their login immediately, if they have one. " +
+      "This can't be undone from within the app."
+    );
+    if(!ok) return;
+    try{
+      var q = query(collection(db, "users"), where("staffId", "==", staff.id));
+      var snap = await getDocs(q);
+      var deactivations = [];
+      snap.forEach(function(d){ deactivations.push(setDoc(doc(db, "users", d.id), {active:false}, {merge:true})); });
+      await Promise.allSettled(deactivations);
+    }catch(err){
+      console.error("Failed to deactivate login during staff deletion", err);
+    }
+    module.staffMembers = module.staffMembers.filter(function(m){ return m.id !== staff.id; });
+    saveData();
+    staffView = "directory";
+    renderStaffModuleBody(module);
+    toast(staff.name + " has been deleted");
   }
 
   function renderStaffOfficeConfig(module){
