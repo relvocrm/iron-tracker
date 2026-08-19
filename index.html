@@ -911,6 +911,22 @@
     font-weight:700; font-size:14px; color:var(--text); text-align:left;
   }
   .login-staff-tile:active{background:var(--accent-soft);border-color:var(--accent);}
+
+  /* ---------- Print slip ---------- */
+  @media print{
+    body > *:not(#printSlipContainer){ display:none !important; }
+    #printSlipContainer{ display:block !important; }
+  }
+  .print-slip{max-width:640px;margin:0 auto;padding:24px;font-family:Arial,Helvetica,sans-serif;color:#111;background:#fff;}
+  .print-slip-header{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:16px;}
+  .print-slip-header h2{margin:0;font-size:18px;letter-spacing:.3px;}
+  .print-slip-header .ps-date{font-size:12px;color:#555;}
+  .print-slip-meta{display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;margin-bottom:18px;font-size:13px;}
+  .print-slip-meta div b{display:inline-block;min-width:110px;color:#555;font-weight:600;}
+  .print-slip-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#555;border-bottom:1px solid #ccc;padding-bottom:4px;margin:16px 0 8px;}
+  .print-slip-list{margin:0;padding-left:18px;font-size:13.5px;line-height:1.7;}
+  .print-slip-footer{margin-top:28px;display:flex;justify-content:space-between;font-size:12px;color:#555;}
+  .print-slip-footer .ps-sign{border-top:1px solid #999;padding-top:4px;width:160px;text-align:center;}
 </style>
 <script>
 (function(){
@@ -1245,16 +1261,15 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   }
   var STOCKPREP_FIELDS = [
     {key:"vehicleNumber", label:"Vehicle Number", headers:["vehicle number","vehicle no","vehicle no.","reg number","registration number","vehicle num"]},
-    {key:"segment", label:"Segment", headers:["segment"]}
+    {key:"segment", label:"Segment", headers:["segment"]},
+    {key:"model", label:"Model", headers:["model","vehicle model"]}
   ];
-  var DEFAULT_MAINTENANCE_CATALOG = {
-    "Mechanical": ["Oil Change", "Tyre Replacement", "Brake Change", "Battery Replacement", "AC Servicing"],
-    "Bodywork / Painting": ["Dent Removal", "Full Repaint", "Bumper Repair", "Scratch Touch-up"],
-    "Fitness Renewal": ["RTO Fitness Test", "Emission Test", "Fitness Certificate Renewal"]
-  };
+  var DEFAULT_WORK_TYPES = ["Mechanical Work", "Electrical Work", "Body Work", "Painting", "Fitness Renewal"];
   var DEFAULT_SPARE_PARTS_CATALOG = {
-    "Mechanical": ["Engine Oil", "Oil Filter", "Brake Pads", "Brake Fluid", "Tyres", "Battery", "Spark Plugs", "Air Filter"],
-    "Bodywork / Painting": ["Primer", "Paint", "Clear Coat", "Bumper", "Body Filler"],
+    "Mechanical Work": ["Engine Oil", "Oil Filter", "Brake Pads", "Brake Fluid", "Tyres", "Battery", "Spark Plugs", "Air Filter"],
+    "Electrical Work": ["Wiring Harness", "Fuse", "Relay", "Headlight Bulb", "Alternator"],
+    "Body Work": ["Bumper", "Body Filler", "Dent Panel", "Door Handle"],
+    "Painting": ["Primer", "Paint", "Clear Coat"],
     "Fitness Renewal": ["Fitness Certificate", "Pollution Certificate"]
   };
   var DEFAULT_PAPERWORK_CATALOG = ["RC Transfer", "Insurance", "Fitness Pending", "Tax Pending", "Permit Surrender", "Other Legal / Admin"];
@@ -1277,27 +1292,37 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   function freshStockPrepTab(name){
     return {
       id: uid(), name: name || "Stock Prep Report", type:"stockprep", vehicles: [],
-      maintenanceCatalog: JSON.parse(JSON.stringify(DEFAULT_MAINTENANCE_CATALOG)),
+      maintenanceCatalog: DEFAULT_WORK_TYPES.slice(),
       sparePartsCatalog: JSON.parse(JSON.stringify(DEFAULT_SPARE_PARTS_CATALOG)),
       paperworkCatalog: DEFAULT_PAPERWORK_CATALOG.slice()
     };
   }
-  function freshPrepVehicle(vehicleNumber, segment){
-    return {id: uid(), vehicleNumber: vehicleNumber || "", segment: segment || "", maintenance: [], paperwork: [], paperworkAssignedTo: null, paperworkStages: freshPaperworkStages()};
+  function freshPrepVehicle(vehicleNumber, segment, model){
+    return {id: uid(), vehicleNumber: vehicleNumber || "", segment: segment || "", model: model || "", maintenance: [], paperwork: [], paperworkAssignedTo: null, paperworkStages: freshPaperworkStages()};
   }
   var WEEKDAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   var WORKFLOW_LOOKBACK_DAYS = 90;
+  var ACTION_WORKFLOW_TYPES = [
+    {key:"stockReportUpload", label:"Stock Report Upload", accept:".xlsx,.xls,.csv", icon:"📊"},
+    {key:"propReportUpload", label:"Prop Report Upload", accept:"*", icon:"📋"},
+    {key:"fileUpload", label:"General File Upload", accept:"*", icon:"📎"}
+  ];
+  function actionWorkflowTypeDef(key){
+    return ACTION_WORKFLOW_TYPES.find(function(t){ return t.key === key; }) || ACTION_WORKFLOW_TYPES[2];
+  }
   function freshWorkflowTab(name){
     var now = new Date().toISOString();
     return {
       id: uid(), name: name || "Workflow", type:"workflow",
       items: [
-        {id: uid(), name:"Video Content", scheduleType:"weekly", weekday:5, dayOfMonth:null, time:null, createdAt:now},
-        {id: uid(), name:"Contact Save", scheduleType:"monthly", weekday:null, dayOfMonth:1, time:null, createdAt:now},
-        {id: uid(), name:"Ticket", scheduleType:"daily", weekday:null, dayOfMonth:null, time:"14:00", createdAt:now},
-        {id: uid(), name:"Monitor after ticket", scheduleType:"daily", weekday:null, dayOfMonth:null, time:null, createdAt:now}
+        {id: uid(), name:"Video Content", scheduleType:"weekly", weekday:5, dayOfMonth:null, time:null, note:"", createdAt:now},
+        {id: uid(), name:"Contact Save", scheduleType:"monthly", weekday:null, dayOfMonth:1, time:null, note:"", createdAt:now},
+        {id: uid(), name:"Ticket", scheduleType:"daily", weekday:null, dayOfMonth:null, time:"14:00", note:"", createdAt:now},
+        {id: uid(), name:"Monitor after ticket", scheduleType:"daily", weekday:null, dayOfMonth:null, time:null, note:"", createdAt:now}
       ],
-      completions: []
+      completions: [],
+      actionWorkflows: [],
+      actionCompletions: []
     };
   }
   function isoDateStr(d){
@@ -1926,6 +1951,16 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
             }else if(tab.type === "workflow"){
               if(!Array.isArray(tab.items)) tab.items = freshWorkflowTab().items;
               if(!Array.isArray(tab.completions)) tab.completions = [];
+              if(!Array.isArray(tab.actionWorkflows)) tab.actionWorkflows = [];
+              if(!Array.isArray(tab.actionCompletions)) tab.actionCompletions = [];
+              tab.actionWorkflows.forEach(function(aw){
+                if(!aw.id) aw.id = uid();
+                if(!aw.actionType) aw.actionType = "fileUpload";
+                if(!aw.scheduleType) aw.scheduleType = "daily";
+                if(typeof aw.note !== "string") aw.note = "";
+                if(!aw.createdAt) aw.createdAt = new Date().toISOString();
+                if(typeof aw.assignedTo === "undefined") aw.assignedTo = null;
+              });
               tab.items.forEach(function(item){
                 if(!item.id) item.id = uid();
                 if(!item.scheduleType) item.scheduleType = "daily";
@@ -1933,6 +1968,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
                 // this stops the app from retroactively inventing missed days before the item ever existed.
                 if(!item.createdAt) item.createdAt = new Date().toISOString();
                 if(typeof item.assignedTo === "undefined") item.assignedTo = null;
+                if(typeof item.note !== "string") item.note = "";
               });
               tab.completions.forEach(function(c){ if(!c.id) c.id = uid(); });
             }else if(tab.type === "stock"){
@@ -1943,10 +1979,14 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
               });
             }else if(tab.type === "stockprep"){
               if(!Array.isArray(tab.vehicles)) tab.vehicles = [];
-              if(!tab.maintenanceCatalog || typeof tab.maintenanceCatalog !== "object") tab.maintenanceCatalog = JSON.parse(JSON.stringify(DEFAULT_MAINTENANCE_CATALOG));
+              if(!tab.maintenanceCatalog){
+                tab.maintenanceCatalog = DEFAULT_WORK_TYPES.slice();
+              }else if(!Array.isArray(tab.maintenanceCatalog) && typeof tab.maintenanceCatalog === "object"){
+                // Migrate the old category->complaints object shape into a flat work-type list.
+                tab.maintenanceCatalog = Object.keys(tab.maintenanceCatalog);
+              }
               if(!tab.sparePartsCatalog || typeof tab.sparePartsCatalog !== "object") tab.sparePartsCatalog = JSON.parse(JSON.stringify(DEFAULT_SPARE_PARTS_CATALOG));
               if(!Array.isArray(tab.paperworkCatalog) || tab.paperworkCatalog.length === 0) tab.paperworkCatalog = DEFAULT_PAPERWORK_CATALOG.slice();
-              Object.keys(tab.maintenanceCatalog).forEach(function(cat){ if(!Array.isArray(tab.maintenanceCatalog[cat])) tab.maintenanceCatalog[cat] = []; });
               Object.keys(tab.sparePartsCatalog).forEach(function(cat){ if(!Array.isArray(tab.sparePartsCatalog[cat])) tab.sparePartsCatalog[cat] = []; });
               tab.vehicles.forEach(function(v){
                 if(!v.id) v.id = uid();
@@ -1955,6 +1995,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
                 if(!Array.isArray(v.maintenance)) v.maintenance = [];
                 if(!Array.isArray(v.paperwork)) v.paperwork = [];
                 if(typeof v.paperworkAssignedTo === "undefined") v.paperworkAssignedTo = null;
+                if(typeof v.model !== "string") v.model = "";
                 if(!v.paperworkStages || typeof v.paperworkStages !== "object") v.paperworkStages = freshPaperworkStages();
                 PAPERWORK_STAGES.forEach(function(s){
                   if(!v.paperworkStages[s.key]) v.paperworkStages[s.key] = {subStatus:"Pending", toggle:false, deadEndDate:null, savedAt:null};
@@ -2902,10 +2943,39 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       ? '<div class="empty-state"><div class="big">🗂️</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "Nothing completed yet." : "No general tasks right now.") + '</p></div>'
       : showing.map(function(e){ return staffTaskCardHTML(e, true, null); }).join("");
     html += renderPrepItemsHubSection();
+    html += renderVehiclePaperworkReportSection();
     wrap.innerHTML = html;
     wirePendingCompletedTabs(wrap, filterKey, renderTasksHub);
     wireStaffTaskCardEvents(wrap, staffModule, null, true, byId, renderTasksHub);
     wirePrepHubSection(wrap);
+    wirePendingCompletedTabs(wrap, "tasksHubPwReport", renderTasksHub);
+  }
+
+  function renderVehiclePaperworkReportSection(){
+    var allVehicles = getAllPrepVehiclesFlat();
+    var filterKey = "tasksHubPwReport";
+    var pending = allVehicles.filter(function(e){ return !isVehiclePaperworkComplete(e.vehicle); });
+    var completed = allVehicles.filter(function(e){ return isVehiclePaperworkComplete(e.vehicle); });
+    var showing = getStaffListFilter(filterKey) === "completed" ? completed : pending;
+    var html = '<div class="section-title">📄 Vehicle Paperwork Report</div>';
+    if(allVehicles.length === 0){
+      return html + '<div class="empty-state"><div class="big">📄</div><p>No vehicles in Stock Prep yet.</p></div>';
+    }
+    html += pendingCompletedTabsHTML(filterKey, pending.length, completed.length);
+    html += showing.length === 0
+      ? '<div class="empty-state"><div class="big">' + (getStaffListFilter(filterKey) === "completed" ? "📄" : "✅") + '</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "Nothing completed yet." : "Nothing pending right now.") + '</p></div>'
+      : showing.map(function(entry){
+          var v = entry.vehicle;
+          var modelLabel = getPrepVehicleModel(v);
+          return '<div class="card card-tight">' +
+            '<div class="hist-row" style="border:none;padding:0;">' +
+              '<div class="left"><div class="date" style="font-weight:600;">' + esc(v.vehicleNumber || "—") + '</div>' +
+                '<div class="sess">' + esc(entry.business.name) + (modelLabel ? (' · ' + esc(modelLabel)) : '') + '</div></div>' +
+              '<div class="right">' + paperworkStageProgressLabel(v) + '</div>' +
+            '</div>' +
+          '</div>';
+        }).join("");
+    return html;
   }
 
   function renderHeader(){
@@ -4310,6 +4380,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   var workflowConfirmState = {}; // "itemId|dateStr" -> bool, transient
   var workflowManageOpen = {}; // tabId -> bool, transient
   var workflowAddFormOpen = {}; // tabId -> bool, transient
+  var actionWfAddFormOpen = {}; // tabId -> bool, transient
 
   function workflowPendingCardHTML(entry){
     var item = entry.item;
@@ -4384,11 +4455,23 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     html += '<button class="link-btn" id="btnToggleWorkflowManage" style="padding-left:0;">' + (manageOpen ? "Hide" : "Manage / remove scheduled items") + '</button>';
     html += '<div id="workflowManagePanel"></div>';
 
+    html += '<div class="sheet-table-card">';
+    html += '<div class="sheet-table-header" style="margin-bottom:0;">' +
+      '<span class="sheet-table-title">⚡ Action-Based Workflows</span>' +
+      '<button class="btn btn-primary btn-header-action" id="btnToggleActionWfAdd">' + (actionWfAddFormOpen[tab.id] ? "Close" : "+ New Action") + '</button>' +
+    '</div>' +
+    '<p class="backup-note">Assign a recurring upload task to a specific staff member — they can\'t mark it Done until they\'ve actually uploaded a file.</p>' +
+    '<div id="actionWfAddFormWrap"></div>' +
+    '<div id="actionWfListWrap"></div>' +
+    '</div>';
+
     panel.innerHTML = html;
     wireWorkflowPanel(panel, module, business, tab);
     wireViewMoreButtons(panel, function(){ renderBizWorkflowPanel(module, business, tab); });
     renderWorkflowManagePanel(module, business, tab);
     renderWorkflowAddForm(module, business, tab);
+    renderActionWfAddForm(module, business, tab);
+    renderActionWfList(module, business, tab);
 
     document.getElementById("btnToggleWorkflowManage").addEventListener("click", function(){
       workflowManageOpen[tab.id] = !manageOpen;
@@ -4396,6 +4479,10 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     });
     document.getElementById("btnToggleWorkflowAdd").addEventListener("click", function(){
       workflowAddFormOpen[tab.id] = !addOpen;
+      renderBizWorkflowPanel(module, business, tab);
+    });
+    document.getElementById("btnToggleActionWfAdd").addEventListener("click", function(){
+      actionWfAddFormOpen[tab.id] = !actionWfAddFormOpen[tab.id];
       renderBizWorkflowPanel(module, business, tab);
     });
   }
@@ -4464,6 +4551,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     wrap.innerHTML =
       '<div class="manage-item" style="margin-top:14px;">' +
         '<input class="input" id="wfNewName" placeholder="Task name" style="margin-bottom:8px;">' +
+        '<textarea class="input" id="wfNewNote" placeholder="Note / instructions for staff (optional)" rows="2" style="margin-bottom:8px;"></textarea>' +
         '<select class="input" id="wfNewType" style="margin-bottom:8px;">' +
           '<option value="daily">Every day</option>' +
           '<option value="weekly">Every week (specific day)</option>' +
@@ -4505,7 +4593,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       var name = document.getElementById("wfNewName").value.trim();
       var type = document.getElementById("wfNewType").value;
       if(!name){ toast("Enter a task name", true); return; }
-      var newItem = {id: uid(), name: name, scheduleType: type, weekday:null, dayOfMonth:null, time:null, createdAt: new Date().toISOString(), assignedTo: document.getElementById("wfNewAssign").value || null};
+      var newItem = {id: uid(), name: name, scheduleType: type, weekday:null, dayOfMonth:null, time:null, note: document.getElementById("wfNewNote").value.trim(), createdAt: new Date().toISOString(), assignedTo: document.getElementById("wfNewAssign").value || null};
       if(type === "weekly") newItem.weekday = parseInt(document.getElementById("wfNewWeekday").value, 10);
       else if(type === "monthly") newItem.dayOfMonth = parseInt(document.getElementById("wfNewDayOfMonth").value, 10) || 1;
       else{
@@ -4523,6 +4611,106 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       workflowAddFormOpen[tab.id] = false;
       renderBizWorkflowPanel(module, business, tab);
       toast(name + " added to schedule");
+    });
+  }
+
+  function renderActionWfAddForm(module, business, tab){
+    var wrap = document.getElementById("actionWfAddFormWrap");
+    if(!wrap) return;
+    if(!actionWfAddFormOpen[tab.id]){ wrap.innerHTML = ""; return; }
+    var staffOptions = staffAssignOptions();
+    if(staffOptions.length === 0){
+      wrap.innerHTML = '<p class="backup-note">Add someone to the Staff Directory first — Action Workflows must be assigned to a specific staff member.</p>';
+      return;
+    }
+    wrap.innerHTML =
+      '<div class="manage-item" style="margin-top:14px;">' +
+        '<input class="input" id="awfNewName" placeholder="Action name (e.g. Weekly Stock Report)" style="margin-bottom:8px;">' +
+        '<select class="input" id="awfNewType" style="margin-bottom:8px;">' +
+          ACTION_WORKFLOW_TYPES.map(function(t){ return '<option value="' + t.key + '">' + t.icon + ' ' + esc(t.label) + '</option>'; }).join("") +
+        '</select>' +
+        '<select class="input" id="awfNewAssign" style="margin-bottom:8px;">' +
+          staffOptions.map(function(s){ return '<option value="' + s.id + '">' + esc(s.name) + '</option>'; }).join("") +
+        '</select>' +
+        '<select class="input" id="awfNewSchedType" style="margin-bottom:8px;">' +
+          '<option value="daily">Every day</option>' +
+          '<option value="weekly">Every week (specific day)</option>' +
+          '<option value="monthly">Every month (specific date)</option>' +
+        '</select>' +
+        '<div id="awfNewExtra"></div>' +
+        '<textarea class="input" id="awfNewNote" placeholder="Note / instructions for staff (optional)" rows="2" style="margin:8px 0;"></textarea>' +
+        '<button class="btn btn-primary btn-sm" id="awfAddBtn" style="width:100%;">Add Action Workflow</button>' +
+      '</div>';
+
+    function renderExtra(){
+      var type = document.getElementById("awfNewSchedType").value;
+      var extra = document.getElementById("awfNewExtra");
+      if(type === "weekly"){
+        extra.innerHTML = '<select class="input" id="awfNewWeekday">' + WEEKDAY_NAMES.map(function(w,i){ return '<option value="' + i + '"' + (i===1?" selected":"") + '>' + w + '</option>'; }).join("") + '</select>';
+      }else if(type === "monthly"){
+        extra.innerHTML = '<input class="input input-mono" type="number" min="1" max="31" id="awfNewDayOfMonth" value="1">';
+      }else{
+        extra.innerHTML = '<select class="input" id="awfNewHour"><option value="">No specific time — all day</option>' +
+          [1,2,3,4,5,6,7,8,9,10,11,12].map(function(h){ return '<option value="' + h + '">' + h + ' PM</option>'; }).join("") + '</select>';
+      }
+    }
+    renderExtra();
+    document.getElementById("awfNewSchedType").addEventListener("change", renderExtra);
+
+    document.getElementById("awfAddBtn").addEventListener("click", function(){
+      var name = document.getElementById("awfNewName").value.trim();
+      if(!name){ toast("Enter an action name", true); return; }
+      var type = document.getElementById("awfNewSchedType").value;
+      var newAction = {
+        id: uid(), name: name, actionType: document.getElementById("awfNewType").value,
+        assignedTo: document.getElementById("awfNewAssign").value,
+        scheduleType: type, weekday:null, dayOfMonth:null, time:null,
+        note: document.getElementById("awfNewNote").value.trim(),
+        createdAt: new Date().toISOString()
+      };
+      if(type === "weekly") newAction.weekday = parseInt(document.getElementById("awfNewWeekday").value, 10);
+      else if(type === "monthly") newAction.dayOfMonth = parseInt(document.getElementById("awfNewDayOfMonth").value, 10) || 1;
+      else{
+        var hourVal = document.getElementById("awfNewHour").value;
+        if(hourVal) newAction.time = String((parseInt(hourVal,10) % 12) + 12).padStart(2,"0") + ":00";
+      }
+      tab.actionWorkflows.push(newAction);
+      saveData();
+      actionWfAddFormOpen[tab.id] = false;
+      renderBizWorkflowPanel(module, business, tab);
+      toast(name + " assigned to " + (staffOptions.find(function(s){ return s.id === newAction.assignedTo; }) || {}).name);
+    });
+  }
+
+  function renderActionWfList(module, business, tab){
+    var wrap = document.getElementById("actionWfListWrap");
+    if(!wrap) return;
+    var items = tab.actionWorkflows || [];
+    if(items.length === 0){
+      wrap.innerHTML = '<div class="empty-state"><div class="big">⚡</div><p>No action-based workflows yet.</p></div>';
+      return;
+    }
+    wrap.innerHTML = items.map(function(aw){
+      var typeDef = actionWorkflowTypeDef(aw.actionType);
+      var assignee = staffAssignOptions().find(function(s){ return s.id === aw.assignedTo; });
+      return '<div class="card card-tight" style="margin-top:8px;">' +
+        '<div class="hist-row" style="border:none;padding:0;">' +
+          '<div class="left"><div class="date" style="font-weight:600;">' + typeDef.icon + ' ' + esc(aw.name) + '</div>' +
+            '<div class="sess">' + esc(assignee ? assignee.name : "Unassigned") + ' · ' + esc(workflowScheduleLabel(aw)) + '</div></div>' +
+          '<button class="icon-btn action-wf-del" data-id="' + aw.id + '" title="Remove"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+    wrap.querySelectorAll(".action-wf-del").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        if(!confirm("Remove this action workflow? Its history will be removed too.")) return;
+        var id = btn.getAttribute("data-id");
+        tab.actionWorkflows = tab.actionWorkflows.filter(function(a){ return a.id !== id; });
+        tab.actionCompletions = tab.actionCompletions.filter(function(c){ return c.itemId !== id; });
+        saveData();
+        renderActionWfList(module, business, tab);
+        toast("Action workflow removed");
+      });
     });
   }
 
@@ -5928,6 +6116,110 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     return results;
   }
 
+  function getAssignedActionWorkflowsForStaff(staffId){
+    var results = [];
+    var bizModule = data.modules.business;
+    if(bizModule && bizModule.type === "business"){
+      (bizModule.businesses || []).forEach(function(biz){
+        (biz.tabs || []).forEach(function(tab){
+          if(tab.type !== "workflow") return;
+          (tab.actionWorkflows || []).forEach(function(aw){
+            if(aw.assignedTo === staffId) results.push({item:aw, tab:tab, businessName: biz.name});
+          });
+        });
+      });
+    }
+    return results;
+  }
+
+  function findWorkflowTabById(tabId){
+    var tab = null;
+    var bizModule = data.modules.business;
+    if(bizModule && bizModule.type === "business"){
+      (bizModule.businesses || []).forEach(function(biz){
+        (biz.tabs || []).forEach(function(t){ if(t.id === tabId) tab = t; });
+      });
+    }
+    return tab;
+  }
+
+  // Only filename/size/timestamp are stored, never the file's actual binary content — embedding
+  // real file bytes in the synced JSON data would risk exceeding Firestore's per-document size limit.
+  // This still fully satisfies "cannot mark Done until a file has been uploaded": selecting a file is
+  // required before the Mark Done button becomes enabled, and staff have no other action available.
+  function renderStaffActionWfList(module, staff){
+    var wrap = document.getElementById("staffActionWfList");
+    if(!wrap) return;
+    var items = getAssignedActionWorkflowsForStaff(staff.id);
+    var todayStr = isoDateStr(new Date());
+    function getCompletion(entry){
+      return (entry.tab.actionCompletions || []).find(function(c){ return c.itemId === entry.item.id && c.dueDate === todayStr; });
+    }
+    var dueToday = items.filter(function(e){ return isItemDueOn(e.item, new Date()); });
+    if(dueToday.length === 0){
+      wrap.innerHTML = '<div class="empty-state"><div class="big">⚡</div><p>No action tasks due today.</p></div>';
+      return;
+    }
+    wrap.innerHTML = dueToday.map(function(entry){
+      var typeDef = actionWorkflowTypeDef(entry.item.actionType);
+      var completion = getCompletion(entry);
+      var isDone = completion && completion.status === "completed";
+      var hasFile = completion && completion.fileName;
+      var html = '<div class="task-card"><div class="task-top"><div class="task-body">' +
+        '<div class="task-title">' + typeDef.icon + ' ' + esc(entry.item.name) + '</div>' +
+        '<div class="task-badges">' +
+          '<span class="badge-pill" style="color:var(--down);border-color:var(--down);">🏢 ' + esc(entry.businessName) + '</span>' +
+          '<span class="badge-pill">' + esc(workflowScheduleLabel(entry.item)) + '</span>' +
+          (isDone ? '<span class="badge-pill completed">✓ Done today</span>' : '<span class="badge-pill pending-red">Due today</span>') +
+        '</div>' +
+        (entry.item.note ? '<p class="backup-note" style="margin-top:8px;">' + esc(entry.item.note) + '</p>' : '') +
+        '</div></div>';
+      if(!isDone){
+        html += '<div style="margin-top:10px;">' +
+          (hasFile ? '<p class="backup-note" style="color:var(--up);margin:0 0 8px;">✅ Attached: ' + esc(completion.fileName) + '</p>' : '') +
+          '<input type="file" accept="' + typeDef.accept + '" class="input action-wf-file" data-item-id="' + entry.item.id + '" data-tab-id="' + entry.tab.id + '" style="margin-bottom:8px;">' +
+          '<button class="btn btn-primary btn-sm action-wf-done" data-item-id="' + entry.item.id + '" data-tab-id="' + entry.tab.id + '" data-item-name="' + esc(entry.item.name) + '"' + (hasFile ? '' : ' disabled') + '>Mark Done</button>' +
+        '</div>';
+      }
+      html += '</div>';
+      return html;
+    }).join("");
+
+    wrap.querySelectorAll(".action-wf-file").forEach(function(input){
+      input.addEventListener("change", function(){
+        var file = input.files[0];
+        if(!file) return;
+        var itemId = input.getAttribute("data-item-id"), tabId = input.getAttribute("data-tab-id");
+        var tab = findWorkflowTabById(tabId);
+        if(!tab) return;
+        var dateStr = isoDateStr(new Date());
+        var existing = tab.actionCompletions.find(function(c){ return c.itemId === itemId && c.dueDate === dateStr; });
+        if(existing){ existing.fileName = file.name; existing.fileSize = file.size; existing.uploadedAt = new Date().toISOString(); }
+        else tab.actionCompletions.push({id: uid(), itemId:itemId, dueDate:dateStr, status:"pending", fileName:file.name, fileSize:file.size, uploadedAt:new Date().toISOString(), completedAt:null});
+        saveData();
+        renderStaffActionWfList(module, staff);
+        toast("File attached — you can now mark this Done");
+      });
+    });
+    wrap.querySelectorAll(".action-wf-done").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var itemId = btn.getAttribute("data-item-id"), tabId = btn.getAttribute("data-tab-id");
+        var itemName = btn.getAttribute("data-item-name");
+        var tab = findWorkflowTabById(tabId);
+        if(!tab) return;
+        var dateStr = isoDateStr(new Date());
+        var existing = tab.actionCompletions.find(function(c){ return c.itemId === itemId && c.dueDate === dateStr; });
+        if(!existing || !existing.fileName){ toast("Upload the required file first", true); return; }
+        if(!confirm('Mark "' + itemName + '" as Done? This submits your uploaded file as complete for today.')) return;
+        existing.status = "completed";
+        existing.completedAt = new Date().toISOString();
+        saveData();
+        renderStaffActionWfList(module, staff);
+        toast("Marked done ✅");
+      });
+    });
+  }
+
   function companyBadgeHTML(entry){
     if(entry.businessName){
       var accent = entry.businessAccent || "var(--down)";
@@ -6141,21 +6433,25 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     });
   }
 
+  var staffWorkflowDetailOpen = {}; // itemId -> bool, transient
   function staffWorkflowCardHTML(entry){
     var item = entry.item, tab = entry.tab;
     var todayStr = isoDateStr(new Date());
     var dueToday = isItemDueOn(item, new Date());
     var completion = (tab.completions || []).find(function(c){ return c.itemId === item.id && c.dueDate === todayStr; });
     var isDone = completion && completion.status === "completed";
+    var detailOpen = !!staffWorkflowDetailOpen[item.id];
     var html = '<div class="task-card"><div class="task-top">' +
-      '<div class="task-body"><div class="task-title">' + esc(item.name) + '</div>' +
+      '<div class="task-body"><div class="task-title" style="cursor:pointer;" data-wf-detail="' + item.id + '">' + esc(item.name) + (item.note ? ' <span style="color:var(--text-faint);font-weight:500;">· has note</span>' : '') + '</div>' +
       '<div class="task-badges">' +
         '<span class="badge-pill" style="color:var(--down);border-color:var(--down);">🏢 ' + esc(entry.businessName) + '</span>' +
         '<span class="badge-pill">' + esc(workflowScheduleLabel(item)) + '</span>' +
         (isDone ? '<span class="badge-pill completed">✓ Done today</span>' : (dueToday ? '<span class="badge-pill pending-red">Due today</span>' : '')) +
-      '</div></div>';
+      '</div>' +
+      (detailOpen ? '<p class="backup-note" style="margin-top:8px;">' + (item.note ? esc(item.note) : "No additional notes from Admin.") + '</p>' : '') +
+      '</div>';
     if(dueToday && !isDone){
-      html += '<button class="btn btn-primary btn-sm staff-wf-mark" data-item-id="' + item.id + '" data-tab-id="' + tab.id + '">Mark Done</button>';
+      html += '<button class="btn btn-primary btn-sm staff-wf-mark" data-item-id="' + item.id + '" data-tab-id="' + tab.id + '" data-item-name="' + esc(item.name) + '">Mark Done</button>';
     }
     html += '</div></div>';
     return html;
@@ -6180,9 +6476,18 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       : showing.map(staffWorkflowCardHTML).join("");
     wrap.innerHTML = html;
     wirePendingCompletedTabs(wrap, filterKey, function(){ renderStaffWorkflowList(module, staff); });
+    wrap.querySelectorAll("[data-wf-detail]").forEach(function(el){
+      el.addEventListener("click", function(){
+        var itemId = el.getAttribute("data-wf-detail");
+        staffWorkflowDetailOpen[itemId] = !staffWorkflowDetailOpen[itemId];
+        renderStaffWorkflowList(module, staff);
+      });
+    });
     wrap.querySelectorAll(".staff-wf-mark").forEach(function(btn){
       btn.addEventListener("click", function(){
         var itemId = btn.getAttribute("data-item-id"), tabId = btn.getAttribute("data-tab-id");
+        var itemName = btn.getAttribute("data-item-name");
+        if(!confirm('Mark "' + itemName + '" as Done? This will submit it as completed for today.')) return;
         var tab = null;
         var bizModule = data.modules.business;
         if(bizModule && bizModule.type === "business"){
@@ -6212,10 +6517,10 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   }
   function paperworkStageProgressLabel(vehicle){
     var stages = vehicle.paperworkStages || {};
-    var enabled = PAPERWORK_STAGES.filter(function(s){ return stages[s.key] && stages[s.key].toggle; });
-    var done = enabled.filter(function(s){ return stages[s.key].subStatus === "Completed"; }).length;
-    if(enabled.length === 0) return '<span class="badge-pill badge-neutral">Not started</span>';
-    return '<span class="badge-pill' + (done === enabled.length ? " completed" : "") + '">' + done + ' / ' + enabled.length + ' stages</span>';
+    var total = PAPERWORK_STAGES.length;
+    var done = PAPERWORK_STAGES.filter(function(s){ return stages[s.key] && stages[s.key].subStatus === "Completed"; }).length;
+    if(done === 0) return '<span class="badge-pill badge-neutral">Not started</span>';
+    return '<span class="badge-pill' + (isVehiclePaperworkComplete(vehicle) ? " completed" : "") + '">Completed ' + done + ' of ' + total + ' Stages</span>';
   }
 
   function renderStaffDashPaperworkTab(module, member){
@@ -6242,10 +6547,11 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
             return '<div class="card card-tight staff-pw-open" data-vehicle-id="' + entry.vehicle.id + '">' +
               '<div class="hist-row" style="border:none;padding:0;">' +
                 '<div class="left"><div class="date" style="font-weight:600;">' + esc(entry.vehicle.vehicleNumber || "—") + '</div>' +
-                  '<div class="sess">' + esc(entry.business.name) + (entry.vehicle.segment ? (' · ' + esc(entry.vehicle.segment)) : '') + '</div></div>' +
-                '<div class="right">' + paperworkStageProgressLabel(entry.vehicle) + '</div>' +
+                  '<div class="sess">' + esc(entry.business.name) + (getPrepVehicleModel(entry.vehicle) ? (' · ' + esc(getPrepVehicleModel(entry.vehicle))) : '') + (entry.vehicle.segment ? (' · ' + esc(entry.vehicle.segment)) : '') + '</div></div>' +
+                '<div class="right" style="display:flex;align-items:center;gap:8px;">' + paperworkStageProgressLabel(entry.vehicle) +
+                  '<button class="btn btn-primary btn-header-action">Proceed →</button>' +
+                '</div>' +
               '</div>' +
-              '<button class="btn btn-primary btn-sm" style="width:100%;margin-top:10px;">Proceed →</button>' +
             '</div>';
           }).join("");
       wrap.innerHTML = html;
@@ -6275,7 +6581,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     var html = '<button class="link-btn" id="btnBackToPwList" style="padding-left:0;margin-bottom:10px;">← Back to vehicle list</button>';
     html += '<div class="pw-wizard-header">' +
       '<div class="pw-wizard-vehicle">' + esc(vehicle.vehicleNumber || "Vehicle") + '</div>' +
-      '<div class="pw-wizard-sub">' + esc(entry.business.name) + (vehicle.segment ? (' · ' + esc(vehicle.segment)) : '') + '</div>' +
+      '<div class="pw-wizard-sub">' + esc(entry.business.name) + (getPrepVehicleModel(vehicle) ? (' · ' + esc(getPrepVehicleModel(vehicle))) : '') + (vehicle.segment ? (' · ' + esc(vehicle.segment)) : '') + '</div>' +
     '</div>';
     html += '<div class="pw-wizard-progress">Stage ' + (stageIdx + 1) + ' of ' + PAPERWORK_STAGES.length + ': ' + esc(stageDef.label) + '</div>';
 
@@ -6291,7 +6597,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       '<button class="switch' + (stageData.toggle ? " on" : "") + '" id="pwStageToggle"><span class="knob"></span></button>' +
     '</div>';
     if(stageDef.hasDeadEnd){
-      html += '<div class="field" style="margin-bottom:0;"><label>Dead End Date <span style="text-transform:none;letter-spacing:0;">(name change deadline)</span></label><input class="input" type="date" id="pwDeadEndDate" value="' + (stageData.deadEndDate || "") + '"></div>';
+      html += '<div class="field" style="margin-bottom:0;"><label>Dead End Date <span style="text-transform:none;letter-spacing:0;color:var(--danger);">* required</span></label><input class="input" type="date" id="pwDeadEndDate" value="' + (stageData.deadEndDate || "") + '" required></div>';
     }
     html += '</div>';
 
@@ -6316,6 +6622,20 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       stageData.savedAt = new Date().toISOString();
       saveData();
     }
+    // Shared guard for both Next and Finish: the applicability toggle must be ON before advancing,
+    // and Stage 1 (Insurance) additionally requires a Dead End Date to be set.
+    function validateBeforeAdvance(){
+      readForm();
+      if(!stageData.toggle){
+        toast("Turn on \"Applicable to this vehicle\" before continuing", true);
+        return false;
+      }
+      if(stageDef.hasDeadEnd && !stageData.deadEndDate){
+        toast("Dead End Date is required for Insurance", true);
+        return false;
+      }
+      return true;
+    }
 
     document.getElementById("btnBackToPwList").addEventListener("click", function(){
       staffPaperworkView = null;
@@ -6332,12 +6652,13 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       renderStaffPaperworkVehicleDetail(module, member, entry);
     });
     document.getElementById("pwBtnNext").addEventListener("click", function(){
+      if(!validateBeforeAdvance()) return;
       saveStage();
       if(stageIdx < PAPERWORK_STAGES.length - 1){
         staffPaperworkWizardStage[vehicle.id] = stageIdx + 1;
         renderStaffPaperworkVehicleDetail(module, member, entry);
       }else{
-        toast("Paperwork wizard complete for this vehicle");
+        toast(isVehiclePaperworkComplete(vehicle) ? "Paperwork complete — moved to Completed" : "Paperwork wizard finished for this vehicle");
         staffPaperworkView = null;
         staffPaperworkWizardStage[vehicle.id] = 0;
         renderStaffDashPaperworkTab(module, member);
@@ -6997,7 +7318,8 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       '<div class="sheet-table-header" style="margin:16px 0 0;"><span class="section-title" style="margin:0;">📤 Outgoing Tasks</span>' +
         '<button class="btn btn-primary btn-header-action" id="btnOpenNewTaskModal">+ Task</button></div>' +
       '<div id="staffOutgoingList"></div>' +
-      '<div class="section-title">My Workflows</div><div id="staffWorkflowList"></div>';
+      '<div class="section-title">My Workflows</div><div id="staffWorkflowList"></div>' +
+      '<div class="section-title">⚡ Action Tasks</div><div id="staffActionWfList"></div>';
 
     document.getElementById("btnOpenNewTaskModal").addEventListener("click", function(){
       openStaffNewTaskModal(module, member);
@@ -7006,6 +7328,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     renderStaffTaskList(module, member, false);
     renderStaffOutgoingList(module, member);
     renderStaffWorkflowList(module, member);
+    renderStaffActionWfList(module, member);
   }
 
   function renderStaffGate(){
@@ -7057,6 +7380,29 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     return Object.keys(map).map(function(k){
       return {vehicleNumber: map[k].vehicleNumber, label: map[k].labels.join(" / ") || "—"};
     }).sort(function(a,b){ return a.vehicleNumber.localeCompare(b.vehicleNumber); });
+  }
+
+  // Uses the vehicle's own model field if set (from Excel import or manual entry); otherwise
+  // cross-references the Stock Report by vehicle number so Stock Prep doesn't need duplicate entry.
+  function getPrepVehicleModel(vehicle){
+    if(vehicle.model) return vehicle.model;
+    var targetKey = normalizeVehicleNumber(vehicle.vehicleNumber);
+    if(!targetKey) return "";
+    var bizModule = data.modules.business;
+    if(bizModule && bizModule.type === "business"){
+      for(var i = 0; i < (bizModule.businesses || []).length; i++){
+        var biz = bizModule.businesses[i];
+        for(var j = 0; j < (biz.tabs || []).length; j++){
+          var tab = biz.tabs[j];
+          if(tab.type !== "stock") continue;
+          for(var k = 0; k < (tab.rows || []).length; k++){
+            var r = tab.rows[k];
+            if(r.vehicleNumber && normalizeVehicleNumber(r.vehicleNumber) === targetKey && r.vehicleModel) return r.vehicleModel;
+          }
+        }
+      }
+    }
+    return "";
   }
 
   function mapExcelRowToStockFields(row){
@@ -7200,7 +7546,6 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   var stockPrepManageCategory = {}; // tabId -> currently selected category for complaint/parts management, transient
   var prepMaintFormOpen = {}; // vehicleId -> bool, transient
   var prepPaperFormOpen = {}; // vehicleId -> bool, transient
-  var prepMaintFormState = {category: null}; // transient, remembers the last-picked category while the form is open
 
   function mapExcelRowToPrepFields(row){
     var normalizedRow = {};
@@ -7233,7 +7578,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
           var key = normalizeVehicleNumber(mapped.vehicleNumber);
           if(existing[key]){ dupSkipped++; return; }
           existing[key] = true;
-          tab.vehicles.push(freshPrepVehicle(mapped.vehicleNumber, mapped.segment));
+          tab.vehicles.push(freshPrepVehicle(mapped.vehicleNumber, mapped.segment, mapped.model));
           added++;
         });
         saveData();
@@ -7249,9 +7594,14 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     reader.readAsArrayBuffer(file);
   }
 
+  function maintenanceItemLabel(item){
+    if(item.categories && item.categories.length) return item.categories.join(", ");
+    if(item.category) return item.category + (item.complaint ? (" - " + item.complaint) : "");
+    return "—";
+  }
   function maintenanceReportLine(item){
     var parts = (item.spareParts && item.spareParts.length) ? item.spareParts.join(", ") : "None";
-    return item.category + " - " + item.complaint + " -> Required Spare Parts: " + parts;
+    return maintenanceItemLabel(item) + " -> Required Spare Parts: " + parts;
   }
   function paperworkReportLine(item){
     return item.category + (item.notes ? (" - " + item.notes) : "");
@@ -7280,29 +7630,26 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     var wrap = document.getElementById("stockPrepManageWrap");
     if(!wrap) return;
     if(!stockPrepManageOpen[tab.id]){ wrap.innerHTML = ""; return; }
-    var cats = Object.keys(tab.maintenanceCatalog);
+    var cats = tab.maintenanceCatalog || [];
     var selectedCat = stockPrepManageCategory[tab.id] && cats.indexOf(stockPrepManageCategory[tab.id]) !== -1 ? stockPrepManageCategory[tab.id] : (cats[0] || null);
-    var complaints = selectedCat ? (tab.maintenanceCatalog[selectedCat] || []) : [];
     var parts = selectedCat ? (tab.sparePartsCatalog[selectedCat] || []) : [];
 
     var html = '<div class="sheet-table-card">';
-    html += '<div class="section-title" style="margin-top:0;">Maintenance Categories</div>';
+    html += '<div class="section-title" style="margin-top:0;">Work Type Categories</div>';
+    html += '<p class="backup-note">These are the checkbox options staff and admin pick from when logging maintenance — e.g. Mechanical Work, Electrical Work, Body Work, Painting.</p>';
     html += '<div class="chip-row">' + (cats.length === 0 ? '<p class="backup-note" style="margin:0;">None yet.</p>' :
       cats.map(function(c){ return '<span class="chip">' + esc(c) + ' <span class="x mgr-del-cat" data-cat="' + esc(c) + '">✕</span></span>'; }).join("")) + '</div>';
-    html += '<div class="add-exercise-row" style="margin-top:8px;"><input class="input" id="mgrNewCat" placeholder="Add new category"><button class="btn btn-ghost btn-sm" id="btnMgrAddCat">Add</button></div>';
+    html += '<div class="add-exercise-row" style="margin-top:8px;"><input class="input" id="mgrNewCat" placeholder="Add new work type"><button class="btn btn-ghost btn-sm" id="btnMgrAddCat">Add</button></div>';
     html += '</div>';
 
     html += '<div class="sheet-table-card">';
-    html += '<div class="section-title" style="margin-top:0;">Complaints / Services &amp; Spare Parts</div>';
+    html += '<div class="section-title" style="margin-top:0;">Spare Parts</div>';
     if(cats.length === 0){
-      html += '<p class="backup-note">Add a Maintenance Category above first.</p>';
+      html += '<p class="backup-note">Add a Work Type Category above first.</p>';
     }else{
-      html += '<div class="field" style="margin-bottom:14px;"><label>Category</label><select class="input" id="mgrCatSelect">' +
+      html += '<div class="field" style="margin-bottom:14px;"><label>For Work Type</label><select class="input" id="mgrCatSelect">' +
         cats.map(function(c){ return '<option value="' + esc(c) + '"' + (c === selectedCat ? " selected" : "") + '>' + esc(c) + '</option>'; }).join("") + '</select></div>';
-      html += '<div class="manage-item"><label>Complaints / Services</label><div class="chip-row">' +
-        (complaints.length === 0 ? '<p class="backup-note" style="margin:0;">None yet.</p>' : complaints.map(function(c){ return '<span class="chip">' + esc(c) + ' <span class="x mgr-del-complaint" data-val="' + esc(c) + '">✕</span></span>'; }).join("")) + '</div>' +
-        '<div class="add-exercise-row" style="margin-top:6px;"><input class="input" id="mgrNewComplaint" placeholder="Add complaint / service"><button class="btn btn-ghost btn-sm" id="btnMgrAddComplaint">Add</button></div></div>';
-      html += '<div class="manage-item" style="margin-top:14px;"><label>Spare Parts</label><div class="chip-row">' +
+      html += '<div class="manage-item"><div class="chip-row">' +
         (parts.length === 0 ? '<p class="backup-note" style="margin:0;">None yet.</p>' : parts.map(function(p){ return '<span class="chip">' + esc(p) + ' <span class="x mgr-del-part" data-val="' + esc(p) + '">✕</span></span>'; }).join("")) + '</div>' +
         '<div class="add-exercise-row" style="margin-top:6px;"><input class="input" id="mgrNewPart" placeholder="Add spare part"><button class="btn btn-ghost btn-sm" id="btnMgrAddPart">Add</button></div></div>';
     }
@@ -7318,47 +7665,31 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
 
     document.getElementById("btnMgrAddCat").addEventListener("click", function(){
       var name = document.getElementById("mgrNewCat").value.trim();
-      if(!name){ toast("Enter a category name", true); return; }
-      if(!tab.maintenanceCatalog[name]) tab.maintenanceCatalog[name] = [];
+      if(!name){ toast("Enter a work type name", true); return; }
+      if(cats.indexOf(name) === -1) tab.maintenanceCatalog.push(name);
       if(!tab.sparePartsCatalog[name]) tab.sparePartsCatalog[name] = [];
       stockPrepManageCategory[tab.id] = name;
       saveData();
       renderStockPrepManagePanel(module, business, tab);
-      toast(name + " category added");
+      toast(name + " added");
     });
     wrap.querySelectorAll(".mgr-del-cat").forEach(function(x){
       x.addEventListener("click", function(){
         var cat = x.getAttribute("data-cat");
         if(cats.length <= 1){ toast("Keep at least one category", true); return; }
-        if(!confirm('Delete category "' + cat + '"? Its complaints and spare parts lists will be removed too.')) return;
-        delete tab.maintenanceCatalog[cat];
+        if(!confirm('Delete work type "' + cat + '"? Its spare parts list will be removed too.')) return;
+        tab.maintenanceCatalog = tab.maintenanceCatalog.filter(function(c){ return c !== cat; });
         delete tab.sparePartsCatalog[cat];
         if(stockPrepManageCategory[tab.id] === cat) stockPrepManageCategory[tab.id] = null;
         saveData();
         renderStockPrepManagePanel(module, business, tab);
-        toast("Category deleted");
+        toast("Work type deleted");
       });
     });
     var catSelectEl = document.getElementById("mgrCatSelect");
     if(catSelectEl) catSelectEl.addEventListener("change", function(){
       stockPrepManageCategory[tab.id] = this.value;
       renderStockPrepManagePanel(module, business, tab);
-    });
-    var addComplaintBtn = document.getElementById("btnMgrAddComplaint");
-    if(addComplaintBtn) addComplaintBtn.addEventListener("click", function(){
-      var name = document.getElementById("mgrNewComplaint").value.trim();
-      if(!name){ toast("Enter a complaint / service", true); return; }
-      if(tab.maintenanceCatalog[selectedCat].indexOf(name) === -1) tab.maintenanceCatalog[selectedCat].push(name);
-      saveData();
-      renderStockPrepManagePanel(module, business, tab);
-      toast(name + " added");
-    });
-    wrap.querySelectorAll(".mgr-del-complaint").forEach(function(x){
-      x.addEventListener("click", function(){
-        tab.maintenanceCatalog[selectedCat] = tab.maintenanceCatalog[selectedCat].filter(function(c){ return c !== x.getAttribute("data-val"); });
-        saveData();
-        renderStockPrepManagePanel(module, business, tab);
-      });
     });
     var addPartBtn = document.getElementById("btnMgrAddPart");
     if(addPartBtn) addPartBtn.addEventListener("click", function(){
@@ -7409,13 +7740,14 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       '<input type="file" id="stockPrepExcelInput" accept=".xlsx,.xls,.csv" style="display:none;">' +
     '</div>';
     html += '<div id="stockPrepManageWrap"></div>';
-    html += '<p class="backup-note" style="margin-bottom:10px;">Only Vehicle Number and Segment are read from the file, matched by column header regardless of position — other columns are ignored. Duplicate vehicle numbers are skipped automatically.</p>';
+    html += '<p class="backup-note" style="margin-bottom:10px;">Vehicle Number, Segment, and Model are read from the file, matched by column header regardless of position — other columns are ignored. Duplicate vehicle numbers are skipped automatically.</p>';
 
     if(tab.vehicles.length === 0){
       html += '<div class="empty-state"><div class="big">🔧</div><p>No vehicles yet. Upload an Excel file or add one manually.</p></div>';
     }else{
       html += '<div class="sheet-scroll"><table class="sheet-table stockprep-table"><thead><tr>' +
         '<th class="sheet-col-head">Vehicle Number</th>' +
+        '<th class="sheet-col-head">Model</th>' +
         '<th class="sheet-col-head">Segment</th>' +
         '<th class="sheet-col-head">Maintenance</th>' +
         '<th class="sheet-col-head">Paperwork</th>' +
@@ -7426,6 +7758,9 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         html += '<td>' + (editMode
           ? '<input class="sheet-cell-input prep-input" data-field="vehicleNumber" data-vehicle-id="' + v.id + '" value="' + esc(v.vehicleNumber) + '">'
           : '<span class="sheet-cell-locked prep-open-vehicle" data-vehicle-id="' + v.id + '" style="cursor:pointer;text-decoration:underline;color:var(--accent);">' + (esc(v.vehicleNumber) || "—") + '</span>') + '</td>';
+        html += '<td>' + (editMode
+          ? '<input class="sheet-cell-input prep-input" data-field="model" data-vehicle-id="' + v.id + '" value="' + esc(v.model || "") + '">'
+          : '<span class="sheet-cell-locked">' + (esc(getPrepVehicleModel(v)) || "—") + '</span>') + '</td>';
         html += '<td>' + (editMode
           ? '<input class="sheet-cell-input prep-input" data-field="segment" data-vehicle-id="' + v.id + '" value="' + esc(v.segment) + '">'
           : '<span class="sheet-cell-locked">' + (esc(v.segment) || "—") + '</span>') + '</td>';
@@ -7496,22 +7831,81 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     });
   }
 
+  var prepStatusPickerOpen = {}; // itemId -> bool, transient
   function prepItemRowHTML(item, kind, useConfirmForDone){
     var statusClass = item.status === "Done" ? "completed" : (item.status === "In Progress" ? "" : "pending-red");
     return '<div class="card card-tight prep-report-card" data-item-id="' + item.id + '">' +
       '<div class="prep-report-line">' +
-        '<span class="prep-report-cat">' + esc(item.category) + '</span> - <span class="prep-report-complaint">' + esc(item.complaint) + '</span>' +
+        '<span class="prep-report-cat">' + esc(maintenanceItemLabel(item)) + '</span>' +
         '<div class="prep-report-parts">→ Required Spare Parts: <b>' + (item.spareParts && item.spareParts.length ? esc(item.spareParts.join(", ")) : "None") + '</b></div>' +
       '</div>' +
       '<div class="hist-row" style="border:none;padding:8px 0 0;">' +
         '<div class="left"></div>' +
-        '<div class="right"><span class="badge-pill ' + statusClass + '">' + esc(item.status) + '</span></div>' +
+        '<div class="right"><button class="badge-pill ' + statusClass + ' prep-status-badge" data-item-id="' + item.id + '" style="cursor:pointer;border-width:1.5px;">' + esc(item.status) + ' ▾</button></div>' +
       '</div>' +
-      '<select class="input prep-item-status" data-item-id="' + item.id + '" style="margin-top:6px;">' +
-        PREP_STATUS_OPTIONS.map(function(s){ return '<option value="' + s + '"' + (s === item.status ? " selected" : "") + '>' + s + '</option>'; }).join("") +
-      '</select>' +
+      '<div id="prepStatusPicker_' + item.id + '"></div>' +
       '<div style="text-align:right;margin-top:6px;"><button class="icon-btn prep-item-del" data-item-id="' + item.id + '" data-kind="maintenance" title="Remove"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>' +
     '</div>';
+  }
+  // Shared wiring for the clickable status badge — used for both Admin's maintenance list and
+  // anywhere else prepItemRowHTML is rendered. Marking "Done" requires explicit confirmation and
+  // immediately re-renders via rerenderFn, which is what actually moves the item into Completed.
+  function wirePrepStatusBadges(container, items, rerenderFn){
+    container.querySelectorAll(".prep-status-badge").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var itemId = btn.getAttribute("data-item-id");
+        prepStatusPickerOpen[itemId] = !prepStatusPickerOpen[itemId];
+        var pickerWrap = document.getElementById("prepStatusPicker_" + itemId);
+        if(!pickerWrap) return;
+        if(!prepStatusPickerOpen[itemId]){ pickerWrap.innerHTML = ""; return; }
+        var item = items.find(function(i){ return i.id === itemId; });
+        if(!item) return;
+        pickerWrap.innerHTML = '<div class="chip-row" style="margin-top:8px;">' +
+          PREP_STATUS_OPTIONS.map(function(s){ return '<span class="chip prep-status-opt' + (s === item.status ? " selected" : "") + '" data-status="' + s + '" style="cursor:pointer;">' + s + '</span>'; }).join("") +
+        '</div>';
+        pickerWrap.querySelectorAll(".prep-status-opt").forEach(function(chip){
+          chip.addEventListener("click", function(){
+            var newStatus = chip.getAttribute("data-status");
+            if(newStatus === "Done" && !confirm('Mark "' + maintenanceItemLabel(item) + '" as Done? It will move to the Completed tab.')) return;
+            item.status = newStatus;
+            saveData();
+            prepStatusPickerOpen[itemId] = false;
+            rerenderFn();
+          });
+        });
+      });
+    });
+  }
+
+  // Aggregates every pending maintenance item for a vehicle into one clean, printable mechanic slip —
+  // Vehicle Number, Model, business context, the full list of required works, and a combined,
+  // de-duplicated spare parts list pulled from every item on the slip.
+  function openMaintenanceSlip(vehicle, businessName){
+    var items = (vehicle.maintenance || []).filter(function(i){ return i.status !== "Done"; });
+    if(items.length === 0){ toast("No pending maintenance items to print", true); return; }
+    var modelLabel = getPrepVehicleModel(vehicle);
+    var allParts = [];
+    items.forEach(function(i){
+      (i.spareParts || []).forEach(function(p){ if(allParts.indexOf(p) === -1) allParts.push(p); });
+    });
+    var html = '<div class="print-slip">' +
+      '<div class="print-slip-header"><h2>Mechanic Work Slip</h2><span class="ps-date">' + fmtDate(new Date().toISOString()) + '</span></div>' +
+      '<div class="print-slip-meta">' +
+        '<div><b>Vehicle No.</b>' + esc(vehicle.vehicleNumber || "—") + '</div>' +
+        '<div><b>Model</b>' + esc(modelLabel || "—") + '</div>' +
+        '<div><b>Company</b>' + esc(businessName || "—") + '</div>' +
+        '<div><b>Segment</b>' + esc(vehicle.segment || "—") + '</div>' +
+      '</div>' +
+      '<div class="print-slip-section-title">Required Works</div>' +
+      '<ol class="print-slip-list">' + items.map(function(i){ return '<li>' + esc(maintenanceItemLabel(i)) + '</li>'; }).join("") + '</ol>' +
+      '<div class="print-slip-section-title">Required Spare Parts</div>' +
+      (allParts.length === 0
+        ? '<p style="font-size:13px;color:#555;">None listed</p>'
+        : '<ul class="print-slip-list">' + allParts.map(function(p){ return '<li>' + esc(p) + '</li>'; }).join("") + '</ul>') +
+      '<div class="print-slip-footer"><div class="ps-sign">Mechanic Signature</div><div class="ps-sign">Supervisor Signature</div></div>' +
+    '</div>';
+    document.getElementById("printSlipContainer").innerHTML = html;
+    setTimeout(function(){ window.print(); }, 50);
   }
 
   function paperworkSummaryTableHTML(vehicle){
@@ -7535,18 +7929,29 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     var panel = document.getElementById("bizTabInner");
     var maintOpen = !!prepMaintFormOpen[vehicle.id];
 
+    var modelLabel = getPrepVehicleModel(vehicle);
     var html = '<div class="biz-tab-header" style="margin-bottom:16px;">' +
       '<button class="back-btn" id="btnBackToPrepList"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>' +
-      '<span class="sheet-table-title">' + esc(vehicle.vehicleNumber || "Vehicle") + (vehicle.segment ? (' <span style="color:var(--text-faint);font-weight:500;">— ' + esc(vehicle.segment) + '</span>') : '') + '</span>' +
+      '<span class="sheet-table-title">' + esc(vehicle.vehicleNumber || "Vehicle") + (modelLabel ? (' <span style="color:var(--text-faint);font-weight:500;">— ' + esc(modelLabel) + '</span>') : '') + (vehicle.segment ? (' <span style="color:var(--text-faint);font-weight:500;">· ' + esc(vehicle.segment) + '</span>') : '') + '</span>' +
     '</div>';
 
     html += '<div class="sheet-table-card">';
     html += '<div class="sheet-table-header" style="margin-bottom:10px;"><span class="sheet-table-title">🔧 Maintenance</span>' +
+      '<button class="icon-btn" id="btnPrintMaintSlip" title="Print mechanic slip" style="margin-right:4px;"><svg viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg></button>' +
       '<button class="btn btn-primary btn-sm" id="btnToggleMaintForm">' + (maintOpen ? "Close" : "+ Add Item") + '</button></div>';
     html += '<div id="prepMaintFormWrap"></div>';
-    html += vehicle.maintenance.length === 0
-      ? '<div class="empty-state"><div class="big">🔧</div><p>No maintenance items yet.</p></div>'
-      : vehicle.maintenance.map(function(item){ return prepItemRowHTML(item, "maintenance"); }).join("");
+    var maintFilterKey = "prepMaint:" + vehicle.id;
+    var maintPending = vehicle.maintenance.filter(function(i){ return i.status !== "Done"; });
+    var maintDone = vehicle.maintenance.filter(function(i){ return i.status === "Done"; });
+    if(vehicle.maintenance.length === 0){
+      html += '<div class="empty-state"><div class="big">🔧</div><p>No maintenance items yet.</p></div>';
+    }else{
+      var maintShowing = getStaffListFilter(maintFilterKey) === "completed" ? maintDone : maintPending;
+      html += pendingCompletedTabsHTML(maintFilterKey, maintPending.length, maintDone.length);
+      html += maintShowing.length === 0
+        ? '<div class="empty-state"><div class="big">' + (getStaffListFilter(maintFilterKey) === "completed" ? "🔧" : "✅") + '</div><p>' + (getStaffListFilter(maintFilterKey) === "completed" ? "Nothing completed yet." : "Nothing pending.") + '</p></div>'
+        : maintShowing.map(function(item){ return prepItemRowHTML(item, "maintenance"); }).join("");
+    }
     html += '</div>';
 
     html += '<div class="sheet-table-card">';
@@ -7565,16 +7970,14 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       prepMaintFormOpen[vehicle.id] = !maintOpen;
       renderStockPrepVehicleDetail(module, business, tab, vehicle);
     });
+    document.getElementById("btnPrintMaintSlip").addEventListener("click", function(){
+      openMaintenanceSlip(vehicle, business.name);
+    });
 
     if(maintOpen) renderMaintAddForm(module, business, tab, vehicle);
 
-    panel.querySelectorAll(".prep-item-status").forEach(function(sel){
-      sel.addEventListener("change", function(){
-        var item = vehicle.maintenance.find(function(i){ return i.id === sel.getAttribute("data-item-id"); });
-        if(item){ item.status = sel.value; saveData(); }
-        renderStockPrepVehicleDetail(module, business, tab, vehicle);
-      });
-    });
+    wirePendingCompletedTabs(panel, maintFilterKey, function(){ renderStockPrepVehicleDetail(module, business, tab, vehicle); });
+    wirePrepStatusBadges(panel, vehicle.maintenance, function(){ renderStockPrepVehicleDetail(module, business, tab, vehicle); });
     panel.querySelectorAll(".prep-item-del").forEach(function(btn){
       btn.addEventListener("click", function(){
         if(!confirm("Remove this item? This can't be undone.")) return;
@@ -7588,49 +7991,58 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   /* ---------- Maintenance: Category -> Complaint -> Spare Parts structured picker ---------- */
   function renderMaintAddForm(module, business, tab, vehicle){
     var wrap = document.getElementById("prepMaintFormWrap");
-    var cats = Object.keys(tab.maintenanceCatalog);
+    var cats = tab.maintenanceCatalog || [];
     if(cats.length === 0){
-      wrap.innerHTML = '<p class="backup-note">No maintenance categories set up yet — go to <b>⚙️ Manage Categories</b> to add one before creating items.</p>';
+      wrap.innerHTML = '<p class="backup-note">No work type categories set up yet — go to <b>⚙️ Manage Categories</b> to add one before creating items.</p>';
       return;
     }
-    var selectedCat = prepMaintFormState.category && cats.indexOf(prepMaintFormState.category) !== -1 ? prepMaintFormState.category : cats[0];
-    var complaints = tab.maintenanceCatalog[selectedCat] || [];
-    var parts = tab.sparePartsCatalog[selectedCat] || [];
+    renderMaintFormBody();
 
-    wrap.innerHTML =
-      '<div class="quickadd">' +
-        '<div class="field" style="margin-bottom:10px;"><label>a) Category</label>' +
-          '<select class="input" id="maintCatSelect">' + cats.map(function(c){ return '<option value="' + esc(c) + '"' + (c === selectedCat ? " selected" : "") + '>' + esc(c) + '</option>'; }).join("") + '</select>' +
-        '</div>' +
-        '<div class="field" style="margin-bottom:10px;"><label>b) Complaint / Service</label>' +
-          '<select class="input" id="maintComplaintSelect">' +
-            (complaints.length === 0 ? '<option value="">None set up for this category yet</option>' : complaints.map(function(c){ return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join("")) +
-          '</select>' +
-        '</div>' +
-        '<div class="field" style="margin-bottom:10px;"><label>c) Required Spare Parts <span style="text-transform:none;letter-spacing:0;">(select any / all)</span></label>' +
-          '<div class="chip-row" id="maintPartsChecklist">' +
-            (parts.length === 0 ? '<p class="backup-note" style="margin:0;">None set up for this category yet.</p>' :
-              parts.map(function(p){ return '<label class="chip" style="cursor:pointer;"><input type="checkbox" class="maint-part-check" value="' + esc(p) + '" style="margin-right:5px;">' + esc(p) + '</label>'; }).join("")) +
+    function selectedCats(){
+      return Array.from(wrap.querySelectorAll(".maint-cat-check:checked")).map(function(cb){ return cb.value; });
+    }
+    function partsForSelectedCats(sel){
+      var union = [];
+      (sel.length ? sel : cats).forEach(function(c){
+        (tab.sparePartsCatalog[c] || []).forEach(function(p){ if(union.indexOf(p) === -1) union.push(p); });
+      });
+      return union;
+    }
+    function renderMaintFormBody(){
+      var sel = wrap.querySelector(".maint-cat-check") ? selectedCats() : [];
+      var parts = partsForSelectedCats(sel);
+      var checkedParts = Array.from(wrap.querySelectorAll(".maint-part-check:checked")).map(function(cb){ return cb.value; });
+      wrap.innerHTML =
+        '<div class="quickadd">' +
+          '<div class="field" style="margin-bottom:10px;"><label>Category <span style="text-transform:none;letter-spacing:0;">(select any / all)</span></label>' +
+            '<div class="chip-row" id="maintCatChecklist">' +
+              cats.map(function(c){ return '<label class="chip' + (sel.indexOf(c) !== -1 ? " selected" : "") + '" style="cursor:pointer;"><input type="checkbox" class="maint-cat-check" value="' + esc(c) + '"' + (sel.indexOf(c) !== -1 ? " checked" : "") + ' style="margin-right:5px;">' + esc(c) + '</label>'; }).join("") +
+            '</div>' +
           '</div>' +
-        '</div>' +
-        '<p class="backup-note">Need a new category, complaint, or spare part? Add it in <b>⚙️ Manage Categories</b> first.</p>' +
-        '<button class="btn btn-primary" id="btnCreateMaintItem" style="width:100%;">Add Maintenance Item</button>' +
-      '</div>';
+          '<div class="field" style="margin-bottom:10px;"><label>Required Spare Parts <span style="text-transform:none;letter-spacing:0;">(select any / all)</span></label>' +
+            '<div class="chip-row" id="maintPartsChecklist">' +
+              (parts.length === 0 ? '<p class="backup-note" style="margin:0;">None set up for the selected categories yet.</p>' :
+                parts.map(function(p){ return '<label class="chip' + (checkedParts.indexOf(p) !== -1 ? " selected" : "") + '" style="cursor:pointer;"><input type="checkbox" class="maint-part-check" value="' + esc(p) + '"' + (checkedParts.indexOf(p) !== -1 ? " checked" : "") + ' style="margin-right:5px;">' + esc(p) + '</label>'; }).join("")) +
+            '</div>' +
+          '</div>' +
+          '<p class="backup-note">Need a new category or spare part? Add it in <b>⚙️ Manage Categories</b> first.</p>' +
+          '<button class="btn btn-primary" id="btnCreateMaintItem" style="width:100%;">Add Maintenance Item</button>' +
+        '</div>';
 
-    document.getElementById("maintCatSelect").addEventListener("change", function(){
-      prepMaintFormState.category = this.value;
-      renderMaintAddForm(module, business, tab, vehicle);
-    });
-    document.getElementById("btnCreateMaintItem").addEventListener("click", function(){
-      var complaint = document.getElementById("maintComplaintSelect").value;
-      if(!complaint){ toast("Add a complaint / service for this category in Manage Categories first", true); return; }
-      var selectedParts = Array.from(document.querySelectorAll(".maint-part-check:checked")).map(function(cb){ return cb.value; });
-      vehicle.maintenance.push({id: uid(), category: selectedCat, complaint: complaint, spareParts: selectedParts, status:"Pending", createdAt:new Date().toISOString()});
-      saveData();
-      prepMaintFormOpen[vehicle.id] = false;
-      renderStockPrepVehicleDetail(module, business, tab, vehicle);
-      toast("Maintenance item added");
-    });
+      wrap.querySelectorAll(".maint-cat-check").forEach(function(cb){
+        cb.addEventListener("change", renderMaintFormBody);
+      });
+      document.getElementById("btnCreateMaintItem").addEventListener("click", function(){
+        var chosenCats = selectedCats();
+        if(chosenCats.length === 0){ toast("Select at least one category", true); return; }
+        var chosenParts = Array.from(document.querySelectorAll(".maint-part-check:checked")).map(function(cb){ return cb.value; });
+        vehicle.maintenance.push({id: uid(), categories: chosenCats, spareParts: chosenParts, status:"Pending", createdAt:new Date().toISOString()});
+        saveData();
+        prepMaintFormOpen[vehicle.id] = false;
+        renderStockPrepVehicleDetail(module, business, tab, vehicle);
+        toast("Maintenance item added");
+      });
+    }
   }
 
   // Every unique Vehicle Number across every Stock Report tab, in any business — used to populate the
@@ -9714,5 +10126,6 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   }
 })();
 </script>
+<div id="printSlipContainer" style="display:none;"></div>
 </body>
 </html>
