@@ -6,58 +6,66 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#14161B">
+<meta name="theme-color" content="#f3f4f6">
 <title>RelvoCRM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#14161b;
-    --bg-grad: radial-gradient(1200px 600px at 50% -10%, #1b1e26 0%, #14161b 60%);
-    --panel:#1c1f26;
-    --panel-2:#232630;
-    --border:#2c303a;
-    --border-strong:#3a3f4b;
-    --text:#f2f0ea;
-    --text-dim:#9a9eaa;
-    --text-faint:#656a76;
-    --accent:#4f46e5;
-    --accent-dim:#3f39c4;
-    --accent-soft:rgba(79,70,229,.14);
-    --up:#8bc084;
-    --down:#6fa3c2;
-    --danger:#e15554;
-    --danger-soft:rgba(225,85,84,.14);
-    --radius:14px;
-    --radius-sm:9px;
-    --font-display:'Barlow Condensed',"Arial Narrow",sans-serif;
+    --bg:#0f1420;
+    --bg-grad: radial-gradient(1200px 600px at 50% -10%, #171d2c 0%, #0f1420 60%);
+    --panel:#1a2032;
+    --panel-2:#222940;
+    --border:#2d3548;
+    --border-strong:#3d4760;
+    --text:#f1f3f9;
+    --text-dim:#a3acc2;
+    --text-faint:#6b7490;
+    --accent:#6b7fd7;
+    --accent-dim:#5568c2;
+    --accent-soft:rgba(107,127,215,.16);
+    --up:#4ade80;
+    --up-soft:rgba(74,222,128,.16);
+    --down:#60a5fa;
+    --down-soft:rgba(96,165,250,.16);
+    --danger:#f87171;
+    --danger-soft:rgba(248,113,113,.16);
+    --panel-translucent:rgba(26,32,50,.92);
+    --radius:12px;
+    --radius-sm:8px;
+    --font-display:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     --font-body:'Inter',system-ui,-apple-system,sans-serif;
     --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
     --app-max-width:560px;
     --sidebar-width:248px;
+    --shadow-card: 0 1px 2px rgba(0,0,0,.16), 0 2px 8px rgba(0,0,0,.12);
   }
   @media(min-width:768px){ :root{ --app-max-width:740px; } }
   @media(min-width:1024px){ :root{ --app-max-width:960px; } }
   @media(min-width:1440px){ :root{ --app-max-width:1160px; } }
 
   [data-theme="light"]{
-    --bg:#f4f3ef;
-    --bg-grad: radial-gradient(1200px 600px at 50% -10%, #ffffff 0%, #f4f3ef 60%);
+    --bg:#f3f4f6;
+    --bg-grad: radial-gradient(1200px 600px at 50% -10%, #ffffff 0%, #f3f4f6 60%);
     --panel:#ffffff;
-    --panel-2:#f0efe9;
-    --border:#dcd9cf;
-    --border-strong:#b3af9f;
-    --text:#1c1e22;
-    --text-dim:#484b52;
-    --text-faint:#6b6e76;
-    --accent:#4338ca;
-    --accent-dim:#3730a3;
-    --accent-soft:rgba(67,56,202,.16);
-    --up:#3f9a45;
-    --down:#3d7fa0;
-    --danger:#d13f3e;
-    --danger-soft:rgba(209,63,62,.10);
+    --panel-2:#f9fafb;
+    --border:#e5e7eb;
+    --border-strong:#d1d5db;
+    --text:#111827;
+    --text-dim:#4b5563;
+    --text-faint:#6b7280;
+    --accent:#334155;
+    --accent-dim:#1e293b;
+    --accent-soft:rgba(51,65,85,.08);
+    --up:#16a34a;
+    --up-soft:rgba(22,163,74,.10);
+    --down:#2563eb;
+    --down-soft:rgba(37,99,235,.10);
+    --danger:#dc2626;
+    --danger-soft:rgba(220,38,38,.08);
+    --panel-translucent:rgba(255,255,255,.85);
+    --shadow-card: 0 1px 2px rgba(0,0,0,.04), 0 2px 8px rgba(17,24,39,.06);
   }
   body, .card, .panel, .tile, .task-card, .emi-card, .sheet-table-card, .quickadd,
   .manage-panel, .biz-stat-cell, .modal-card, input, select, textarea, .btn, .chip,
@@ -97,7 +105,7 @@
   /* ---------- Tabs (bottom nav) ---------- */
   .tabbar{
     position:fixed;left:0;right:0;bottom:0;
-    background:rgba(20,22,27,.92);backdrop-filter:blur(14px);
+    background:var(--panel-translucent);backdrop-filter:blur(14px);
     border-top:1px solid var(--border);
     padding:8px 10px calc(8px + env(safe-area-inset-bottom));
     z-index:50;
@@ -129,9 +137,10 @@
   /* ---------- Cards / generic ---------- */
   .card{
     background:var(--panel);border:1px solid var(--border);
-    border-radius:var(--radius);padding:16px;margin-bottom:12px;
+    border-radius:var(--radius);padding:18px;margin-bottom:12px;
+    box-shadow:var(--shadow-card);
   }
-  .card-tight{padding:12px 14px;}
+  .card-tight{padding:14px 16px;}
   .empty-state{
     text-align:center;padding:34px 18px;color:var(--text-dim);
     border:1px dashed var(--border-strong);border-radius:var(--radius);
@@ -170,8 +179,8 @@
     border:1px solid var(--border);
     border-radius:18px;padding:16px 14px 14px;cursor:pointer;text-align:left;
     display:flex;flex-direction:column;gap:9px;overflow:hidden;
-    box-shadow:0 1px 2px rgba(0,0,0,.2), 0 12px 26px -16px rgba(0,0,0,.55);
-    transition:transform .12s,border-color .15s;
+    box-shadow:var(--shadow-card);
+    transition:transform .12s,border-color .15s,box-shadow .15s;
   }
   .tile:active{transform:scale(.96);}
   .tile::before{
@@ -260,7 +269,7 @@
   .ledger-num-input{text-align:right;padding-right:6px !important;}
   .ledger-profit{color:var(--up);}
   .ledger-profit.neg{color:var(--danger);}
-  .ledger-opening-row td{background:rgba(111,163,194,.09);border-bottom:1px solid rgba(111,163,194,.25);}
+  .ledger-opening-row td{background:var(--down-soft);border-bottom:1px solid var(--border-strong);}
   .ledger-opening-row .sheet-cell-locked{color:var(--down);}
   .ledger-opening-row .ledger-text-cell{color:var(--text);}
   .ledger-totals-row td{background:var(--panel-2);border-top:2px solid var(--border-strong);padding-top:11px !important;padding-bottom:11px !important;}
@@ -351,7 +360,7 @@
   .emi-reminder-days.urgent{color:var(--danger);}
   .emi-card{
     background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-sm);
-    padding:10px 11px;margin-bottom:8px;
+    padding:10px 11px;margin-bottom:8px;box-shadow:var(--shadow-card);
   }
   .emi-card.closed{opacity:.7;}
   .emi-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;}
@@ -370,7 +379,7 @@
   /* ---------- Tracking Sheet (spreadsheet) ---------- */
   .sheet-table-card{
     background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
-    padding:14px;margin-bottom:16px;
+    padding:16px;margin-bottom:16px;box-shadow:var(--shadow-card);
   }
   .sheet-table-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
   .sheet-table-title{
@@ -432,7 +441,7 @@
 
   .task-card{
     background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-sm);
-    padding:12px 13px;margin-bottom:9px;
+    padding:12px 13px;margin-bottom:9px;box-shadow:var(--shadow-card);
   }
   .task-top{display:flex;align-items:flex-start;gap:11px;}
   .task-switch{flex-shrink:0;margin-top:1px;}
@@ -482,7 +491,7 @@
     width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;
     font-size:22px;background:var(--tile-accent-soft, var(--accent-soft));flex-shrink:0;
   }
-  .module-header .m-name{font-family:var(--font-display);font-size:21px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;line-height:1.1;}
+  .module-header .m-name{font-family:var(--font-display);font-size:21px;font-weight:800;letter-spacing:-.2px;line-height:1.1;}
   .module-header .m-meta{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);margin-top:2px;}
 
   /* ---------- Gym / Fitness energy theme (scoped — Gym module only) ---------- */
@@ -528,7 +537,7 @@
     transition:opacity .15s, transform .1s;
   }
   .btn:active{transform:scale(.98);}
-  .btn-primary{background:var(--accent);color:var(--btn-text, #1a1108);}
+  .btn-primary{background:var(--accent);color:var(--btn-text, #ffffff);}
   .btn-ghost{background:var(--panel-2);color:var(--text);border:1px solid var(--border-strong);}
   .btn-danger{background:var(--danger-soft);color:var(--danger);}
   .btn-finish{background:var(--up);color:#122016;}
@@ -552,7 +561,7 @@
 
   /* ---------- Active category (Gym draft) ---------- */
   .active-cat{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-  .active-cat .name{font-family:var(--font-display);font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+  .active-cat .name{font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:-.2px;}
   .active-cat .name span{color:var(--accent);}
 
   /* ---------- Quick add form ---------- */
@@ -638,8 +647,8 @@
   .compare-mid{display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 6px;}
   .compare-mid .bar{width:1px;height:20px;background:var(--border-strong);}
   .delta{font-family:var(--font-mono);font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;white-space:nowrap;}
-  .delta.up{color:var(--up);background:rgba(139,192,132,.12);}
-  .delta.down{color:var(--down);background:rgba(111,163,194,.12);}
+  .delta.up{color:var(--up);background:var(--up-soft);}
+  .delta.down{color:var(--down);background:var(--down-soft);}
   .delta.flat{color:var(--text-dim);background:var(--panel);}
   .delta.new{color:var(--accent);background:var(--accent-soft);}
 
@@ -709,7 +718,7 @@
   .entry-card .ebadges{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px;}
   .badge-pill{font-family:var(--font-mono);font-size:10px;padding:3px 9px;border-radius:999px;background:var(--panel-2);color:var(--text-dim);border:1px solid var(--border);white-space:nowrap;}
   .badge-pill.status{color:var(--accent);border-color:var(--accent-dim);background:var(--accent-soft);}
-  .badge-pill.completed{color:var(--up);border-color:var(--up);background:rgba(139,192,132,.14);}
+  .badge-pill.completed{color:var(--up);border-color:var(--up);background:var(--up-soft);}
   .badge-pill.pending-red{color:var(--danger);border-color:var(--danger);background:var(--danger-soft);font-weight:700;}
   .badge-pill.badge-neutral{color:var(--text-dim);border-color:var(--border-strong);}
   .pending-task-card{border-left:3px solid var(--danger);}
@@ -932,7 +941,7 @@
 (function(){
   try{
     var t = localStorage.getItem("ironLogTheme");
-    document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+    document.documentElement.setAttribute("data-theme", t === "dark" ? "dark" : "light");
   }catch(e){}
 })();
 </script>
@@ -951,8 +960,8 @@
   <div class="login-card">
     <div class="login-brand">Relvo<span class="sidebar-brand-crm">CRM</span></div>
     <div class="login-title">Sign in to continue</div>
-    <div class="field" style="margin-bottom:10px;"><label>User ID</label><input class="input" type="text" id="loginIdentifier" autocomplete="username" placeholder="User ID"></div>
-    <div class="field" style="margin-bottom:14px;"><label>Password</label><input class="input" type="password" id="loginPassword" autocomplete="current-password" placeholder="Password"></div>
+    <div class="field" style="margin-bottom:10px;"><label>User ID</label><input class="input" type="text" id="loginIdentifier" autocomplete="off" name="staffLoginId" placeholder="User ID"></div>
+    <div class="field" style="margin-bottom:14px;"><label>Password</label><input class="input" type="password" id="loginPassword" autocomplete="off" name="staffLoginPw" placeholder="Password"></div>
     <button class="btn btn-primary" id="btnLogin" style="width:100%;">Sign In</button>
     <div id="loginError" class="login-error"></div>
     <div id="loginSpinnerOverlay" class="login-spinner-overlay" style="display:none;">
@@ -1102,10 +1111,15 @@
   <div class="modal-card" id="modalCard"></div>
 </div>
 
+<div class="modal-overlay" id="vehiclePickerOverlay" style="display:none;z-index:260;">
+  <div class="modal-card" id="vehiclePickerCard"></div>
+</div>
+
 <script type="module">
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSnapshot, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-storage.js";
 
 (function(){
   "use strict";
@@ -1123,6 +1137,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   const firebaseApp = initializeApp(firebaseConfig);
   const auth = getAuth(firebaseApp);
   const db = getFirestore(firebaseApp);
+  const storage = getStorage(firebaseApp);
 
   // Creating a Firebase Auth user via createUserWithEmailAndPassword automatically signs in as that
   // new user on whatever app instance it's called on. Running it on a throwaway secondary app instance
@@ -1148,6 +1163,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   const ATTENDANCE_COL = collection(db, "ironLogAttendance");
   const DEVICE_BINDING_COL = collection(db, "ironLogDeviceBindings");
   const LEAVES_COL = collection(db, "ironLogLeaves");
+  const ACTION_COMPLETIONS_COL = collection(db, "ironLogActionCompletions");
 
   var firebaseUser = null;
   var firebaseProfile = null;
@@ -1161,6 +1177,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   var knownAttendanceDocs = new Map();
   var knownDeviceBindingDocs = new Map();
   var knownLeaveDocs = new Map();
+  var knownActionCompletionDocs = new Map();
   var authBooted = false;
 
   var STORAGE_KEY = "ironLogData_v2";
@@ -1304,7 +1321,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   var WORKFLOW_LOOKBACK_DAYS = 90;
   var ACTION_WORKFLOW_TYPES = [
     {key:"stockReportUpload", label:"Stock Report Upload", accept:".xlsx,.xls,.csv", icon:"📊"},
-    {key:"propReportUpload", label:"Prop Report Upload", accept:"*", icon:"📋"},
+    {key:"stockPrepUpload", label:"Stock Prep Report Upload", accept:".xlsx,.xls,.csv", icon:"🔧"},
     {key:"fileUpload", label:"General File Upload", accept:"*", icon:"📎"}
   ];
   function actionWorkflowTypeDef(key){
@@ -1595,6 +1612,12 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     document.getElementById("loginGate").style.display = "flex";
     document.querySelector(".app").style.display = "none";
     hideLoginSpinner();
+    // Defense in depth against cross-account autofill on shared/synced browsers: never let a
+    // previous person's typed-but-unsubmitted credentials linger visibly for the next person.
+    var idField = document.getElementById("loginIdentifier");
+    var pwField = document.getElementById("loginPassword");
+    if(idField) idField.value = "";
+    if(pwField) pwField.value = "";
   }
   function hideLoginGate(){
     hideBootLoader();
@@ -2162,28 +2185,91 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     return out;
   }
 
+  // Same object-identity-preservation principle as mergeLeaveDocsIntoData below — tasks are mutated
+  // far more frequently throughout the app (status changes, extension approve/reject, etc), making
+  // this the more likely primary cause of "requires many clicks to register."
+  // Protects against a real race condition: a local change (new task, new chat message, status
+  // change) can exist in memory for a moment before its write actually reaches Firestore (the local
+  // save is debounced ~180ms, plus network time). If ANY other sync event on the tasks collection
+  // fires during that window, the old merge logic would rebuild the arrays purely from the snapshot
+  // — which doesn't yet reflect the just-made change — silently erasing it from local state, not
+  // just failing to display it. Marking a task "dirty" for a few seconds after any local edit tells
+  // the merge function to trust the local copy instead of the stale snapshot until the write has had
+  // realistic time to round-trip and be reflected back.
+  var TASK_DIRTY_GRACE_MS = 9000; // generous margin for slower connections where the write round-trip can exceed a few seconds
+  var recentLocalTaskEdits = {}; // taskId -> timestamp of last local edit
+  function markTaskDirty(taskId){ recentLocalTaskEdits[taskId] = Date.now(); }
+  function isTaskDirty(taskId){
+    var t = recentLocalTaskEdits[taskId];
+    return !!t && (Date.now() - t) < TASK_DIRTY_GRACE_MS;
+  }
   function mergeTaskDocsIntoData(taskDocs){
     if(!taskDocs || taskDocs.size === 0) return;
     var bizModule = data.modules && data.modules.business;
-    if(bizModule && bizModule.type === "business") (bizModule.businesses || []).forEach(function(b){ b.tasks = []; });
     var staffModule = findStaffModuleAny();
-    if(staffModule){
-      staffModule.tasks = [];
-      (staffModule.staffMembers || []).forEach(function(m){ m.tasks = []; });
+    var existingById = {};
+    var existingLocation = {};
+    if(bizModule && bizModule.type === "business"){
+      (bizModule.businesses || []).forEach(function(b){ (b.tasks || []).forEach(function(t){ existingById[t.id] = t; existingLocation[t.id] = {type:"business", businessId:b.id}; }); });
     }
-    taskDocs.forEach(function(raw){
-      var t = JSON.parse(JSON.stringify(raw));
-      delete t.locationType; delete t.businessId; delete t.staffMemberId; delete t.locationKey; delete t.updatedAt; delete t.updatedBy;
+    if(staffModule){
+      (staffModule.tasks || []).forEach(function(t){ existingById[t.id] = t; existingLocation[t.id] = {type:"staffGeneral"}; });
+      (staffModule.staffMembers || []).forEach(function(m){ (m.tasks || []).forEach(function(t){ existingById[t.id] = t; existingLocation[t.id] = {type:"staffMember", staffMemberId:m.id}; }); });
+    }
+    var byBusiness = {}, staffGeneral = [], byStaffMember = {};
+    var processedIds = {};
+    taskDocs.forEach(function(raw, docId){
+      processedIds[docId] = true;
+      var existing = existingById[docId];
+      var t;
+      if(existing && isTaskDirty(docId)){
+        // Trust the local, more-recent version instead of this possibly-stale snapshot.
+        t = existing;
+      }else{
+        var clean = JSON.parse(JSON.stringify(raw));
+        delete clean.locationType; delete clean.businessId; delete clean.staffMemberId; delete clean.locationKey; delete clean.updatedAt; delete clean.updatedBy;
+        clean.id = docId;
+        if(existing){
+          Object.keys(clean).forEach(function(k){ existing[k] = clean[k]; });
+          t = existing;
+        }else{
+          t = clean;
+        }
+      }
       if(raw.locationType === "business" && bizModule){
-        var b = (bizModule.businesses || []).find(function(x){ return x.id === raw.businessId; });
-        if(b) b.tasks.push(t);
+        if(!byBusiness[raw.businessId]) byBusiness[raw.businessId] = [];
+        byBusiness[raw.businessId].push(t);
       }else if(raw.locationType === "staffGeneral" && staffModule){
-        staffModule.tasks.push(t);
+        staffGeneral.push(t);
       }else if(raw.locationType === "staffMember" && staffModule){
-        var m = findStaffMember(staffModule, raw.staffMemberId);
-        if(m) m.tasks.push(t);
+        if(!byStaffMember[raw.staffMemberId]) byStaffMember[raw.staffMemberId] = [];
+        byStaffMember[raw.staffMemberId].push(t);
       }
     });
+    // Re-inject any locally-dirty task that isn't in this snapshot at all yet — e.g. a brand-new
+    // task whose write hasn't landed on the server before this unrelated sync event fired.
+    Object.keys(recentLocalTaskEdits).forEach(function(taskId){
+      if(processedIds[taskId] || !isTaskDirty(taskId)) return;
+      var existing = existingById[taskId];
+      var loc = existingLocation[taskId];
+      if(!existing || !loc) return;
+      if(loc.type === "business"){
+        if(!byBusiness[loc.businessId]) byBusiness[loc.businessId] = [];
+        byBusiness[loc.businessId].push(existing);
+      }else if(loc.type === "staffGeneral"){
+        staffGeneral.push(existing);
+      }else if(loc.type === "staffMember"){
+        if(!byStaffMember[loc.staffMemberId]) byStaffMember[loc.staffMemberId] = [];
+        byStaffMember[loc.staffMemberId].push(existing);
+      }
+    });
+    if(bizModule && bizModule.type === "business"){
+      (bizModule.businesses || []).forEach(function(b){ b.tasks = byBusiness[b.id] || []; });
+    }
+    if(staffModule){
+      staffModule.tasks = staffGeneral;
+      (staffModule.staffMembers || []).forEach(function(m){ m.tasks = byStaffMember[m.id] || []; });
+    }
   }
 
   // Attendance lives per staff member per day. This exists as its own granular collection (rather than
@@ -2253,17 +2339,133 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     }
     return out;
   }
+  // Preserves object identity for leaves that already exist locally (matched by id, which is the
+  // same value as the Firestore doc id — see flattenLeaveDocs above) by mutating the existing object
+  // in place rather than replacing it. Without this, any UI code holding a reference to a specific
+  // leave object across an async gap — e.g. an Approve/Reject button's click handler closure — gets
+  // silently orphaned the moment this listener re-fires, which happens on every single save (since
+  // the admin's own approval write echoes back through this same listener within ~1 second). That
+  // mismatch is what produced "needs 10-15 clicks to register": most clicks were mutating a copy
+  // that had already been discarded by the time the next sync cycle rebuilt the array.
   function mergeLeaveDocsIntoData(leaveDocs){
     if(!leaveDocs || leaveDocs.size === 0) return;
     var staffModule = findStaffModuleAny();
     if(!staffModule) return;
-    (staffModule.staffMembers || []).forEach(function(m){ m.leaves = []; });
-    leaveDocs.forEach(function(raw){
+    var existingById = {};
+    (staffModule.staffMembers || []).forEach(function(m){
+      (m.leaves || []).forEach(function(l){ existingById[l.id] = l; });
+    });
+    var byMember = {};
+    leaveDocs.forEach(function(raw, docId){
       var m = findStaffMember(staffModule, raw.staffMemberId);
       if(!m) return;
-      var l = JSON.parse(JSON.stringify(raw));
-      delete l.staffMemberId; delete l.moduleId; delete l.updatedAt; delete l.updatedBy;
-      m.leaves.push(l);
+      var clean = JSON.parse(JSON.stringify(raw));
+      delete clean.staffMemberId; delete clean.moduleId; delete clean.updatedAt; delete clean.updatedBy;
+      clean.id = docId;
+      var existing = existingById[docId];
+      var leaf;
+      if(existing){
+        Object.keys(clean).forEach(function(k){ existing[k] = clean[k]; });
+        leaf = existing;
+      }else{
+        leaf = clean;
+      }
+      if(!byMember[m.id]) byMember[m.id] = [];
+      byMember[m.id].push(leaf);
+    });
+    (staffModule.staffMembers || []).forEach(function(m){ m.leaves = byMember[m.id] || []; });
+  }
+
+  // Action workflow completions live inside a business's workflow tab, which otherwise only syncs
+  // via the admin-only app-state blob. This collection lets a staff member's own completion (and
+  // uploaded file reference) actually reach Admin, the same pattern used for attendance/leaves.
+  function isActionWorkflowAssignedTo(tabId, itemId, staffId){
+    var bizModule = data.modules.business;
+    if(!bizModule || bizModule.type !== "business") return false;
+    for(var i = 0; i < (bizModule.businesses || []).length; i++){
+      var tabs = bizModule.businesses[i].tabs || [];
+      for(var j = 0; j < tabs.length; j++){
+        if(tabs[j].id !== tabId) continue;
+        var aw = (tabs[j].actionWorkflows || []).find(function(a){ return a.id === itemId; });
+        return !!(aw && aw.assignedTo === staffId);
+      }
+    }
+    return false;
+  }
+  function flattenActionCompletionDocs(){
+    var out = new Map();
+    var bizModule = data.modules.business;
+    if(bizModule && bizModule.type === "business"){
+      (bizModule.businesses || []).forEach(function(biz){
+        (biz.tabs || []).forEach(function(tab){
+          if(tab.type !== "workflow") return;
+          (tab.actionCompletions || []).forEach(function(c){
+            var aw = (tab.actionWorkflows || []).find(function(a){ return a.id === c.itemId; });
+            // assignedTo is denormalized here (not part of the local completion object) purely so
+            // the Firestore security rule can check it directly — rules can't search a nested array
+            // for a matching actionWorkflow item the way isActionWorkflowAssignedTo() does locally.
+            out.set(c.id, Object.assign({}, JSON.parse(JSON.stringify(c)), {tabId:tab.id, businessId:biz.id, assignedTo: aw ? aw.assignedTo : null}));
+          });
+        });
+      });
+    }
+    return out;
+  }
+  var recentLocalActionCompletionEdits = {}; // completionId -> timestamp, same grace-period pattern as task edits
+  function markActionCompletionDirty(completionId){ recentLocalActionCompletionEdits[completionId] = Date.now(); }
+  function isActionCompletionDirty(completionId){
+    var t = recentLocalActionCompletionEdits[completionId];
+    return !!t && (Date.now() - t) < TASK_DIRTY_GRACE_MS;
+  }
+  function mergeActionCompletionDocsIntoData(docsMap){
+    if(!docsMap || docsMap.size === 0) return;
+    var bizModule = data.modules.business;
+    if(!bizModule || bizModule.type !== "business") return;
+    var existingById = {};
+    var existingTabId = {};
+    (bizModule.businesses || []).forEach(function(biz){
+      (biz.tabs || []).forEach(function(tab){
+        if(tab.type !== "workflow") return;
+        (tab.actionCompletions || []).forEach(function(c){ existingById[c.id] = c; existingTabId[c.id] = tab.id; });
+      });
+    });
+    var byTab = {};
+    var processedIds = {};
+    docsMap.forEach(function(raw, docId){
+      processedIds[docId] = true;
+      var existing = existingById[docId];
+      var c;
+      if(existing && isActionCompletionDirty(docId)){
+        c = existing;
+      }else{
+        var clean = JSON.parse(JSON.stringify(raw));
+        delete clean.tabId; delete clean.businessId; delete clean.assignedTo; delete clean.updatedAt; delete clean.updatedBy;
+        clean.id = docId;
+        if(existing){
+          Object.keys(clean).forEach(function(k){ existing[k] = clean[k]; });
+          c = existing;
+        }else{
+          c = clean;
+        }
+      }
+      if(!byTab[raw.tabId]) byTab[raw.tabId] = [];
+      byTab[raw.tabId].push(c);
+    });
+    // Re-inject any locally-dirty completion not yet reflected in this snapshot at all — e.g. one
+    // whose async upload/parse just finished and hasn't round-tripped through Firestore yet.
+    Object.keys(recentLocalActionCompletionEdits).forEach(function(id){
+      if(processedIds[id] || !isActionCompletionDirty(id)) return;
+      var existing = existingById[id];
+      var tabId = existingTabId[id];
+      if(!existing || !tabId) return;
+      if(!byTab[tabId]) byTab[tabId] = [];
+      byTab[tabId].push(existing);
+    });
+    (bizModule.businesses || []).forEach(function(biz){
+      (biz.tabs || []).forEach(function(tab){
+        if(tab.type !== "workflow") return;
+        tab.actionCompletions = byTab[tab.id] || [];
+      });
     });
   }
 
@@ -2372,9 +2574,22 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     mergeAttendanceDocsIntoData(knownAttendanceDocs);
     mergeDeviceBindingDocsIntoData(knownDeviceBindingDocs);
     mergeLeaveDocsIntoData(knownLeaveDocs);
+    mergeActionCompletionDocsIntoData(knownActionCompletionDocs);
   }
 
   function rerenderAfterRemote(){
+    // A background sync firing while the user is mid-keystroke in a text field would otherwise
+    // destroy and recreate that field via innerHTML rebuild — losing focus, cursor position, and
+    // anything typed but not yet sent. Deferring the render until they're done typing (blur, or a
+    // short idle gap) fixes this for chat inputs and protects every other text field the same way.
+    var active = document.activeElement;
+    if(active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA")){
+      clearTimeout(rerenderAfterRemote._deferTimer);
+      var retry = function(){ rerenderAfterRemote(); };
+      active.addEventListener("blur", retry, {once:true});
+      rerenderAfterRemote._deferTimer = setTimeout(retry, 4000);
+      return;
+    }
     try{
       renderHeader();
       syncRoleUI();
@@ -2445,6 +2660,17 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       if(canDelete) writes.push(deleteDoc(doc(db,"ironLogLeaves",id)));
     });
 
+    var actionCompletions = flattenActionCompletionDocs();
+    actionCompletions.forEach(function(c, id){
+      var canWrite = isFirebaseAdmin() || (staffId && isActionWorkflowAssignedTo(c.tabId, c.itemId, staffId));
+      if(canWrite) writes.push(setDoc(doc(db,"ironLogActionCompletions",id), Object.assign({}, c, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true}));
+    });
+    knownActionCompletionDocs.forEach(function(remote, id){
+      if(actionCompletions.has(id)) return;
+      var canDelete = isFirebaseAdmin() || (staffId && isActionWorkflowAssignedTo(remote.tabId, remote.itemId, staffId));
+      if(canDelete) writes.push(deleteDoc(doc(db,"ironLogActionCompletions",id)));
+    });
+
     if(isFirebaseAdmin()){
       var roster = flattenStaffRoster();
       if(roster) writes.push(setDoc(STAFF_ROSTER_REF, Object.assign({}, roster, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid})));
@@ -2497,7 +2723,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     cloudUnsubs.forEach(function(fn){ try{ fn(); }catch(e){} });
     cloudUnsubs = [];
     knownTaskDocs = new Map(); knownPaperworkDocs = new Map(); knownGymPlanDocs = new Map(); knownAttendanceDocs = new Map();
-    knownDeviceBindingDocs = new Map(); knownLeaveDocs = new Map();
+    knownDeviceBindingDocs = new Map(); knownLeaveDocs = new Map(); knownActionCompletionDocs = new Map();
   }
 
   async function startCloudSync(){
@@ -2639,6 +2865,17 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       finally{ cloudApplying = false; }
       rerenderAfterRemote();
     }, function(err){ console.error("Leaves listener", err); }));
+
+    cloudUnsubs.push(onSnapshot(ACTION_COMPLETIONS_COL, function(snap){
+      var map = new Map();
+      snap.forEach(function(d){ map.set(d.id, d.data()); });
+      knownActionCompletionDocs = map;
+      cloudApplying = true;
+      try{ mergeActionCompletionDocsIntoData(map); persist(data); }
+      catch(err){ console.error("Action-completion merge failed", err); }
+      finally{ cloudApplying = false; }
+      rerenderAfterRemote();
+    }, function(err){ console.error("Action-completion listener", err); }));
 
     var draftRef = doc(db, "ironLogGymDrafts", firebaseUser.uid);
     cloudUnsubs.push(onSnapshot(draftRef, function(snap){
@@ -2789,6 +3026,9 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   }
   modalOverlayEl.addEventListener("click", function(e){
     if(e.target === modalOverlayEl) closeModal();
+  });
+  document.getElementById("vehiclePickerOverlay").addEventListener("click", function(e){
+    if(e.target.id === "vehiclePickerOverlay") closeVehiclePickerOverlay();
   });
 
   // ---------- icon picker (shared component) ----------
@@ -2984,11 +3224,56 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       : showing.map(function(e){ return staffTaskCardHTML(e, true, null); }).join("");
     html += renderPrepItemsHubSection();
     html += renderVehiclePaperworkReportSection();
+    html += renderUploadedFilesHubSection();
     wrap.innerHTML = html;
     wirePendingCompletedTabs(wrap, filterKey, renderTasksHub);
     wireStaffTaskCardEvents(wrap, staffModule, null, true, byId, renderTasksHub);
     wirePrepHubSection(wrap);
     wirePendingCompletedTabs(wrap, "tasksHubPwReport", renderTasksHub);
+  }
+
+  // Gathers every action-workflow completion across every business into one dedicated Admin view —
+  // Stock Report / Stock Prep imports show their summary, General uploads get a real "Open file" link.
+  function getAllActionCompletionsForHub(){
+    var results = [];
+    var bizModule = data.modules.business;
+    if(bizModule && bizModule.type === "business"){
+      (bizModule.businesses || []).forEach(function(biz){
+        (biz.tabs || []).forEach(function(tab){
+          if(tab.type !== "workflow") return;
+          (tab.actionCompletions || []).forEach(function(c){
+            var aw = (tab.actionWorkflows || []).find(function(a){ return a.id === c.itemId; });
+            if(!aw) return;
+            var assignee = staffAssignOptions().find(function(s){ return s.id === aw.assignedTo; });
+            results.push({completion:c, actionWorkflow:aw, businessName:biz.name, staffName: assignee ? assignee.name : "Unknown"});
+          });
+        });
+      });
+    }
+    return results.sort(function(a,b){ return new Date(b.completion.dueDate) - new Date(a.completion.dueDate); });
+  }
+  function renderUploadedFilesHubSection(){
+    var all = getAllActionCompletionsForHub();
+    var html = '<div class="section-title">📎 Uploaded Files &amp; Reports</div>';
+    if(all.length === 0){
+      return html + '<div class="empty-state"><div class="big">📎</div><p>No action-workflow uploads yet.</p></div>';
+    }
+    html += all.slice(0, 30).map(function(e){
+      var c = e.completion, aw = e.actionWorkflow;
+      var typeDef = actionWorkflowTypeDef(aw.actionType);
+      var statusIcon = c.error ? "⚠️" : (c.status === "completed" ? "✅" : "🕓");
+      var line = c.error ? esc(c.error) : (c.summary || (c.fileName ? ("Attached: " + c.fileName) : "No file"));
+      var openLink = c.downloadURL ? (' — <a href="' + esc(c.downloadURL) + '" target="_blank" rel="noopener" style="color:var(--accent);">Open file</a>') : "";
+      return '<div class="card card-tight">' +
+        '<div class="hist-row" style="border:none;padding:0;">' +
+          '<div class="left"><div class="date" style="font-weight:600;">' + typeDef.icon + ' ' + esc(aw.name) + '</div>' +
+            '<div class="sess">' + esc(e.businessName) + ' · ' + esc(e.staffName) + ' · ' + esc(fmtDate(c.dueDate)) + '</div></div>' +
+          '<div class="right">' + statusIcon + '</div>' +
+        '</div>' +
+        '<div class="backup-note" style="margin-top:6px;">' + line + openLink + '</div>' +
+      '</div>';
+    }).join("");
+    return html;
   }
 
   function renderVehiclePaperworkReportSection(){
@@ -3501,7 +3786,9 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         var vehicleInput = document.getElementById("taskVehicleInput");
         var vehicleNumber = vehicleInput ? (vehicleInput.value || null) : null;
         if(!title){ toast("Enter a task", true); return; }
-        business.tasks.push({id: uid(), title: title, deadline: deadline, status: "pending", createdAt: new Date().toISOString(), completedAt: null, notes: noteText, assignedTo: assignedTo, createdBy: "admin", extensionRequest: null, isNew: !!assignedTo, vehicleNumber: vehicleNumber, chat: []});
+        var newTaskId = uid();
+        business.tasks.push({id: newTaskId, title: title, deadline: deadline, status: "pending", createdAt: new Date().toISOString(), completedAt: null, notes: noteText, assignedTo: assignedTo, createdBy: "admin", extensionRequest: null, isNew: !!assignedTo, vehicleNumber: vehicleNumber, chat: []});
+        markTaskDirty(newTaskId);
         saveData();
         renderHeader();
         bizTaskFormOpen[business.id] = false;
@@ -3630,13 +3917,14 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   function wireTaskChat(container, getTaskFn, viewerId, viewerName, rerenderFn){
     function send(taskId){
       var input = container.querySelector('.task-chat-input[data-task-id="' + taskId + '"]');
-      if(!input) return;
+      if(!input){ console.error("Chat send failed: input not found for task", taskId); toast("Couldn't send — please reopen this task and try again", true); return; }
       var msg = input.value.trim();
       if(!msg) return;
       var task = getTaskFn(taskId);
-      if(!task) return;
+      if(!task){ console.error("Chat send failed: task not found", taskId); toast("Couldn't send — this task may have been removed or moved", true); return; }
       if(!Array.isArray(task.chat)) task.chat = [];
       task.chat.push({id: uid(), senderId: viewerId, senderName: viewerName, message: msg, timestamp: new Date().toISOString()});
+      markTaskDirty(taskId);
       saveData();
       rerenderFn();
     }
@@ -3647,6 +3935,12 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       input.addEventListener("keydown", function(e){
         if(e.key === "Enter"){ e.preventDefault(); send(input.getAttribute("data-task-id")); }
       });
+    });
+    // Keep the latest message visible by default, same as WhatsApp — without this, a scrollable
+    // container with more content than fits just shows its top (the oldest messages) until the
+    // user manually scrolls down, which reads exactly like "new messages are hidden."
+    container.querySelectorAll(".task-chat-thread").forEach(function(thread){
+      thread.scrollTop = thread.scrollHeight;
     });
   }
 
@@ -3716,7 +4010,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         var task = business.tasks.find(function(t){ return t.id === id; });
         // Approving an extension ONLY moves the deadline forward — it must never touch task.status.
         // The task stays exactly as it was (Pending unless someone completed it separately).
-        if(task && task.extensionRequest){ task.deadline = task.extensionRequest.newDate; task.extensionRequest.status = "approved"; saveData(); }
+        if(task && task.extensionRequest){ task.deadline = task.extensionRequest.newDate; task.extensionRequest.status = "approved"; markTaskDirty(id); saveData(); }
         rerenderFn();
         toast("Extension approved");
       });
@@ -3725,7 +4019,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       btn.addEventListener("click", function(){
         var id = btn.getAttribute("data-tid");
         var task = business.tasks.find(function(t){ return t.id === id; });
-        if(task && task.extensionRequest){ task.extensionRequest.status = "rejected"; saveData(); }
+        if(task && task.extensionRequest){ task.extensionRequest.status = "rejected"; markTaskDirty(id); saveData(); }
         rerenderFn();
         toast("Extension rejected");
       });
@@ -3749,6 +4043,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         if(!task) return;
         if(task.status === "completed"){ task.status = "pending"; task.completedAt = null; }
         else{ task.status = "completed"; task.completedAt = new Date().toISOString(); }
+        markTaskDirty(id);
         getTaskState(id).confirming = false;
         saveData();
         renderHeader();
@@ -4665,20 +4960,24 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     wrap.innerHTML =
       '<div class="manage-item" style="margin-top:14px;">' +
         '<input class="input" id="awfNewName" placeholder="Action name (e.g. Weekly Stock Report)" style="margin-bottom:8px;">' +
-        '<select class="input" id="awfNewType" style="margin-bottom:8px;">' +
-          ACTION_WORKFLOW_TYPES.map(function(t){ return '<option value="' + t.key + '">' + t.icon + ' ' + esc(t.label) + '</option>'; }).join("") +
-        '</select>' +
-        '<select class="input" id="awfNewAssign" style="margin-bottom:8px;">' +
-          staffOptions.map(function(s){ return '<option value="' + s.id + '">' + esc(s.name) + '</option>'; }).join("") +
-        '</select>' +
-        '<select class="input" id="awfNewSchedType" style="margin-bottom:8px;">' +
-          '<option value="daily">Every day</option>' +
-          '<option value="weekly">Every week (specific day)</option>' +
-          '<option value="monthly">Every month (specific date)</option>' +
-        '</select>' +
-        '<div id="awfNewExtra"></div>' +
-        '<textarea class="input" id="awfNewNote" placeholder="Note / instructions for staff (optional)" rows="2" style="margin:8px 0;"></textarea>' +
-        '<button class="btn btn-primary btn-sm" id="awfAddBtn" style="width:100%;">Add Action Workflow</button>' +
+        '<div class="row-2" style="margin-bottom:8px;">' +
+          '<select class="input" id="awfNewType">' +
+            ACTION_WORKFLOW_TYPES.map(function(t){ return '<option value="' + t.key + '">' + t.icon + ' ' + esc(t.label) + '</option>'; }).join("") +
+          '</select>' +
+          '<select class="input" id="awfNewAssign">' +
+            staffOptions.map(function(s){ return '<option value="' + s.id + '">' + esc(s.name) + '</option>'; }).join("") +
+          '</select>' +
+        '</div>' +
+        '<div class="row-2" style="margin-bottom:8px;">' +
+          '<select class="input" id="awfNewSchedType">' +
+            '<option value="daily">Every day</option>' +
+            '<option value="weekly">Every week</option>' +
+            '<option value="monthly">Every month</option>' +
+          '</select>' +
+          '<div id="awfNewExtra"></div>' +
+        '</div>' +
+        '<textarea class="input" id="awfNewNote" placeholder="Note / instructions for staff (optional)" rows="2" style="margin-bottom:8px;"></textarea>' +
+        '<button class="btn btn-primary btn-header-action" id="awfAddBtn">+ Add Action Workflow</button>' +
       '</div>';
 
     function renderExtra(){
@@ -4732,13 +5031,28 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     wrap.innerHTML = items.map(function(aw){
       var typeDef = actionWorkflowTypeDef(aw.actionType);
       var assignee = staffAssignOptions().find(function(s){ return s.id === aw.assignedTo; });
-      return '<div class="card card-tight" style="margin-top:8px;">' +
+      var history = (tab.actionCompletions || [])
+        .filter(function(c){ return c.itemId === aw.id; })
+        .sort(function(a,b){ return new Date(b.dueDate) - new Date(a.dueDate); })
+        .slice(0, 5);
+      var html = '<div class="card card-tight" style="margin-top:8px;">' +
         '<div class="hist-row" style="border:none;padding:0;">' +
           '<div class="left"><div class="date" style="font-weight:600;">' + typeDef.icon + ' ' + esc(aw.name) + '</div>' +
             '<div class="sess">' + esc(assignee ? assignee.name : "Unassigned") + ' · ' + esc(workflowScheduleLabel(aw)) + '</div></div>' +
           '<button class="icon-btn action-wf-del" data-id="' + aw.id + '" title="Remove"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>' +
-        '</div>' +
-      '</div>';
+        '</div>';
+      if(history.length > 0){
+        html += '<div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px;">';
+        html += history.map(function(c){
+          var statusIcon = c.error ? "⚠️" : (c.status === "completed" ? "✅" : "🕓");
+          var line = c.error ? esc(c.error) : (c.summary || (c.fileName ? ("Attached: " + c.fileName) : "No file yet"));
+          var openLink = (c.downloadURL) ? (' — <a href="' + esc(c.downloadURL) + '" target="_blank" rel="noopener" style="color:var(--accent);">Open file</a>') : "";
+          return '<div class="backup-note" style="margin:2px 0;">' + statusIcon + ' ' + esc(fmtDate(c.dueDate)) + ' — ' + line + openLink + '</div>';
+        }).join("");
+        html += '</div>';
+      }
+      html += '</div>';
+      return html;
     }).join("");
     wrap.querySelectorAll(".action-wf-del").forEach(function(btn){
       btn.addEventListener("click", function(){
@@ -5330,7 +5644,9 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         '<button class="link-btn yard-manage-rates" data-id="' + y.id + '" style="padding:0;margin-right:10px;">Rates</button>' +
         '<button class="icon-btn yard-del" data-id="' + y.id + '" title="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>';
     }).join("");
-    html += '<div class="add-exercise-row" style="margin-top:10px;"><input class="input" id="newYardName" placeholder="Yard name (e.g. Malappuram)"><button class="btn btn-primary btn-sm" id="btnAddYard">Add Yard</button></div></div>';
+    html += '<div class="add-exercise-row" style="margin-top:10px;"><input class="input" id="newYardName" placeholder="Yard name (e.g. Malappuram)"></div>' +
+      '<div class="row-2" style="margin-top:8px;"><input class="input" id="newYardRateCategory" placeholder="Category (optional, e.g. 2-Wheeler)"><input class="input input-mono" id="newYardRateAmount" placeholder="Price (optional)" inputmode="decimal"></div>' +
+      '<button class="btn btn-primary btn-sm" id="btnAddYard" style="width:100%;margin-top:8px;">Add Yard</button></div>';
 
     var yard = yardRateManageId ? dp.yards.find(function(y){ return y.id === yardRateManageId; }) : null;
     if(yard){
@@ -5347,12 +5663,15 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     document.getElementById("btnAddYard").addEventListener("click", function(){
       var name = document.getElementById("newYardName").value.trim();
       if(!name){ toast("Enter a yard name", true); return; }
+      var rateCat = document.getElementById("newYardRateCategory").value.trim();
+      var rateAmt = document.getElementById("newYardRateAmount").value.trim();
       var newYard = {id: uid(), name:name, rates:[]};
+      if(rateCat && rateAmt) newYard.rates.push({id: uid(), category:rateCat, amount:rateAmt});
       dp.yards.push(newYard);
       yardRateManageId = newYard.id;
       saveData();
       renderYardMgmt();
-      toast(name + " added");
+      toast(name + " added" + (rateCat && rateAmt ? " with rate" : ""));
     });
     wrap.querySelectorAll(".yard-del").forEach(function(btn){
       btn.addEventListener("click", function(){
@@ -6163,7 +6482,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         (biz.tabs || []).forEach(function(tab){
           if(tab.type !== "workflow") return;
           (tab.actionWorkflows || []).forEach(function(aw){
-            if(aw.assignedTo === staffId) results.push({item:aw, tab:tab, businessName: biz.name});
+            if(aw.assignedTo === staffId) results.push({item:aw, tab:tab, business:biz, businessName: biz.name});
           });
         });
       });
@@ -6186,6 +6505,8 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   // real file bytes in the synced JSON data would risk exceeding Firestore's per-document size limit.
   // This still fully satisfies "cannot mark Done until a file has been uploaded": selecting a file is
   // required before the Mark Done button becomes enabled, and staff have no other action available.
+  var actionWfProcessingId = null; // itemId currently mid-upload/parse, transient
+  var actionWfCompletedTodayOpen = false; // transient
   function renderStaffActionWfList(module, staff){
     var wrap = document.getElementById("staffActionWfList");
     if(!wrap) return;
@@ -6195,49 +6516,74 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       return (entry.tab.actionCompletions || []).find(function(c){ return c.itemId === entry.item.id && c.dueDate === todayStr; });
     }
     var dueToday = items.filter(function(e){ return isItemDueOn(e.item, new Date()); });
+    var stillPending = dueToday.filter(function(e){ var c = getCompletion(e); return !c || c.status !== "completed"; });
+    var completedToday = dueToday.filter(function(e){ var c = getCompletion(e); return c && c.status === "completed"; });
     if(dueToday.length === 0){
       wrap.innerHTML = '<div class="empty-state"><div class="big">⚡</div><p>No action tasks due today.</p></div>';
       return;
     }
-    wrap.innerHTML = dueToday.map(function(entry){
+    if(stillPending.length === 0){
+      wrap.innerHTML = '<div class="empty-state"><div class="big">✅</div><p>All action tasks completed for today — nice work.</p></div>';
+    }else{
+      wrap.innerHTML = "";
+    }
+    wrap.innerHTML += stillPending.map(function(entry){
       var typeDef = actionWorkflowTypeDef(entry.item.actionType);
       var completion = getCompletion(entry);
-      var isDone = completion && completion.status === "completed";
-      var hasFile = completion && completion.fileName;
-      var html = '<div class="task-card"><div class="task-top"><div class="task-body">' +
-        '<div class="task-title">' + typeDef.icon + ' ' + esc(entry.item.name) + '</div>' +
-        '<div class="task-badges">' +
+      var hasFile = completion && completion.fileName && !completion.error;
+      var processing = actionWfProcessingId === entry.item.id;
+      var statusText = processing ? '<span style="color:var(--text-faint);">⏳ Processing…</span>'
+        : hasFile ? ('<span style="color:var(--up);">✅ ' + esc(completion.summary || completion.fileName) + '</span>')
+        : (completion && completion.error) ? ('<span style="color:var(--danger);">⚠️ ' + esc(completion.error) + '</span>')
+        : '<span style="color:var(--text-faint);">No file yet</span>';
+      var html = '<div class="task-card card-tight">' +
+        '<div class="task-title" style="display:flex;align-items:center;gap:6px;">' + typeDef.icon + ' ' + esc(entry.item.name) + '</div>' +
+        '<div class="task-badges" style="margin-top:4px;">' +
           '<span class="badge-pill" style="color:var(--down);border-color:var(--down);">🏢 ' + esc(entry.businessName) + '</span>' +
           '<span class="badge-pill">' + esc(workflowScheduleLabel(entry.item)) + '</span>' +
-          (isDone ? '<span class="badge-pill completed">✓ Done today</span>' : '<span class="badge-pill pending-red">Due today</span>') +
         '</div>' +
-        (entry.item.note ? '<p class="backup-note" style="margin-top:8px;">' + esc(entry.item.note) + '</p>' : '') +
-        '</div></div>';
-      if(!isDone){
-        html += '<div style="margin-top:10px;">' +
-          (hasFile ? '<p class="backup-note" style="color:var(--up);margin:0 0 8px;">✅ Attached: ' + esc(completion.fileName) + '</p>' : '') +
-          '<input type="file" accept="' + typeDef.accept + '" class="input action-wf-file" data-item-id="' + entry.item.id + '" data-tab-id="' + entry.tab.id + '" style="margin-bottom:8px;">' +
-          '<button class="btn btn-primary btn-sm action-wf-done" data-item-id="' + entry.item.id + '" data-tab-id="' + entry.tab.id + '" data-item-name="' + esc(entry.item.name) + '"' + (hasFile ? '' : ' disabled') + '>Mark Done</button>' +
-        '</div>';
-      }
-      html += '</div>';
+        (entry.item.note ? '<p class="backup-note" style="margin-top:4px;">' + esc(entry.item.note) + '</p>' : '') +
+        '<div style="display:flex;align-items:center;gap:8px;margin-top:8px;">' +
+          '<label class="icon-btn action-wf-upload-label" style="border:1px solid var(--border-strong);border-radius:8px;cursor:pointer;flex-shrink:0;display:flex;" title="Attach file">' +
+            '<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;"><path d="M21.44 11.05l-9.19 9.19a5.5 5.5 0 01-7.78-7.78l9.19-9.19a3.5 3.5 0 014.95 4.95L9.41 17.41a1.5 1.5 0 01-2.12-2.12l8.49-8.49"/></svg>' +
+            '<input type="file" accept="' + typeDef.accept + '" class="action-wf-file" data-item-id="' + entry.item.id + '" data-tab-id="' + entry.tab.id + '" data-business-id="' + entry.business.id + '" data-action-type="' + entry.item.actionType + '"' + (processing ? ' disabled' : '') + ' style="display:none;">' +
+          '</label>' +
+          '<div style="flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + statusText + '</div>' +
+          '<button class="btn btn-primary btn-header-action action-wf-done" data-item-id="' + entry.item.id + '" data-tab-id="' + entry.tab.id + '" data-item-name="' + esc(entry.item.name) + '"' + ((hasFile && !processing) ? '' : ' disabled') + '>Mark Done</button>' +
+        '</div>' +
+      '</div>';
       return html;
     }).join("");
+    if(completedToday.length > 0){
+      wrap.innerHTML += '<button class="link-btn" style="padding-left:0;margin-top:6px;" id="btnToggleActionWfCompletedToday">' + (actionWfCompletedTodayOpen ? "Hide" : "Show") + ' ' + completedToday.length + ' completed today</button>';
+      if(actionWfCompletedTodayOpen){
+        wrap.innerHTML += completedToday.map(function(entry){
+          var typeDef = actionWorkflowTypeDef(entry.item.actionType);
+          var completion = getCompletion(entry);
+          return '<div class="task-card"><div class="task-top"><div class="task-body">' +
+            '<div class="task-title">' + typeDef.icon + ' ' + esc(entry.item.name) + '</div>' +
+            '<div class="task-badges">' +
+              '<span class="badge-pill" style="color:var(--down);border-color:var(--down);">🏢 ' + esc(entry.businessName) + '</span>' +
+              '<span class="badge-pill completed">✓ Done today' + (completion.summary ? (" — " + esc(completion.summary)) : "") + '</span>' +
+            '</div></div></div></div>';
+        }).join("");
+      }
+    }
+
+    var toggleBtn = document.getElementById("btnToggleActionWfCompletedToday");
+    if(toggleBtn) toggleBtn.addEventListener("click", function(){
+      actionWfCompletedTodayOpen = !actionWfCompletedTodayOpen;
+      renderStaffActionWfList(module, staff);
+    });
 
     wrap.querySelectorAll(".action-wf-file").forEach(function(input){
       input.addEventListener("change", function(){
         var file = input.files[0];
         if(!file) return;
-        var itemId = input.getAttribute("data-item-id"), tabId = input.getAttribute("data-tab-id");
-        var tab = findWorkflowTabById(tabId);
-        if(!tab) return;
-        var dateStr = isoDateStr(new Date());
-        var existing = tab.actionCompletions.find(function(c){ return c.itemId === itemId && c.dueDate === dateStr; });
-        if(existing){ existing.fileName = file.name; existing.fileSize = file.size; existing.uploadedAt = new Date().toISOString(); }
-        else tab.actionCompletions.push({id: uid(), itemId:itemId, dueDate:dateStr, status:"pending", fileName:file.name, fileSize:file.size, uploadedAt:new Date().toISOString(), completedAt:null});
-        saveData();
-        renderStaffActionWfList(module, staff);
-        toast("File attached — you can now mark this Done");
+        var itemId = input.getAttribute("data-item-id");
+        var entry = dueToday.find(function(e){ return e.item.id === itemId; });
+        if(!entry) return;
+        handleActionWfUpload(module, staff, entry, file);
       });
     });
     wrap.querySelectorAll(".action-wf-done").forEach(function(btn){
@@ -6248,15 +6594,126 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         if(!tab) return;
         var dateStr = isoDateStr(new Date());
         var existing = tab.actionCompletions.find(function(c){ return c.itemId === itemId && c.dueDate === dateStr; });
-        if(!existing || !existing.fileName){ toast("Upload the required file first", true); return; }
-        if(!confirm('Mark "' + itemName + '" as Done? This submits your uploaded file as complete for today.')) return;
+        if(!existing || !existing.fileName || existing.error){ toast("Upload the required file first", true); return; }
+        if(!confirm('Mark "' + itemName + '" as Done? This submits your upload as complete for today.')) return;
         existing.status = "completed";
         existing.completedAt = new Date().toISOString();
+        markActionCompletionDirty(existing.id);
         saveData();
         renderStaffActionWfList(module, staff);
         toast("Marked done ✅");
       });
     });
+  }
+
+  function saveActionCompletionFields(tab, itemId, fields){
+    var dateStr = isoDateStr(new Date());
+    var existing = tab.actionCompletions.find(function(c){ return c.itemId === itemId && c.dueDate === dateStr; });
+    if(existing){
+      Object.keys(fields).forEach(function(k){ existing[k] = fields[k]; });
+    }else{
+      existing = Object.assign({id: uid(), itemId:itemId, dueDate:dateStr, status:"pending", completedAt:null}, fields);
+      tab.actionCompletions.push(existing);
+    }
+    markActionCompletionDirty(existing.id);
+    return existing;
+  }
+
+  // Routes an action-workflow upload by its configured type. Stock Report / Stock Prep Report
+  // genuinely parse the Excel file and merge it into the real business data — the same import path
+  // used when uploading directly from the Stock/Stock Prep tab — so the workflow isn't just a proof
+  // of upload, it actually updates the live report. General uploads go to Firebase Storage so Admin
+  // can open the real file afterward, not just see a filename.
+  // Wraps a promise with a hard timeout — without this, a genuinely hung network request (Storage
+  // misconfiguration, a stalled connection, a silent CORS failure) leaves no way for the UI to ever
+  // recover, since nothing ever resolves or rejects the original promise on its own.
+  function withTimeout(promise, ms, message){
+    return Promise.race([
+      promise,
+      new Promise(function(resolve, reject){ setTimeout(function(){ reject(new Error(message || "Timed out")); }, ms); })
+    ]);
+  }
+  function handleActionWfUpload(module, staff, entry, file){
+    var itemId = entry.item.id, tab = entry.tab, business = entry.business;
+    var actionType = entry.item.actionType;
+    actionWfProcessingId = itemId;
+    renderStaffActionWfList(module, staff);
+
+    if(actionType === "stockReportUpload"){
+      var stockTab = findBusinessTabByType(business, "stock");
+      if(!stockTab){
+        saveActionCompletionFields(tab, itemId, {fileName:null, error:"This business has no Stock Report section set up yet — ask Admin to add one."});
+        saveData(); actionWfProcessingId = null; renderStaffActionWfList(module, staff);
+        return;
+      }
+      parseStockExcelFile(file, module, business, stockTab, function(result){
+        actionWfProcessingId = null;
+        if(result.error){
+          saveActionCompletionFields(tab, itemId, {fileName:null, error:"Couldn't read that file — make sure it's a valid Excel file."});
+        }else if(!result.added || result.added === 0){
+          saveActionCompletionFields(tab, itemId, {fileName:null, error:"This file added no valid rows — check it has a Vehicle Number column with real data, then try again."});
+        }else{
+          saveActionCompletionFields(tab, itemId, {fileName:file.name, fileSize:file.size, uploadedAt:new Date().toISOString(), summary:result.message, error:null});
+        }
+        saveData();
+        renderStaffActionWfList(module, staff);
+        toast((result.error || !result.added) ? "Upload rejected — no valid data found" : "Stock Report updated — " + result.message);
+      });
+    }else if(actionType === "stockPrepUpload"){
+      var prepTab = findBusinessTabByType(business, "stockprep");
+      if(!prepTab){
+        saveActionCompletionFields(tab, itemId, {fileName:null, error:"This business has no Stock Prep section set up yet — ask Admin to add one."});
+        saveData(); actionWfProcessingId = null; renderStaffActionWfList(module, staff);
+        return;
+      }
+      parseStockPrepExcelFile(file, module, business, prepTab, function(result){
+        actionWfProcessingId = null;
+        if(result.error){
+          saveActionCompletionFields(tab, itemId, {fileName:null, error:"Couldn't read that file — make sure it's a valid Excel file."});
+        }else if(!result.added || result.added === 0){
+          saveActionCompletionFields(tab, itemId, {fileName:null, error:"This file added no valid rows — check it has a Vehicle Number column with real data, then try again."});
+        }else{
+          saveActionCompletionFields(tab, itemId, {fileName:file.name, fileSize:file.size, uploadedAt:new Date().toISOString(), summary:result.message, error:null});
+        }
+        saveData();
+        renderStaffActionWfList(module, staff);
+        toast((result.error || !result.added) ? "Upload rejected — no valid data found" : "Stock Prep Report updated — " + result.message);
+      });
+    }else{
+      if(location.protocol === "file:"){
+        actionWfProcessingId = null;
+        var fileOriginMsg = "File uploads need this app hosted at a real web address (http/https) — Firebase Storage can't accept uploads from a file opened directly on your computer.";
+        saveActionCompletionFields(tab, itemId, {fileName:null, error:fileOriginMsg});
+        saveData();
+        renderStaffActionWfList(module, staff);
+        toast("Can't upload from a local file — see the message on this card", true);
+        return;
+      }
+      var path = "actionUploads/" + tab.id + "/" + itemId + "/" + Date.now() + "_" + file.name;
+      var ref = storageRef(storage, path);
+      var uploadChain = uploadBytes(ref, file).then(function(){
+        return getDownloadURL(ref);
+      });
+      withTimeout(uploadChain, 25000, "Upload timed out").then(function(url){
+        actionWfProcessingId = null;
+        saveActionCompletionFields(tab, itemId, {fileName:file.name, fileSize:file.size, uploadedAt:new Date().toISOString(), downloadURL:url, storagePath:path, error:null});
+        saveData();
+        renderStaffActionWfList(module, staff);
+        toast("File uploaded — you can now mark this Done");
+      }).catch(function(err){
+        console.error("Action workflow file upload failed", err);
+        actionWfProcessingId = null;
+        // Firebase Storage's error is far more specific than "check your connection" — surfacing the
+        // real code/message (e.g. storage/unauthorized, or a CORS-origin failure) makes this
+        // diagnosable instead of misleadingly blaming the user's network when it's very often something
+        // else entirely, like Storage rules not yet published or a restricted origin.
+        var errDetail = (err && (err.code || err.message)) ? (err.code || err.message) : "Unknown error";
+        saveActionCompletionFields(tab, itemId, {fileName:null, error:"Upload failed (" + errDetail + ") — see console for details."});
+        saveData();
+        renderStaffActionWfList(module, staff);
+        toast("Upload failed: " + errDetail, true);
+      });
+    }
   }
 
   function companyBadgeHTML(entry){
@@ -6406,6 +6863,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         if(t){
           if(t.status === "completed"){ t.status = "pending"; t.completedAt = null; }
           else{ t.status = "completed"; t.completedAt = new Date().toISOString(); }
+          markTaskDirty(t.id);
           saveData(); renderHeader();
         }
         staffTaskConfirm[btn.getAttribute("data-task-id")] = false;
@@ -6426,7 +6884,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         var newDate = document.getElementById("extDate-" + id).value;
         if(!newDate){ toast("Pick a new date", true); return; }
         var t = byId[id];
-        if(t){ t.extensionRequest = {newDate:newDate, status:"pending", requestedAt:new Date().toISOString()}; saveData(); }
+        if(t){ t.extensionRequest = {newDate:newDate, status:"pending", requestedAt:new Date().toISOString()}; markTaskDirty(t.id); saveData(); }
         staffExtensionFormOpen[id] = false;
         rerender();
         toast("Extension requested");
@@ -6435,7 +6893,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     wrap.querySelectorAll(".staff-ext-approve").forEach(function(btn){
       btn.addEventListener("click", function(){
         var t = byId[btn.getAttribute("data-task-id")];
-        if(t && t.extensionRequest){ t.deadline = t.extensionRequest.newDate; t.extensionRequest.status = "approved"; saveData(); }
+        if(t && t.extensionRequest){ t.deadline = t.extensionRequest.newDate; t.extensionRequest.status = "approved"; markTaskDirty(t.id); saveData(); }
         rerender();
         toast("Extension approved");
       });
@@ -6443,7 +6901,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     wrap.querySelectorAll(".staff-ext-reject").forEach(function(btn){
       btn.addEventListener("click", function(){
         var t = byId[btn.getAttribute("data-task-id")];
-        if(t && t.extensionRequest){ t.extensionRequest.status = "rejected"; saveData(); }
+        if(t && t.extensionRequest){ t.extensionRequest.status = "rejected"; markTaskDirty(t.id); saveData(); }
         rerender();
         toast("Extension rejected");
       });
@@ -6866,6 +7324,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       }else{
         module.tasks.push(newTask); // no business tagged — falls back to the General Tasks pool
       }
+      markTaskDirty(newTask.id);
 
       saveData(); renderHeader();
       closeModal();
@@ -7518,7 +7977,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     return result;
   }
 
-  function parseStockExcelFile(file, module, business, tab){
+  function parseStockExcelFile(file, module, business, tab, onDone){
     if(typeof XLSX === "undefined"){ toast("Excel library failed to load — check your connection and try again", true); return; }
     var reader = new FileReader();
     reader.onload = function(e){
@@ -7541,13 +8000,14 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
           added++;
         });
         saveData();
-        renderBizStockPanel(module, business, tab);
         var msg = added + " row" + (added === 1 ? "" : "s") + " added";
         if(dupSkipped > 0) msg += ", " + dupSkipped + " duplicate vehicle number" + (dupSkipped === 1 ? "" : "s") + " skipped";
         if(noVehicleSkipped > 0) msg += ", " + noVehicleSkipped + " skipped (no vehicle number)";
-        toast(msg);
+        if(onDone){ onDone({added:added, dupSkipped:dupSkipped, noVehicleSkipped:noVehicleSkipped, message:msg}); }
+        else{ renderBizStockPanel(module, business, tab); toast(msg); }
       }catch(err){
-        toast("Couldn't read that file — make sure it's a valid Excel file", true);
+        if(onDone){ onDone({error:true}); }
+        else{ toast("Couldn't read that file — make sure it's a valid Excel file", true); }
       }
     };
     reader.readAsArrayBuffer(file);
@@ -7660,7 +8120,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     return result;
   }
 
-  function parseStockPrepExcelFile(file, module, business, tab){
+  function parseStockPrepExcelFile(file, module, business, tab, onDone){
     if(typeof XLSX === "undefined"){ toast("Excel library failed to load — check your connection and try again", true); return; }
     var reader = new FileReader();
     reader.onload = function(e){
@@ -7681,13 +8141,14 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
           added++;
         });
         saveData();
-        renderBizStockPrepPanel(module, business, tab);
         var msg = added + " vehicle" + (added === 1 ? "" : "s") + " added";
         if(dupSkipped > 0) msg += ", " + dupSkipped + " duplicate vehicle number" + (dupSkipped === 1 ? "" : "s") + " skipped";
         if(noVehicleSkipped > 0) msg += ", " + noVehicleSkipped + " skipped (no vehicle number)";
-        toast(msg);
+        if(onDone){ onDone({added:added, dupSkipped:dupSkipped, noVehicleSkipped:noVehicleSkipped, message:msg}); }
+        else{ renderBizStockPrepPanel(module, business, tab); toast(msg); }
       }catch(err){
-        toast("Couldn't read that file — make sure it's a valid Excel file", true);
+        if(onDone){ onDone({error:true}); }
+        else{ toast("Couldn't read that file — make sure it's a valid Excel file", true); }
       }
     };
     reader.readAsArrayBuffer(file);
@@ -8148,6 +8609,9 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   // Vehicle Number dropdown on task creation.
   // Combines Stock Report and Stock Prep Report vehicle numbers for one business, deduplicated,
   // each tagged with which report(s) it came from — for task-creation Vehicle Number dropdowns.
+  function findBusinessTabByType(business, type){
+    return (business.tabs || []).find(function(t){ return t.type === type; });
+  }
   function getStockVehiclesForBusiness(business){
     var seen = {}, out = [];
     (business.tabs || []).forEach(function(tab){
@@ -8195,17 +8659,27 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     if(btn) btn.innerHTML = value ? esc(value) : '<span style="color:var(--text-faint);">— None —</span>';
     if(onAfterSelect) onAfterSelect(value);
   }
+  function showVehiclePickerOverlay(innerHTML){
+    document.getElementById("vehiclePickerCard").innerHTML = innerHTML;
+    document.getElementById("vehiclePickerOverlay").style.display = "flex";
+    var closeBtn = document.getElementById("vpCloseBtn");
+    if(closeBtn) closeBtn.addEventListener("click", closeVehiclePickerOverlay);
+  }
+  function closeVehiclePickerOverlay(){
+    document.getElementById("vehiclePickerOverlay").style.display = "none";
+    document.getElementById("vehiclePickerCard").innerHTML = "";
+  }
   function openVehiclePickerModal(business, inputId, onAfterSelect){
     vehiclePickerTab = "stock";
     vehiclePickerSearch = {stock:"", stockprep:""};
     var currentValue = document.getElementById(inputId) ? document.getElementById(inputId).value : "";
-    showModal(renderVehiclePickerBody(business, currentValue));
+    showVehiclePickerOverlay(renderVehiclePickerBody(business, currentValue));
     wireVehiclePickerModal(business, inputId, onAfterSelect);
   }
   function renderVehiclePickerBody(business, currentValue){
     var stockList = getStockVehiclesForBusiness(business);
     var prepList = getStockPrepVehiclesForBusiness(business);
-    var html = '<div class="modal-header"><h3 class="modal-title">Select Vehicle</h3><button class="modal-close-btn" id="modalCloseBtn">✕</button></div>';
+    var html = '<div class="modal-header"><h3 class="modal-title">Select Vehicle</h3><button class="modal-close-btn" id="vpCloseBtn">✕</button></div>';
     html += '<div class="modal-body">';
     html += '<button class="btn btn-ghost vp-none-btn" style="width:100%;margin-bottom:12px;">' + (currentValue ? "" : "✓ ") + '— None —</button>';
     html += '<div class="pc-tabs">' +
@@ -8227,7 +8701,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       ? '<div class="empty-state"><div class="big">🚗</div><p>No vehicles found.</p></div>'
       : filtered.map(function(v){
           var isSelected = currentValue && normalizeVehicleNumber(v.vehicleNumber) === normalizeVehicleNumber(currentValue);
-          return '<button class="login-staff-tile vp-vehicle-btn" data-vehicle="' + esc(v.vehicleNumber) + '">' +
+          return '<button type="button" class="login-staff-tile vp-vehicle-btn" data-vehicle="' + esc(v.vehicleNumber) + '">' +
             '<span>🚗</span><span style="flex:1;">' + esc(v.vehicleNumber) + (v.model ? (' — ' + esc(v.model)) : '') + '</span>' +
             (isSelected ? '<span style="color:var(--accent);">✓</span>' : '') +
           '</button>';
@@ -8235,7 +8709,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     wrap.querySelectorAll(".vp-vehicle-btn").forEach(function(btn){
       btn.addEventListener("click", function(){
         applyVehicleSelection(inputId, btn.getAttribute("data-vehicle"), onAfterSelect);
-        closeModal();
+        closeVehiclePickerOverlay();
       });
     });
   }
@@ -8243,12 +8717,12 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     var currentValue = document.getElementById(inputId) ? document.getElementById(inputId).value : "";
     document.querySelector(".vp-none-btn").addEventListener("click", function(){
       applyVehicleSelection(inputId, "", onAfterSelect);
-      closeModal();
+      closeVehiclePickerOverlay();
     });
     document.querySelectorAll(".vp-tab-btn").forEach(function(btn){
       btn.addEventListener("click", function(){
         vehiclePickerTab = btn.getAttribute("data-tab");
-        showModal(renderVehiclePickerBody(business, currentValue));
+        showVehiclePickerOverlay(renderVehiclePickerBody(business, currentValue));
         wireVehiclePickerModal(business, inputId, onAfterSelect);
       });
     });
