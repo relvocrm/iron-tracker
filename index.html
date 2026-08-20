@@ -2093,10 +2093,24 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     clearTimeout(cloudWriteTimer);
     cloudWriteTimer = setTimeout(function(){ syncLocalChangesToFirebase(); }, 180);
   }
+  var localPersistTimer = null;
+  var localPersistPending = false;
   function saveData(){
-    persist(data);
+    // The in-memory `data` object is already fully up to date the instant this runs (callers mutate
+    // it directly before calling saveData()), so rendering/logic elsewhere is never stale or delayed —
+    // only the actual synchronous JSON.stringify + localStorage.setItem write gets batched here, since
+    // that's the part that gets measurably slower as real app data accumulates over time.
+    localPersistPending = true;
+    clearTimeout(localPersistTimer);
+    localPersistTimer = setTimeout(function(){
+      persist(data);
+      localPersistPending = false;
+    }, 150);
     scheduleCloudSave();
   }
+  window.addEventListener("beforeunload", function(){
+    if(localPersistPending){ persist(data); }
+  });
 
   function loadDraft(){
     try{
@@ -2885,16 +2899,17 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   function prepHubCardHTML(entry){
     var done = isPrepItemDone(entry);
     var reportLine = entry.kind === "maintenance" ? maintenanceReportLine(entry.item) : paperworkReportLine(entry.item);
-    return '<div class="card card-tight prep-report-card' + (!done ? " pending-task-card" : "") + '">' +
+    return '<div class="card card-tight prep-report-card' + (!done ? " pending-task-card" : "") + '" data-hub-entry-id="' + entry.item.id + '">' +
       '<div class="hist-row" style="border:none;padding:0;">' +
         '<div class="left"><div class="prep-report-line" style="font-size:12px;">' + esc(reportLine) + '</div>' +
           '<div class="sess" style="margin-top:5px;">' + esc(entry.businessName) + ' · ' + esc(entry.vehicle.vehicleNumber) + ' · ' + (entry.kind === "maintenance" ? "Maintenance" : "Paperwork") + '</div></div>' +
         '<div class="right">' +
           (entry.kind === "paperwork"
             ? '<input type="checkbox" class="hub-prep-done" data-hub-item-id="' + entry.item.id + '" ' + (done ? "checked" : "") + ' style="width:18px;height:18px;">'
-            : '<span class="badge-pill' + (done ? " completed" : " pending-red") + '">' + esc(entry.item.status) + '</span>') +
+            : '<button class="badge-pill' + (done ? " completed" : " pending-red") + ' hub-maint-status" data-item-id="' + entry.item.id + '" style="cursor:pointer;border-width:1.5px;">' + esc(entry.item.status) + ' ▾</button>') +
         '</div>' +
       '</div>' +
+      '<div id="hubMaintPicker_' + entry.item.id + '"></div>' +
     '</div>';
   }
   function renderPrepItemsHubSection(){
@@ -2918,6 +2933,31 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         var entry = getAllPrepItemsForHub().find(function(e){ return e.item.id === itemId; });
         if(entry){ entry.item.done = cb.checked; saveData(); }
         renderTasksHub();
+      });
+    });
+    wrap.querySelectorAll(".hub-maint-status").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var itemId = btn.getAttribute("data-item-id");
+        prepStatusPickerOpen[itemId] = !prepStatusPickerOpen[itemId];
+        var pickerWrap = document.getElementById("hubMaintPicker_" + itemId);
+        if(!pickerWrap) return;
+        if(!prepStatusPickerOpen[itemId]){ pickerWrap.innerHTML = ""; return; }
+        var entry = getAllPrepItemsForHub().find(function(e){ return e.item.id === itemId; });
+        if(!entry) return;
+        var item = entry.item;
+        pickerWrap.innerHTML = '<div class="chip-row" style="margin-top:8px;">' +
+          PREP_STATUS_OPTIONS.map(function(s){ return '<span class="chip hub-maint-status-opt' + (s === item.status ? " selected" : "") + '" data-status="' + s + '" style="cursor:pointer;">' + s + '</span>'; }).join("") +
+        '</div>';
+        pickerWrap.querySelectorAll(".hub-maint-status-opt").forEach(function(chip){
+          chip.addEventListener("click", function(){
+            var newStatus = chip.getAttribute("data-status");
+            if(newStatus === "Done" && !confirm('Mark "' + maintenanceItemLabel(item) + '" as Done? It will move to the Completed tab.')) return;
+            item.status = newStatus;
+            saveData();
+            prepStatusPickerOpen[itemId] = false;
+            renderTasksHub();
+          });
+        });
       });
     });
   }
@@ -3418,8 +3458,8 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   function renderBizTasksPanel(module, business){
     var panel = document.getElementById("bizTasksPanel");
     var staffOptions = staffAssignOptions();
-    var vehicleOptions = getVehicleOptionsForBusiness(business);
     var formOpen = !!bizTaskFormOpen[business.id];
+    var preservedVehicle = document.getElementById("taskVehicleInput") ? document.getElementById("taskVehicleInput").value : "";
     panel.innerHTML =
         '<div class="sheet-table-header" style="margin-bottom:' + (formOpen ? "10px" : "16px") + ';"><span class="section-title" style="margin:0;">Tasks</span>' +
           '<button class="btn btn-primary btn-sm" id="btnToggleTaskForm">' + (formOpen ? "Close" : "+ Add Task") + '</button></div>' +
@@ -3433,10 +3473,7 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
               staffOptions.map(function(s){ return '<option value="' + s.id + '">' + esc(s.name) + '</option>'; }).join("") +
             '</select></div>' +
           '</div>' +
-          (vehicleOptions.length > 0 ? '<div class="field" style="margin-bottom:10px;"><label>Vehicle Number <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><select class="input" id="taskVehicleInput">' +
-            '<option value="">— None —</option>' +
-            vehicleOptions.map(function(v){ return '<option value="' + esc(v.vehicleNumber) + '">' + esc(v.vehicleNumber) + ' [' + esc(v.sourceLabel) + ']</option>'; }).join("") +
-          '</select></div>' : '') +
+          vehiclePickerButtonHTML("taskVehicleInput", preservedVehicle, false) +
           '<div class="field" style="margin-bottom:10px;"><label>Notes <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><textarea class="input task-notes-input" id="taskNotesInput" rows="2" placeholder="Add details, reminders, links…"></textarea></div>' +
           '<button class="btn btn-primary" id="taskAddBtn" style="width:100%;">Add Task</button>' +
         '</div>' : '') +
@@ -3453,6 +3490,8 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         bizTaskFormOpen[business.id] = !formOpen;
         renderBizTasksPanel(module, business);
       });
+      var vpBtn = document.getElementById("taskVehicleInput") ? document.querySelector('.vehicle-picker-btn[data-target="taskVehicleInput"]') : null;
+      if(vpBtn) vpBtn.addEventListener("click", function(){ openVehiclePickerModal(business, "taskVehicleInput"); });
       var taskAddBtn = document.getElementById("taskAddBtn");
       if(taskAddBtn) taskAddBtn.addEventListener("click", function(){
         var title = document.getElementById("taskTitleInput").value.trim();
@@ -6515,6 +6554,46 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
     if(enabled.length === 0) return false;
     return enabled.every(function(s){ return stages[s.key].subStatus === "Completed"; });
   }
+  // The first stage not yet marked Completed — represents "where staff need to pick up," shown on
+  // the list card as e.g. "Insurance - Pending" so it's visible before opening the wizard at all.
+  // Returns the 0-based index of the first stage not yet marked Completed, or the last stage's
+  // index if everything is Completed (so re-opening a finished vehicle lands on the final stage,
+  // not stage 0). This is the single source of truth for "where should this vehicle's wizard resume" —
+  // used both to initialize the wizard's position and to compute the card's stage/status display,
+  // so the two can never drift out of sync with each other.
+  function getActivePaperworkStageIndex(vehicle){
+    var stages = vehicle.paperworkStages || {};
+    for(var i = 0; i < PAPERWORK_STAGES.length; i++){
+      var d = stages[PAPERWORK_STAGES[i].key];
+      if(!d || d.subStatus !== "Completed") return i;
+    }
+    return PAPERWORK_STAGES.length - 1;
+  }
+  // Dead End Date lives on whichever stage is flagged hasDeadEnd (currently Insurance) — found
+  // dynamically rather than hardcoding the key, so this keeps working if that stage config changes.
+  function paperworkDeadEndCountdownHTML(vehicle){
+    var stages = vehicle.paperworkStages || {};
+    var stageDef = PAPERWORK_STAGES.find(function(s){ return s.hasDeadEnd; });
+    if(!stageDef) return "";
+    var d = stages[stageDef.key];
+    if(!d || !d.deadEndDate) return "";
+    var target = new Date(d.deadEndDate + "T00:00:00");
+    var today = new Date(); today.setHours(0,0,0,0);
+    var daysLeft = Math.round((target - today) / 86400000);
+    var countdownText = daysLeft < 0 ? ("Overdue by " + Math.abs(daysLeft) + " day" + (Math.abs(daysLeft) === 1 ? "" : "s"))
+      : daysLeft === 0 ? "Due today"
+      : (daysLeft + " day" + (daysLeft === 1 ? "" : "s") + " left");
+    var color = daysLeft < 0 ? "var(--danger)" : (daysLeft <= 3 ? "var(--danger)" : "var(--text-faint)");
+    return '<div class="sess" style="color:' + color + ';margin-top:2px;">Dead End: ' + esc(fmtDate(d.deadEndDate)) + ' (' + countdownText + ')</div>';
+  }
+  function getActivePaperworkStage(vehicle){
+    var stages = vehicle.paperworkStages || {};
+    var idx = getActivePaperworkStageIndex(vehicle);
+    var s = PAPERWORK_STAGES[idx];
+    var d = stages[s.key];
+    if(d && d.subStatus === "Completed") return null; // every stage is Completed
+    return {label: s.label, subStatus: d ? d.subStatus : "Pending"};
+  }
   function paperworkStageProgressLabel(vehicle){
     var stages = vehicle.paperworkStages || {};
     var total = PAPERWORK_STAGES.length;
@@ -6544,10 +6623,14 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
       html += showing.length === 0
         ? '<div class="empty-state"><div class="big">' + (getStaffListFilter(filterKey) === "completed" ? "📄" : "✅") + '</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "No vehicles fully completed yet." : "Nothing incomplete right now.") + '</p></div>'
         : showing.map(function(entry){
+            var activeStage = getActivePaperworkStage(entry.vehicle);
             return '<div class="card card-tight staff-pw-open" data-vehicle-id="' + entry.vehicle.id + '">' +
               '<div class="hist-row" style="border:none;padding:0;">' +
                 '<div class="left"><div class="date" style="font-weight:600;">' + esc(entry.vehicle.vehicleNumber || "—") + '</div>' +
-                  '<div class="sess">' + esc(entry.business.name) + (getPrepVehicleModel(entry.vehicle) ? (' · ' + esc(getPrepVehicleModel(entry.vehicle))) : '') + (entry.vehicle.segment ? (' · ' + esc(entry.vehicle.segment)) : '') + '</div></div>' +
+                  '<div class="sess">' + esc(entry.business.name) + (getPrepVehicleModel(entry.vehicle) ? (' · ' + esc(getPrepVehicleModel(entry.vehicle))) : '') + (entry.vehicle.segment ? (' · ' + esc(entry.vehicle.segment)) : '') + '</div>' +
+                  (activeStage ? '<div class="sess" style="color:var(--accent);font-weight:600;margin-top:2px;">' + esc(activeStage.label) + ' - ' + esc(activeStage.subStatus) + '</div>' : '') +
+                  paperworkDeadEndCountdownHTML(entry.vehicle) +
+                '</div>' +
                 '<div class="right" style="display:flex;align-items:center;gap:8px;">' + paperworkStageProgressLabel(entry.vehicle) +
                   '<button class="btn btn-primary btn-header-action">Proceed →</button>' +
                 '</div>' +
@@ -6560,7 +6643,13 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
         card.addEventListener("click", function(){
           var vid = card.getAttribute("data-vehicle-id");
           var entry = allVehicles.find(function(e){ return e.vehicle.id === vid; });
-          if(entry){ staffPaperworkView = entry; renderStaffDashPaperworkTab(module, member); }
+          if(entry){
+            staffPaperworkView = entry;
+            // Always re-derive from saved stage data on open — never trust a stale in-memory index,
+            // since that variable is transient and resets to nothing on every page refresh/re-login.
+            staffPaperworkWizardStage[vid] = getActivePaperworkStageIndex(entry.vehicle);
+            renderStaffDashPaperworkTab(module, member);
+          }
         });
       });
       return;
@@ -6721,25 +6810,35 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
           '<option value="">— None —</option>' +
           allowedBusinesses.map(function(b){ return '<option value="' + b.id + '">' + esc(b.name) + '</option>'; }).join("") +
         '</select></div>' : '') +
-        '<div class="field" style="margin-bottom:10px;"><label>Vehicle Number <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><select class="input" id="newPeerTaskVehicle"><option value="">— Select a company first —</option></select></div>' +
+        vehiclePickerButtonHTML("newPeerTaskVehicle", "", true) +
         '<div class="field" style="margin-bottom:14px;"><label>Notes <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><textarea class="input task-notes-input" id="newPeerTaskNotes" rows="3" placeholder="Add details, reminders, links…"></textarea></div>' +
         '<button class="btn btn-primary" id="btnCreatePeerTask" style="width:100%;">Create Task</button>' +
       '</div>'
     );
 
-    function refreshVehicleOptions(){
+    function currentPeerTaskBusiness(){
       var companySelect = document.getElementById("newPeerTaskCompany");
-      var vehicleSelect = document.getElementById("newPeerTaskVehicle");
       var companyId = companySelect ? companySelect.value : "";
-      var biz = allowedBusinesses.find(function(b){ return b.id === companyId; });
-      var vehicleOpts = biz ? getVehicleOptionsForBusiness(biz) : [];
-      vehicleSelect.innerHTML = vehicleOpts.length === 0
-        ? '<option value="">' + (biz ? "No vehicles in this company's Stock or Stock Prep" : "— Select a company first —") + '</option>'
-        : '<option value="">— None —</option>' + vehicleOpts.map(function(v){ return '<option value="' + esc(v.vehicleNumber) + '">' + esc(v.vehicleNumber) + ' [' + esc(v.sourceLabel) + ']</option>'; }).join("");
+      return allowedBusinesses.find(function(b){ return b.id === companyId; }) || null;
+    }
+    function refreshVehicleOptions(){
+      var biz = currentPeerTaskBusiness();
+      applyVehicleSelection("newPeerTaskVehicle", "", null); // company changed — any prior pick may not belong to the new company
+      var btn = document.querySelector('.vehicle-picker-btn[data-target="newPeerTaskVehicle"]');
+      if(btn){
+        btn.disabled = !biz;
+        btn.innerHTML = biz ? '<span style="color:var(--text-faint);">— None —</span>' : '<span style="color:var(--text-faint);">Select a company first</span>';
+      }
     }
     var companySelectEl = document.getElementById("newPeerTaskCompany");
     if(companySelectEl) companySelectEl.addEventListener("change", refreshVehicleOptions);
     refreshVehicleOptions();
+    var peerVpBtn = document.querySelector('.vehicle-picker-btn[data-target="newPeerTaskVehicle"]');
+    if(peerVpBtn) peerVpBtn.addEventListener("click", function(){
+      var biz = currentPeerTaskBusiness();
+      if(!biz) return;
+      openVehiclePickerModal(biz, "newPeerTaskVehicle");
+    });
 
     document.getElementById("btnCreatePeerTask").addEventListener("click", function(){
       var title = document.getElementById("newPeerTaskTitle").value.trim();
@@ -8049,6 +8148,119 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, onSn
   // Vehicle Number dropdown on task creation.
   // Combines Stock Report and Stock Prep Report vehicle numbers for one business, deduplicated,
   // each tagged with which report(s) it came from — for task-creation Vehicle Number dropdowns.
+  function getStockVehiclesForBusiness(business){
+    var seen = {}, out = [];
+    (business.tabs || []).forEach(function(tab){
+      if(tab.type !== "stock") return;
+      (tab.rows || []).forEach(function(r){
+        if(!r.vehicleNumber) return;
+        var key = normalizeVehicleNumber(r.vehicleNumber);
+        if(!seen[key]){ seen[key] = true; out.push({vehicleNumber:r.vehicleNumber, model:r.vehicleModel || ""}); }
+      });
+    });
+    return out.sort(function(a,b){ return a.vehicleNumber.localeCompare(b.vehicleNumber); });
+  }
+  function getStockPrepVehiclesForBusiness(business){
+    var seen = {}, out = [];
+    (business.tabs || []).forEach(function(tab){
+      if(tab.type !== "stockprep") return;
+      (tab.vehicles || []).forEach(function(v){
+        if(!v.vehicleNumber) return;
+        var key = normalizeVehicleNumber(v.vehicleNumber);
+        if(!seen[key]){ seen[key] = true; out.push({vehicleNumber:v.vehicleNumber, model:getPrepVehicleModel(v)}); }
+      });
+    });
+    return out.sort(function(a,b){ return a.vehicleNumber.localeCompare(b.vehicleNumber); });
+  }
+
+  var vehiclePickerTab = "stock"; // "stock" | "stockprep", transient
+  var vehiclePickerSearch = {stock:"", stockprep:""}; // transient, per-tab so switching tabs doesn't lose your search
+
+  // Renders a text-input-styled button (not a real <select>) plus a hidden input carrying the actual
+  // value — existing task-creation handlers already read vehicle value via getElementById(id).value,
+  // so this swap requires zero changes to any create-task logic, only to how the field is presented.
+  function vehiclePickerButtonHTML(inputId, currentValue, disabled){
+    return '<div class="field" style="margin-bottom:10px;">' +
+      '<label>Vehicle Number <span style="text-transform:none;letter-spacing:0;">(optional)</span></label>' +
+      '<input type="hidden" id="' + inputId + '" value="' + esc(currentValue || "") + '">' +
+      '<button type="button" class="input vehicle-picker-btn" data-target="' + inputId + '" style="text-align:left;cursor:pointer;"' + (disabled ? " disabled" : "") + '>' +
+        (currentValue ? esc(currentValue) : '<span style="color:var(--text-faint);">' + (disabled ? "Select a company first" : "— None —") + '</span>') +
+      '</button>' +
+    '</div>';
+  }
+  function applyVehicleSelection(inputId, value, onAfterSelect){
+    var input = document.getElementById(inputId);
+    if(input) input.value = value;
+    var btn = document.querySelector('.vehicle-picker-btn[data-target="' + inputId + '"]');
+    if(btn) btn.innerHTML = value ? esc(value) : '<span style="color:var(--text-faint);">— None —</span>';
+    if(onAfterSelect) onAfterSelect(value);
+  }
+  function openVehiclePickerModal(business, inputId, onAfterSelect){
+    vehiclePickerTab = "stock";
+    vehiclePickerSearch = {stock:"", stockprep:""};
+    var currentValue = document.getElementById(inputId) ? document.getElementById(inputId).value : "";
+    showModal(renderVehiclePickerBody(business, currentValue));
+    wireVehiclePickerModal(business, inputId, onAfterSelect);
+  }
+  function renderVehiclePickerBody(business, currentValue){
+    var stockList = getStockVehiclesForBusiness(business);
+    var prepList = getStockPrepVehiclesForBusiness(business);
+    var html = '<div class="modal-header"><h3 class="modal-title">Select Vehicle</h3><button class="modal-close-btn" id="modalCloseBtn">✕</button></div>';
+    html += '<div class="modal-body">';
+    html += '<button class="btn btn-ghost vp-none-btn" style="width:100%;margin-bottom:12px;">' + (currentValue ? "" : "✓ ") + '— None —</button>';
+    html += '<div class="pc-tabs">' +
+      '<button class="pc-tab vp-tab-btn' + (vehiclePickerTab === "stock" ? " active" : "") + '" data-tab="stock">Stock Vehicles (' + stockList.length + ')</button>' +
+      '<button class="pc-tab vp-tab-btn' + (vehiclePickerTab === "stockprep" ? " active" : "") + '" data-tab="stockprep">Stock Prep Vehicles (' + prepList.length + ')</button>' +
+    '</div>';
+    html += '<input class="input" id="vpSearchInput" placeholder="Search vehicle number…" style="margin:10px 0;">';
+    html += '<div id="vpListWrap" style="max-height:320px;overflow-y:auto;"></div>';
+    html += '</div>';
+    return html;
+  }
+  function renderVpList(business, inputId, currentValue, onAfterSelect){
+    var wrap = document.getElementById("vpListWrap");
+    if(!wrap) return;
+    var list = vehiclePickerTab === "stock" ? getStockVehiclesForBusiness(business) : getStockPrepVehiclesForBusiness(business);
+    var q = (vehiclePickerSearch[vehiclePickerTab] || "").trim().toLowerCase();
+    var filtered = q ? list.filter(function(v){ return v.vehicleNumber.toLowerCase().indexOf(q) !== -1; }) : list;
+    wrap.innerHTML = filtered.length === 0
+      ? '<div class="empty-state"><div class="big">🚗</div><p>No vehicles found.</p></div>'
+      : filtered.map(function(v){
+          var isSelected = currentValue && normalizeVehicleNumber(v.vehicleNumber) === normalizeVehicleNumber(currentValue);
+          return '<button class="login-staff-tile vp-vehicle-btn" data-vehicle="' + esc(v.vehicleNumber) + '">' +
+            '<span>🚗</span><span style="flex:1;">' + esc(v.vehicleNumber) + (v.model ? (' — ' + esc(v.model)) : '') + '</span>' +
+            (isSelected ? '<span style="color:var(--accent);">✓</span>' : '') +
+          '</button>';
+        }).join("");
+    wrap.querySelectorAll(".vp-vehicle-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        applyVehicleSelection(inputId, btn.getAttribute("data-vehicle"), onAfterSelect);
+        closeModal();
+      });
+    });
+  }
+  function wireVehiclePickerModal(business, inputId, onAfterSelect){
+    var currentValue = document.getElementById(inputId) ? document.getElementById(inputId).value : "";
+    document.querySelector(".vp-none-btn").addEventListener("click", function(){
+      applyVehicleSelection(inputId, "", onAfterSelect);
+      closeModal();
+    });
+    document.querySelectorAll(".vp-tab-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        vehiclePickerTab = btn.getAttribute("data-tab");
+        showModal(renderVehiclePickerBody(business, currentValue));
+        wireVehiclePickerModal(business, inputId, onAfterSelect);
+      });
+    });
+    var searchInput = document.getElementById("vpSearchInput");
+    searchInput.value = vehiclePickerSearch[vehiclePickerTab] || "";
+    searchInput.addEventListener("input", function(){
+      vehiclePickerSearch[vehiclePickerTab] = this.value;
+      renderVpList(business, inputId, currentValue, onAfterSelect);
+    });
+    renderVpList(business, inputId, currentValue, onAfterSelect);
+  }
+
   function getVehicleOptionsForBusiness(business){
     var map = {};
     (business.tabs || []).forEach(function(tab){
