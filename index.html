@@ -2469,6 +2469,54 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     });
   }
 
+  // Applies pending Stock Report / Stock Prep rows from staff Action Workflow uploads into the real,
+  // shared business data. Staff can write their own ironLogActionCompletions doc, but NOT ironLogState
+  // (admin-only) — so a staff member's successful local parse has no way to reach Admin on its own.
+  // This function is the actual bridge: only Admin's client runs it, since only Admin can write the
+  // data it produces. Id-based dedup makes it safe to call repeatedly without double-adding rows.
+  function processPendingActionCompletionMerges(){
+    if(!isFirebaseAdmin()) return;
+    var bizModule = data.modules.business;
+    if(!bizModule || bizModule.type !== "business") return;
+    var didMerge = false;
+    (bizModule.businesses || []).forEach(function(biz){
+      (biz.tabs || []).forEach(function(wfTab){
+        if(wfTab.type !== "workflow") return;
+        (wfTab.actionCompletions || []).forEach(function(c){
+          if(c.merged !== false) return; // only explicit false — skips undefined (older/other completion types) and true (already done)
+          var targetBiz = (bizModule.businesses || []).find(function(b){ return b.id === c.mergeTargetBusinessId; });
+          var targetTab = targetBiz ? (targetBiz.tabs || []).find(function(t){ return t.id === c.mergeTargetTabId; }) : null;
+          if(c.pendingMergeRows && c.pendingMergeRows.length && targetTab && targetTab.type === "stock"){
+            var existingRowIds = {}, existingRowNums = {};
+            targetTab.rows.forEach(function(r){ existingRowIds[r.id] = true; if(r.vehicleNumber) existingRowNums[normalizeVehicleNumber(r.vehicleNumber)] = true; });
+            c.pendingMergeRows.forEach(function(r){
+              if(existingRowIds[r.id]) return;
+              if(r.vehicleNumber && existingRowNums[normalizeVehicleNumber(r.vehicleNumber)]) return;
+              targetTab.rows.push(r);
+              existingRowIds[r.id] = true;
+              if(r.vehicleNumber) existingRowNums[normalizeVehicleNumber(r.vehicleNumber)] = true;
+            });
+          }else if(c.pendingMergeVehicles && c.pendingMergeVehicles.length && targetTab && targetTab.type === "stockprep"){
+            var existingVIds = {}, existingVNums = {};
+            targetTab.vehicles.forEach(function(v){ existingVIds[v.id] = true; if(v.vehicleNumber) existingVNums[normalizeVehicleNumber(v.vehicleNumber)] = true; });
+            c.pendingMergeVehicles.forEach(function(v){
+              if(existingVIds[v.id]) return;
+              if(v.vehicleNumber && existingVNums[normalizeVehicleNumber(v.vehicleNumber)]) return;
+              targetTab.vehicles.push(v);
+              existingVIds[v.id] = true;
+              if(v.vehicleNumber) existingVNums[normalizeVehicleNumber(v.vehicleNumber)] = true;
+            });
+          }
+          c.merged = true;
+          c.pendingMergeRows = null;
+          c.pendingMergeVehicles = null;
+          didMerge = true;
+        });
+      });
+    });
+    if(didMerge) saveData();
+  }
+
   // Staff roster: a deliberately safe, non-sensitive mirror of the staff module's basic structure
   // (who exists, their names/IDs, office geofence, holidays) that ANY authenticated user can read —
   // unlike APP_STATE_REF, which correctly should be restricted to Admin since it also contains
@@ -2874,6 +2922,8 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       try{ mergeActionCompletionDocsIntoData(map); persist(data); }
       catch(err){ console.error("Action-completion merge failed", err); }
       finally{ cloudApplying = false; }
+      try{ processPendingActionCompletionMerges(); }
+      catch(err){ console.error("Pending action-completion merge into main tables failed", err); }
       rerenderAfterRemote();
     }, function(err){ console.error("Action-completion listener", err); }));
 
@@ -6653,7 +6703,11 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         }else if(!result.added || result.added === 0){
           saveActionCompletionFields(tab, itemId, {fileName:null, error:"This file added no valid rows — check it has a Vehicle Number column with real data, then try again."});
         }else{
-          saveActionCompletionFields(tab, itemId, {fileName:file.name, fileSize:file.size, uploadedAt:new Date().toISOString(), summary:result.message, error:null});
+          saveActionCompletionFields(tab, itemId, {
+            fileName:file.name, fileSize:file.size, uploadedAt:new Date().toISOString(), summary:result.message, error:null,
+            mergeTargetType:"stock", mergeTargetTabId:stockTab.id, mergeTargetBusinessId:business.id,
+            pendingMergeRows: result.newRows, merged:false
+          });
         }
         saveData();
         renderStaffActionWfList(module, staff);
@@ -6673,7 +6727,11 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         }else if(!result.added || result.added === 0){
           saveActionCompletionFields(tab, itemId, {fileName:null, error:"This file added no valid rows — check it has a Vehicle Number column with real data, then try again."});
         }else{
-          saveActionCompletionFields(tab, itemId, {fileName:file.name, fileSize:file.size, uploadedAt:new Date().toISOString(), summary:result.message, error:null});
+          saveActionCompletionFields(tab, itemId, {
+            fileName:file.name, fileSize:file.size, uploadedAt:new Date().toISOString(), summary:result.message, error:null,
+            mergeTargetType:"stockprep", mergeTargetTabId:prepTab.id, mergeTargetBusinessId:business.id,
+            pendingMergeVehicles: result.newVehicles, merged:false
+          });
         }
         saveData();
         renderStaffActionWfList(module, staff);
@@ -7987,7 +8045,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         var rawRows = XLSX.utils.sheet_to_json(sheet, {defval:""});
         var existing = {};
         tab.rows.forEach(function(r){ if(r.vehicleNumber) existing[normalizeVehicleNumber(r.vehicleNumber)] = true; });
-        var added = 0, dupSkipped = 0, noVehicleSkipped = 0;
+        var added = 0, dupSkipped = 0, noVehicleSkipped = 0, addedRows = [];
         rawRows.forEach(function(raw){
           var mapped = mapExcelRowToStockFields(raw);
           if(!mapped.vehicleNumber){ noVehicleSkipped++; return; }
@@ -7997,13 +8055,14 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
           var row = {id: uid()};
           STOCK_FIELDS.forEach(function(f){ row[f.key] = mapped[f.key]; });
           tab.rows.push(row);
+          addedRows.push(row);
           added++;
         });
         saveData();
         var msg = added + " row" + (added === 1 ? "" : "s") + " added";
         if(dupSkipped > 0) msg += ", " + dupSkipped + " duplicate vehicle number" + (dupSkipped === 1 ? "" : "s") + " skipped";
         if(noVehicleSkipped > 0) msg += ", " + noVehicleSkipped + " skipped (no vehicle number)";
-        if(onDone){ onDone({added:added, dupSkipped:dupSkipped, noVehicleSkipped:noVehicleSkipped, message:msg}); }
+        if(onDone){ onDone({added:added, dupSkipped:dupSkipped, noVehicleSkipped:noVehicleSkipped, message:msg, newRows:addedRows}); }
         else{ renderBizStockPanel(module, business, tab); toast(msg); }
       }catch(err){
         if(onDone){ onDone({error:true}); }
@@ -8130,21 +8189,23 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         var rawRows = XLSX.utils.sheet_to_json(sheet, {defval:""});
         var existing = {};
         tab.vehicles.forEach(function(v){ if(v.vehicleNumber) existing[normalizeVehicleNumber(v.vehicleNumber)] = true; });
-        var added = 0, dupSkipped = 0, noVehicleSkipped = 0;
+        var added = 0, dupSkipped = 0, noVehicleSkipped = 0, addedVehicles = [];
         rawRows.forEach(function(raw){
           var mapped = mapExcelRowToPrepFields(raw);
           if(!mapped.vehicleNumber){ noVehicleSkipped++; return; }
           var key = normalizeVehicleNumber(mapped.vehicleNumber);
           if(existing[key]){ dupSkipped++; return; }
           existing[key] = true;
-          tab.vehicles.push(freshPrepVehicle(mapped.vehicleNumber, mapped.segment, mapped.model));
+          var v = freshPrepVehicle(mapped.vehicleNumber, mapped.segment, mapped.model);
+          tab.vehicles.push(v);
+          addedVehicles.push(v);
           added++;
         });
         saveData();
         var msg = added + " vehicle" + (added === 1 ? "" : "s") + " added";
         if(dupSkipped > 0) msg += ", " + dupSkipped + " duplicate vehicle number" + (dupSkipped === 1 ? "" : "s") + " skipped";
         if(noVehicleSkipped > 0) msg += ", " + noVehicleSkipped + " skipped (no vehicle number)";
-        if(onDone){ onDone({added:added, dupSkipped:dupSkipped, noVehicleSkipped:noVehicleSkipped, message:msg}); }
+        if(onDone){ onDone({added:added, dupSkipped:dupSkipped, noVehicleSkipped:noVehicleSkipped, message:msg, newVehicles:addedVehicles}); }
         else{ renderBizStockPrepPanel(module, business, tab); toast(msg); }
       }catch(err){
         if(onDone){ onDone({error:true}); }
