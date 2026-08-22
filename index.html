@@ -141,6 +141,20 @@
     box-shadow:var(--shadow-card);
   }
   .card-tight{padding:14px 16px;}
+  /* Whole-card red treatment for paperwork that's had zero activity for 10+ days — deliberately the
+     entire card background, not just a badge, so it's unmissable scanning down a list. */
+  .card-inactive{background:var(--danger-soft) !important;border-color:var(--danger) !important;}
+  .card-inactive .prep-report-cat, .card-inactive .maint-report-cat{color:var(--danger);}
+  .pw-age-counter{font-family:var(--font-mono);font-size:12.5px;font-weight:800;padding:5px 11px;border-radius:8px;background:var(--panel-2);border:1.5px solid var(--border-strong);color:var(--text);white-space:nowrap;}
+  .card-inactive .pw-age-counter{background:var(--danger);border-color:var(--danger);color:#fff;}
+  /* Dead End countdown and active-stage status — deliberately bold, badge-styled call-outs rather
+     than small muted text, since these were the two details staff kept missing on the card. */
+  .pw-card-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .pw-deadend-badge, .pw-stage-badge{
+    display:inline-flex;align-items:center;gap:5px;font-weight:800;font-size:12.5px;line-height:1.3;
+    padding:5px 10px;border-radius:8px;background:var(--accent-soft);color:var(--accent);border:1.5px solid var(--accent-dim);
+  }
+  .pw-deadend-badge.urgent{background:var(--danger-soft);color:var(--danger);border-color:var(--danger);}
   .empty-state{
     text-align:center;padding:34px 18px;color:var(--text-dim);
     border:1px dashed var(--border-strong);border-radius:var(--radius);
@@ -340,6 +354,12 @@
   }
   .pw-wizard-vehicle{font-size:19px;font-weight:800;letter-spacing:.3px;}
   .pw-wizard-sub{font-size:12.5px;opacity:.9;margin-top:3px;}
+  /* The Dead End badge needs its own contrast treatment here — it sits on the green gradient header,
+     not a normal card background, so the default badge colors would wash out. */
+  .pw-wizard-header .pw-deadend-badge{
+    display:inline-flex;margin-top:10px;background:rgba(0,0,0,.22);color:#fff;border:1.5px solid rgba(255,255,255,.5);
+  }
+  .pw-wizard-header .pw-deadend-badge.urgent{background:#fff;color:var(--danger);border-color:#fff;}
   .pw-wizard-progress{font-size:12px;font-weight:700;color:var(--text-dim);letter-spacing:.3px;text-transform:uppercase;margin-bottom:10px;}
   .pw-wizard-nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;}
   .pw-wizard-nav .btn{padding:12px 10px;font-size:13px;font-weight:700;border:none;color:#fff;}
@@ -609,6 +629,11 @@
   /* ---------- Today's Plan checklist ---------- */
   .plan-checklist{margin:12px 0 18px;}
   .plan-checklist-title{font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px;}
+  .plan-checklist-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .plan-checklist-title-row .plan-checklist-title{margin-bottom:0;}
+  .plan-expiry-badge{font-family:var(--font-mono);font-size:11px;font-weight:800;padding:4px 9px;border-radius:8px;background:var(--accent-soft);color:var(--accent);border:1.5px solid var(--accent-dim);white-space:nowrap;}
+  .plan-checklist-empty{background:var(--panel-2);border:1px dashed var(--border-strong);border-radius:var(--radius);}
+  .plan-checklist-empty .plan-checklist-title{padding:14px 14px 0;}
   .plan-ex-card{background:var(--panel-2);border:1px solid var(--border-strong);border-radius:var(--radius-sm);padding:12px;margin-bottom:8px;}
   .plan-ex-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
   .plan-ex-name{font-size:16px;font-weight:700;color:var(--text);}
@@ -744,6 +769,15 @@
   .badge-pill.completed{color:var(--up);border-color:var(--up);background:var(--up-soft);}
   .badge-pill.pending-red{color:var(--danger);border-color:var(--danger);background:var(--danger-soft);font-weight:700;}
   .badge-pill.badge-neutral{color:var(--text-dim);border-color:var(--border-strong);}
+  /* Sits directly on top of a mechanic's completed work card once the Operations Manager confirms
+     payment — deliberately bolder than the small inline badge-pill used elsewhere, since this is
+     meant to read as a clear, unmissable banner rather than a minor status chip. */
+  .payment-success-banner{
+    display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;text-align:center;
+    background:var(--up-soft);color:var(--up);border:1px solid var(--up);border-radius:var(--radius-sm);
+    padding:8px 10px;margin:-2px -2px 10px;font-weight:700;font-size:12.5px;
+  }
+  .payment-success-banner .psb-time{font-weight:500;color:var(--text-dim);font-size:11.5px;}
   .pending-task-card{border-left:3px solid var(--danger);}
   .entry-card .ehead-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
   .entry-card .enum{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);white-space:nowrap;}
@@ -1072,6 +1106,11 @@
     <div id="staffTaskHubContent"></div>
   </div>
 
+  <!-- ===================== PAPERWORK MONITORING TAB (Operations Manager + designated viewers only) ===================== -->
+  <div class="panel" id="panel-paperworkMonitoring">
+    <div id="paperworkMonitoringContent"></div>
+  </div>
+
   <!-- ===================== BACKUP TAB ===================== -->
   <div class="panel" id="panel-backup">
     <div class="section-title" style="margin-top:0;">Access</div>
@@ -1122,6 +1161,10 @@
     <button class="tab-btn" data-tab="staffTaskHub" id="navStaffTaskHubBtn" style="display:none;">
       <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
       Task Hub
+    </button>
+    <button class="tab-btn" data-tab="paperworkMonitoring" id="navPaperworkMonitoringBtn" style="display:none;">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6M9 9h1"/></svg>
+      Paperwork Monitoring
     </button>
     <button class="tab-btn" data-tab="progress">
       <svg viewBox="0 0 24 24"><path d="M4 19V10M11 19V5M18 19v-7"/></svg>
@@ -1215,6 +1258,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
   const PAPERWORK_COL = collection(db, "ironLogPaperwork");
   const MAINTENANCE_COL = collection(db, "ironLogMaintenance");
   const PAYMENT_ALLOCATIONS_COL = collection(db, "ironLogPaymentAllocations");
+  const WORKFLOW_COL = collection(db, "ironLogWorkflow");
   const GYM_PLANS_COL = collection(db, "ironLogGymPlans");
   const ATTENDANCE_COL = collection(db, "ironLogAttendance");
   const DEVICE_BINDING_COL = collection(db, "ironLogDeviceBindings");
@@ -1231,6 +1275,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
   var knownPaperworkDocs = new Map();
   var knownMaintenanceDocs = new Map();
   var knownPaymentAllocationDocs = new Map();
+  var knownWorkflowDocs = new Map();
   var knownGymPlanDocs = new Map();
   var knownAttendanceDocs = new Map();
   var knownDeviceBindingDocs = new Map();
@@ -1263,10 +1308,10 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       id:"gym", name:"Gym / Fitness", icon:"🏋️", accent:"#4f46e5", type:"gym", isDefault:true,
       nextSessionNumber:1,
       categories:[
-        {id:"push", name:"Push Day", exercises:["Bench Press","Overhead Press","Incline Dumbbell Press","Tricep Pushdown","Lateral Raise"], isDefault:true, presetPlan:[]},
-        {id:"pull", name:"Pull Day", exercises:["Deadlift","Barbell Row","Lat Pulldown","Bicep Curl","Face Pull"], isDefault:true, presetPlan:[]},
-        {id:"legs", name:"Leg Day", exercises:["Squat","Leg Press","Romanian Deadlift","Leg Curl","Calf Raise"], isDefault:true, presetPlan:[]},
-        {id:"forearm", name:"Forearm", exercises:["Wrist Curl","Reverse Wrist Curl","Farmer's Carry","Dead Hang","Grip Squeeze"], isDefault:true, presetPlan:[]}
+        {id:"push", name:"Push Day", exercises:["Bench Press","Overhead Press","Incline Dumbbell Press","Tricep Pushdown","Lateral Raise"], isDefault:true, presetPlan:[], planSetAt:null},
+        {id:"pull", name:"Pull Day", exercises:["Deadlift","Barbell Row","Lat Pulldown","Bicep Curl","Face Pull"], isDefault:true, presetPlan:[], planSetAt:null},
+        {id:"legs", name:"Leg Day", exercises:["Squat","Leg Press","Romanian Deadlift","Leg Curl","Calf Raise"], isDefault:true, presetPlan:[], planSetAt:null},
+        {id:"forearm", name:"Forearm", exercises:["Wrist Curl","Reverse Wrist Curl","Farmer's Carry","Dead Hang","Grip Squeeze"], isDefault:true, presetPlan:[], planSetAt:null}
       ],
       equipmentTypes: EQUIPMENT_OPTIONS.slice(),
       sessions:[],
@@ -1402,7 +1447,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
   }
   function freshPaperworkStages(){
     var obj = {};
-    PAPERWORK_STAGES.forEach(function(s){ obj[s.key] = {subStatus:"Pending", toggle:false, deadEndDate:null, savedAt:null}; });
+    PAPERWORK_STAGES.forEach(function(s){ obj[s.key] = {subStatus:"Pending", toggle:false, deadEndDate:null, savedAt:null, savedBy:null}; });
     return obj;
   }
   function freshStockPrepTab(name){
@@ -1416,7 +1461,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     };
   }
   function freshPrepVehicle(vehicleNumber, segment, model){
-    return {id: uid(), vehicleNumber: vehicleNumber || "", segment: segment || "", model: model || "", maintenance: [], paperwork: [], paperworkAssignedTo: null, paperworkStages: freshPaperworkStages(), paperworkStageIndex: 0};
+    return {id: uid(), vehicleNumber: vehicleNumber || "", segment: segment || "", model: model || "", createdAt: new Date().toISOString(), maintenance: [], paperwork: [], paperworkAssignedTo: null, paperworkStages: freshPaperworkStages(), paperworkStageIndex: 0};
   }
   var WEEKDAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   var WORKFLOW_LOOKBACK_DAYS = 90;
@@ -1625,6 +1670,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       designation: (designation && designation.trim()) ? designation.trim() : "Staff",
       baseSalary: 15000, allowedBusinessIds: null, // null = no restriction, staff can tag any company
       mobileNumber: "", deviceId: null, deviceRegisteredAt: null,
+      paperworkModuleEnabled: true,
       tasks: [], workflowItems: [], attendance: [], leaves: []
     };
   }
@@ -1633,6 +1679,8 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       id:"staff", name:"Staff", icon:"👥", accent:ACCENT_PALETTE[2], type:"staff", isDefault:true,
       office: {lat:null, lng:null, radius:75},
       designations: DEFAULT_STAFF_DESIGNATIONS.slice(),
+      paperworkReportViewerIds: [], // staff ids explicitly granted the Paperwork Monitoring Dashboard,
+      // on top of anyone with the "Operations Manager" designation (see isPaperworkReportViewer)
       staffMembers: [],
       holidays: [], // {id, date:"YYYY-MM-DD", label}
       tasks: [] // peer-created tasks: staff-to-staff or staff-to-admin, separate from Business-assigned tasks
@@ -2028,6 +2076,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         if(!Array.isArray(m.categories)) m.categories = [];
         m.categories.forEach(function(c){
           if(!Array.isArray(c.presetPlan)) c.presetPlan = [];
+          if(typeof c.planSetAt === "undefined") c.planSetAt = null;
           c.presetPlan.forEach(function(p){
             if(!p.id) p.id = uid();
             if(typeof p.exercise === "undefined") p.exercise = "";
@@ -2176,9 +2225,14 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
                 if(!Array.isArray(v.paperwork)) v.paperwork = [];
                 if(typeof v.paperworkAssignedTo === "undefined") v.paperworkAssignedTo = null;
                 if(typeof v.model !== "string") v.model = "";
+                // Best-effort baseline for vehicles that existed before this was tracked — there's no
+                // real historical upload date to recover, so "now" becomes the starting point their
+                // age counter grows from going forward, rather than fabricating a fake past date.
+                if(!v.createdAt) v.createdAt = new Date().toISOString();
                 if(!v.paperworkStages || typeof v.paperworkStages !== "object") v.paperworkStages = freshPaperworkStages();
                 PAPERWORK_STAGES.forEach(function(s){
-                  if(!v.paperworkStages[s.key]) v.paperworkStages[s.key] = {subStatus:"Pending", toggle:false, deadEndDate:null, savedAt:null};
+                  if(!v.paperworkStages[s.key]) v.paperworkStages[s.key] = {subStatus:"Pending", toggle:false, deadEndDate:null, savedAt:null, savedBy:null};
+                  if(typeof v.paperworkStages[s.key].savedBy === "undefined") v.paperworkStages[s.key].savedBy = null;
                 });
                 // paperworkStageIndex is the single persisted "resume pointer" for the wizard — it is
                 // set explicitly by Next/Prev/Finish, never inferred from subStatus (subStatus labels
@@ -2229,6 +2283,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         // everything else is whatever the admin has added via Manage Designations.
         if(!Array.isArray(m.designations) || m.designations.length === 0) m.designations = DEFAULT_STAFF_DESIGNATIONS.slice();
         ["Staff", "Mechanic"].forEach(function(req){ if(m.designations.indexOf(req) === -1) m.designations.push(req); });
+        if(!Array.isArray(m.paperworkReportViewerIds)) m.paperworkReportViewerIds = [];
         m.holidays.forEach(function(h){ if(!h.id) h.id = uid(); });
         function normalizeStaffTask(t){
           if(!t.id) t.id = uid();
@@ -2259,6 +2314,10 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
           // restricted, works-only dashboard (see renderMechanicDashboard); everything else gets the
           // regular staff dashboard. Kept as a free-ish label so more designations can be added later.
           if(typeof s.designation !== "string" || !s.designation) s.designation = "Staff";
+          // Assigned Vehicle Paperwork is now an Admin-toggleable module per staff member — defaults
+          // to true so existing staff keep seeing it exactly as before; Admin can then selectively
+          // turn it off for specific people going forward.
+          if(typeof s.paperworkModuleEnabled === "undefined") s.paperworkModuleEnabled = true;
           if(!Array.isArray(s.tasks)) s.tasks = [];
           if(!Array.isArray(s.workflowItems)) s.workflowItems = [];
           if(!Array.isArray(s.attendance)) s.attendance = [];
@@ -2269,8 +2328,17 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
             if(typeof a.fine === "undefined") a.fine = 0;
             if(typeof a.punchOutAdminSet === "undefined") a.punchOutAdminSet = false;
             if(typeof a.punchInAdminSet === "undefined") a.punchInAdminSet = false;
+            if(typeof a.autoStatus === "undefined") a.autoStatus = null;
+            if(typeof a.autoMarked === "undefined") a.autoMarked = false;
           });
-          s.leaves.forEach(function(l){ if(!l.id) l.id = uid(); if(!l.status) l.status = "pending"; });
+          s.leaves.forEach(function(l){
+            if(!l.id) l.id = uid();
+            if(!l.status) l.status = "pending";
+            if(typeof l.correctionRequested === "undefined") l.correctionRequested = false;
+            if(typeof l.correctionReason === "undefined") l.correctionReason = null;
+            if(typeof l.correctionRequestedAt === "undefined") l.correctionRequestedAt = null;
+            if(typeof l.correctionStatus === "undefined") l.correctionStatus = null;
+          });
         });
       }else{
         m.type = "log";
@@ -2474,6 +2542,25 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
   // Attendance lives per staff member per day. This exists as its own granular collection (rather than
   // only inside the big app-state document) specifically so a staff member's own punch can be written
   // to Firestore by that staff member — the app-state document itself can only be written by Admin.
+  // Attendance dirty-tracking, keyed the same way as the Firestore doc id (staffId_date) — mirrors
+  // Tasks/Maintenance/Payments/Workflow. mergeAttendanceDocsIntoData used to unconditionally wipe and
+  // rebuild every staff member's whole attendance array from each snapshot, with zero protection —
+  // exactly the class of bug that let a Maintenance completion revert before, just not yet fixed here.
+  var ATTENDANCE_DIRTY_GRACE_MS = 10 * 60 * 1000;
+  var ATTENDANCE_DIRTY_STORAGE_KEY = "ironLogAttendanceDirty";
+  var recentLocalAttendanceEdits = loadDirtyMap(ATTENDANCE_DIRTY_STORAGE_KEY);
+  function markAttendanceDirty(docId){
+    recentLocalAttendanceEdits[docId] = Date.now();
+    saveDirtyMap(ATTENDANCE_DIRTY_STORAGE_KEY, recentLocalAttendanceEdits);
+  }
+  function clearAttendanceDirty(docId){
+    delete recentLocalAttendanceEdits[docId];
+    saveDirtyMap(ATTENDANCE_DIRTY_STORAGE_KEY, recentLocalAttendanceEdits);
+  }
+  function isAttendanceDirty(docId){
+    var t = recentLocalAttendanceEdits[docId];
+    return !!t && (Date.now() - t) < ATTENDANCE_DIRTY_GRACE_MS;
+  }
   function flattenAttendanceDocs(){
     var out = new Map();
     var staffModule = findStaffModuleAny();
@@ -2488,16 +2575,38 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     return out;
   }
   function mergeAttendanceDocsIntoData(attendanceDocs){
-    if(!attendanceDocs || attendanceDocs.size === 0) return;
+    if(!attendanceDocs) return;
     var staffModule = findStaffModuleAny();
     if(!staffModule) return;
-    (staffModule.staffMembers || []).forEach(function(m){ m.attendance = []; });
-    attendanceDocs.forEach(function(raw){
-      var m = findStaffMember(staffModule, raw.staffMemberId);
-      if(!m) return;
+    var remoteByStaff = {}; // staffMemberId -> [{docId, rec}]
+    attendanceDocs.forEach(function(raw, docId){
       var a = JSON.parse(JSON.stringify(raw));
+      var staffMemberId = a.staffMemberId;
       delete a.staffMemberId; delete a.moduleId; delete a.updatedAt; delete a.updatedBy;
-      m.attendance.push(a);
+      if(!remoteByStaff[staffMemberId]) remoteByStaff[staffMemberId] = [];
+      remoteByStaff[staffMemberId].push({docId:docId, rec:a});
+    });
+    (staffModule.staffMembers || []).forEach(function(m){
+      var remoteList = remoteByStaff[m.id] || [];
+      var existingByDate = {};
+      (m.attendance || []).forEach(function(a){ existingByDate[a.date] = a; });
+      var merged = [];
+      var seenDates = {};
+      remoteList.forEach(function(entry){
+        seenDates[entry.rec.date] = true;
+        if(isAttendanceDirty(entry.docId)){
+          // Trust the local, more-recent version instead of this possibly-stale snapshot.
+          if(existingByDate[entry.rec.date]) merged.push(existingByDate[entry.rec.date]);
+        }else{
+          merged.push(entry.rec);
+        }
+      });
+      // Keep any local-only records (not yet round-tripped to Firestore) that are still dirty.
+      (m.attendance || []).forEach(function(a){
+        var docId = m.id + "_" + a.date;
+        if(!seenDates[a.date] && isAttendanceDirty(docId)) merged.push(a);
+      });
+      m.attendance = merged;
     });
   }
 
@@ -2546,11 +2655,20 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
   // the admin's own approval write echoes back through this same listener within ~1 second). That
   // mismatch is what produced "needs 10-15 clicks to register": most clicks were mutating a copy
   // that had already been discarded by the time the next sync cycle rebuilt the array.
-  var recentLocalLeaveEdits = {}; // leaveId -> timestamp, same grace-period pattern as task edits
-  function markLeaveDirty(leaveId){ recentLocalLeaveEdits[leaveId] = Date.now(); }
+  var LEAVE_DIRTY_GRACE_MS = 10 * 60 * 1000;
+  var LEAVE_DIRTY_STORAGE_KEY = "ironLogLeaveDirty";
+  var recentLocalLeaveEdits = loadDirtyMap(LEAVE_DIRTY_STORAGE_KEY);
+  function markLeaveDirty(leaveId){
+    recentLocalLeaveEdits[leaveId] = Date.now();
+    saveDirtyMap(LEAVE_DIRTY_STORAGE_KEY, recentLocalLeaveEdits);
+  }
+  function clearLeaveDirty(leaveId){
+    delete recentLocalLeaveEdits[leaveId];
+    saveDirtyMap(LEAVE_DIRTY_STORAGE_KEY, recentLocalLeaveEdits);
+  }
   function isLeaveDirty(leaveId){
     var t = recentLocalLeaveEdits[leaveId];
-    return !!t && (Date.now() - t) < TASK_DIRTY_GRACE_MS;
+    return !!t && (Date.now() - t) < LEAVE_DIRTY_GRACE_MS;
   }
   function mergeLeaveDocsIntoData(leaveDocs){
     if(!leaveDocs || leaveDocs.size === 0) return;
@@ -2775,8 +2893,9 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       office: sm.office || {lat:null, lng:null, radius:75},
       holidays: sm.holidays || [],
       designations: sm.designations && sm.designations.length ? sm.designations : DEFAULT_STAFF_DESIGNATIONS.slice(),
+      paperworkReportViewerIds: sm.paperworkReportViewerIds || [],
       members: (sm.staffMembers || []).map(function(m){
-        return {id:m.id, name:m.name, staffId:m.staffId || "", designation:m.designation || "Staff", baseSalary:m.baseSalary, allowedBusinessIds:m.allowedBusinessIds, mobileNumber:m.mobileNumber || ""};
+        return {id:m.id, name:m.name, staffId:m.staffId || "", designation:m.designation || "Staff", baseSalary:m.baseSalary, allowedBusinessIds:m.allowedBusinessIds, mobileNumber:m.mobileNumber || "", paperworkModuleEnabled: m.paperworkModuleEnabled !== false};
       })
     };
   }
@@ -2789,6 +2908,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     if(roster.office) sm.office = roster.office;
     if(roster.holidays) sm.holidays = roster.holidays;
     if(Array.isArray(roster.designations) && roster.designations.length) sm.designations = roster.designations;
+    if(Array.isArray(roster.paperworkReportViewerIds)) sm.paperworkReportViewerIds = roster.paperworkReportViewerIds;
     var existingById = {};
     (sm.staffMembers || []).forEach(function(m){ existingById[m.id] = m; });
     sm.staffMembers = (roster.members || []).map(function(r){
@@ -2799,6 +2919,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         id:r.id, name:r.name, staffId:r.staffId, createdAt:(existing ? existing.createdAt : new Date().toISOString()),
         designation:(r.designation && String(r.designation).trim()) ? r.designation : "Staff",
         baseSalary:r.baseSalary, allowedBusinessIds:r.allowedBusinessIds, mobileNumber:r.mobileNumber,
+        paperworkModuleEnabled: r.paperworkModuleEnabled !== false,
         deviceId:(existing ? existing.deviceId : null), deviceRegisteredAt:(existing ? existing.deviceRegisteredAt : null),
         tasks:(existing ? existing.tasks : []), workflowItems:(existing ? existing.workflowItems : []),
         attendance:(existing ? existing.attendance : []), leaves:(existing ? existing.leaves : [])
@@ -2816,6 +2937,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         (tab.vehicles || []).forEach(function(v){
           out.set(v.id, {
             vehicleId:v.id, businessId:b.id, tabId:tab.id, vehicleNumber:v.vehicleNumber || "",
+            createdAt: v.createdAt || null,
             paperworkStages:JSON.parse(JSON.stringify(v.paperworkStages || freshPaperworkStages())),
             paperworkStageIndex:typeof v.paperworkStageIndex === "number" ? v.paperworkStageIndex : 0,
             paperwork:JSON.parse(JSON.stringify(v.paperwork || [])),
@@ -2827,6 +2949,24 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     return out;
   }
 
+  // Primary defense is clearPaperworkDirty() below, called only once Firestore actually confirms the
+  // write — a permanently-failing write shouldn't lock this device out of accepting server updates
+  // for that vehicle forever, hence the TTL safety net alongside the confirmed-clear.
+  var PAPERWORK_DIRTY_GRACE_MS = 10 * 60 * 1000;
+  var PAPERWORK_DIRTY_STORAGE_KEY = "ironLogPaperworkDirty";
+  var recentLocalPaperworkEdits = loadDirtyMap(PAPERWORK_DIRTY_STORAGE_KEY);
+  function markPaperworkDirty(vehicleId){
+    recentLocalPaperworkEdits[vehicleId] = Date.now();
+    saveDirtyMap(PAPERWORK_DIRTY_STORAGE_KEY, recentLocalPaperworkEdits);
+  }
+  function clearPaperworkDirty(vehicleId){
+    delete recentLocalPaperworkEdits[vehicleId];
+    saveDirtyMap(PAPERWORK_DIRTY_STORAGE_KEY, recentLocalPaperworkEdits);
+  }
+  function isPaperworkDirty(vehicleId){
+    var t = recentLocalPaperworkEdits[vehicleId];
+    return !!t && (Date.now() - t) < PAPERWORK_DIRTY_GRACE_MS;
+  }
   function mergePaperworkDocsIntoData(docs){
     if(!docs) return;
     var bizModule = data.modules && data.modules.business;
@@ -2838,12 +2978,18 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       if(!tab) return;
       var v = (tab.vehicles || []).find(function(x){ return x.id === pw.vehicleId; });
       if(!v) return;
+      // Skip overwriting this vehicle's paperwork if it was edited locally moments ago — same
+      // "don't let a stale snapshot revert a very-recent local change" protection Maintenance,
+      // Payments, Workflow, Attendance, and Leaves already have.
+      if(isPaperworkDirty(v.id)) return;
       if(pw.paperworkStages) v.paperworkStages = JSON.parse(JSON.stringify(pw.paperworkStages));
       if(typeof pw.paperworkStageIndex === "number") v.paperworkStageIndex = pw.paperworkStageIndex;
       if(Array.isArray(pw.paperwork)) v.paperwork = JSON.parse(JSON.stringify(pw.paperwork));
       if(typeof pw.paperworkAssignedTo !== "undefined") v.paperworkAssignedTo = pw.paperworkAssignedTo;
+      if(pw.createdAt && !v.createdAt) v.createdAt = pw.createdAt;
     });
   }
+
 
   // Maintenance items live inside APP_STATE_REF (the full business tree), which is intentionally
   // restricted to Admin — a Mechanic's client never reads that document, so without this separate
@@ -2859,7 +3005,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         (tab.vehicles || []).forEach(function(v){
           out.set(v.id, {
             vehicleId:v.id, businessId:b.id, businessName:b.name || "", tabId:tab.id,
-            vehicleNumber:v.vehicleNumber || "", segment:v.segment || "", model:v.model || "",
+            vehicleNumber:v.vehicleNumber || "", segment:v.segment || "", model:v.model || "", createdAt:v.createdAt || null,
             maintenance:JSON.parse(JSON.stringify(v.maintenance || []))
           });
         });
@@ -2899,7 +3045,143 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
   function hasAnyPendingLocalEdits(){
     return Object.keys(recentLocalTaskEdits).some(isTaskDirty)
       || Object.keys(recentLocalMaintenanceEdits).some(isMaintenanceDirty)
-      || Object.keys(recentLocalPaymentEdits).some(isPaymentDirty);
+      || Object.keys(recentLocalPaymentEdits).some(isPaymentDirty)
+      || Object.keys(recentLocalWorkflowEdits).some(isWorkflowDirty);
+  }
+  // Payment Allocations and per-vehicle Maintenance are each synced two ways for Admin: through
+  // their own dedicated, dirty-tracked collections (mergePaymentAllocationDocsIntoData /
+  // mergeMaintenanceDocsIntoData), AND redundantly, as part of the single full app-state payload
+  // written to APP_STATE_REF. The full-payload replace in the APP_STATE_REF listener has no
+  // dirty-tracking of its own — it just wholesale-replaces `data` — so a snapshot that hasn't
+  // caught up with a very-recent local edit yet (an Admin clicking Approve, for instance) silently
+  // reverted it, even though the exact same edit was correctly protected everywhere else. These
+  // snapshot the currently-dirty entries immediately before that replace and restore them right
+  // after, so the full-payload path can never clobber what the granular path already protects —
+  // this is the actual fix for "Approve reverts a second later, needs several clicks to stick."
+  function collectDirtyPaymentAllocations(){
+    return (data.paymentAllocations || []).filter(function(p){ return isPaymentDirty(p.id); });
+  }
+  function restoreDirtyPaymentAllocations(dirtyList){
+    if(!dirtyList || !dirtyList.length) return;
+    if(!Array.isArray(data.paymentAllocations)) data.paymentAllocations = [];
+    var byId = {};
+    data.paymentAllocations.forEach(function(p){ byId[p.id] = p; });
+    dirtyList.forEach(function(p){ byId[p.id] = p; });
+    data.paymentAllocations = Object.keys(byId).map(function(id){ return byId[id]; });
+  }
+  function collectDirtyVehicleMaintenance(){
+    var out = [];
+    var bizModule = data.modules && data.modules.business;
+    if(!bizModule || bizModule.type !== "business") return out;
+    (bizModule.businesses || []).forEach(function(b){
+      (b.tabs || []).forEach(function(tab){
+        if(tab.type !== "stockprep") return;
+        (tab.vehicles || []).forEach(function(v){
+          if(isMaintenanceDirty(v.id)) out.push({businessId:b.id, tabId:tab.id, vehicleId:v.id, maintenance:JSON.parse(JSON.stringify(v.maintenance || []))});
+        });
+      });
+    });
+    return out;
+  }
+  function restoreDirtyVehicleMaintenance(dirtyList){
+    if(!dirtyList || !dirtyList.length) return;
+    var bizModule = data.modules && data.modules.business;
+    if(!bizModule || bizModule.type !== "business") return;
+    dirtyList.forEach(function(entry){
+      var b = (bizModule.businesses || []).find(function(x){ return x.id === entry.businessId; });
+      if(!b) return;
+      var tab = (b.tabs || []).find(function(x){ return x.id === entry.tabId; });
+      if(!tab) return;
+      var v = (tab.vehicles || []).find(function(x){ return x.id === entry.vehicleId; });
+      if(!v) return;
+      v.maintenance = entry.maintenance;
+    });
+  }
+  // Same protection, for Workflow tab completions — see the note above writeDomainCollections'
+  // workflow section and mergeWorkflowDocsIntoData for the fuller explanation.
+  function collectDirtyWorkflowCompletions(){
+    var out = [];
+    var bizModule = data.modules && data.modules.business;
+    if(!bizModule || bizModule.type !== "business") return out;
+    (bizModule.businesses || []).forEach(function(b){
+      (b.tabs || []).forEach(function(tab){
+        if(tab.type !== "workflow") return;
+        if(isWorkflowDirty(tab.id)) out.push({businessId:b.id, tabId:tab.id, completions:JSON.parse(JSON.stringify(tab.completions || []))});
+      });
+    });
+    return out;
+  }
+  function restoreDirtyWorkflowCompletions(dirtyList){
+    if(!dirtyList || !dirtyList.length) return;
+    var bizModule = data.modules && data.modules.business;
+    if(!bizModule || bizModule.type !== "business") return;
+    dirtyList.forEach(function(entry){
+      var b = (bizModule.businesses || []).find(function(x){ return x.id === entry.businessId; });
+      if(!b) return;
+      var tab = (b.tabs || []).find(function(x){ return x.id === entry.tabId; });
+      if(!tab) return;
+      tab.completions = entry.completions;
+    });
+  }
+  // Same protection, for per-day Attendance records and Leave requests — both also live inside
+  // data.modules.staff, which rides along in the same full app-state payload for Admin.
+  function collectDirtyAttendance(){
+    var out = [];
+    var staffModule = findStaffModuleAny();
+    if(!staffModule) return out;
+    (staffModule.staffMembers || []).forEach(function(m){
+      (m.attendance || []).forEach(function(a){
+        var docId = m.id + "_" + a.date;
+        if(isAttendanceDirty(docId)) out.push({staffId:m.id, record:JSON.parse(JSON.stringify(a))});
+      });
+    });
+    return out;
+  }
+  function restoreDirtyAttendance(dirtyList){
+    if(!dirtyList || !dirtyList.length) return;
+    var staffModule = findStaffModuleAny();
+    if(!staffModule) return;
+    dirtyList.forEach(function(entry){
+      var m = findStaffMember(staffModule, entry.staffId);
+      if(!m) return;
+      if(!Array.isArray(m.attendance)) m.attendance = [];
+      var idx = m.attendance.findIndex(function(a){ return a.date === entry.record.date; });
+      if(idx === -1) m.attendance.push(entry.record);
+      else m.attendance[idx] = entry.record;
+    });
+  }
+  function collectDirtyLeaves(){
+    var out = [];
+    var staffModule = findStaffModuleAny();
+    if(!staffModule) return out;
+    (staffModule.staffMembers || []).forEach(function(m){
+      (m.leaves || []).forEach(function(l){
+        if(isLeaveDirty(l.id)) out.push({staffId:m.id, record:JSON.parse(JSON.stringify(l))});
+      });
+    });
+    return out;
+  }
+  function restoreDirtyLeaves(dirtyList){
+    if(!dirtyList || !dirtyList.length) return;
+    var staffModule = findStaffModuleAny();
+    if(!staffModule) return;
+    dirtyList.forEach(function(entry){
+      var m = findStaffMember(staffModule, entry.staffId);
+      if(!m) return;
+      if(!Array.isArray(m.leaves)) m.leaves = [];
+      var idx = m.leaves.findIndex(function(l){ return l.id === entry.record.id; });
+      if(idx === -1) m.leaves.push(entry.record);
+      else m.leaves[idx] = entry.record;
+    });
+  }
+  // data.lastSalaryGenMonth is a single scalar, not a per-record collection, so it doesn't need the
+  // full dirty-tracking apparatus above — it only ever needs to move forward. If a stale APP_STATE_REF
+  // snapshot were to revert it to an earlier (or missing) value, maybeGenerateMonthlySalaryAllocations
+  // could think a month hasn't been generated yet and re-run — this keeps whichever value is later
+  // through the replace, "YYYY-MM" string comparison sorts correctly here.
+  function restoreLastSalaryGenMonth(prevValue){
+    if(!prevValue) return;
+    if(!data.lastSalaryGenMonth || data.lastSalaryGenMonth < prevValue) data.lastSalaryGenMonth = prevValue;
   }
   // Primary defense is clearMaintenanceDirty() below, called only once Firestore actually confirms
   // the write (see writeDomainCollections) — this TTL is just a safety net so a permanently-failing
@@ -2947,18 +3229,98 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       if(!v){
         v = freshPrepVehicle(md.vehicleNumber || "", md.segment || "", md.model || "");
         v.id = md.vehicleId;
+        if(md.createdAt) v.createdAt = md.createdAt; // preserve the real upload date instead of "now" from this self-heal moment
         if(!Array.isArray(tab.vehicles)) tab.vehicles = [];
         tab.vehicles.push(v);
       }else{
         if(md.vehicleNumber) v.vehicleNumber = md.vehicleNumber;
         if(typeof md.segment === "string") v.segment = md.segment;
         if(md.model) v.model = md.model;
+        if(md.createdAt && !v.createdAt) v.createdAt = md.createdAt;
       }
       // Skip overwriting maintenance if THIS vehicle was edited locally moments ago — otherwise a
       // snapshot that hasn't caught up yet with a very-recent local write (Mark Complete, a status
       // change, a new item) can silently revert it back to the old state, undoing the user's own
       // action right in front of them.
       if(Array.isArray(md.maintenance) && !isMaintenanceDirty(v.id)) v.maintenance = JSON.parse(JSON.stringify(md.maintenance));
+    });
+  }
+
+  // ---------- Workflow tab sync (daily/weekly/monthly recurring items + completions) ----------
+  // Workflow tabs (type:"workflow") live inside data.modules.business exactly like Stock Prep
+  // vehicles do, and had the exact same gap Maintenance used to have: a Staff member's client never
+  // successfully reads APP_STATE_REF (Admin-only), and there was no dedicated granular collection
+  // for workflow completions at all — so "Mark Done" only ever changed local memory, silently lost
+  // on the next refresh once nothing was left to protect it. One doc per workflow tab (mirroring the
+  // per-vehicle grain of Maintenance), self-healing the business/tab skeleton the same way.
+  var WORKFLOW_DIRTY_GRACE_MS = 10 * 60 * 1000;
+  var WORKFLOW_DIRTY_STORAGE_KEY = "ironLogWorkflowDirty";
+  var recentLocalWorkflowEdits = loadDirtyMap(WORKFLOW_DIRTY_STORAGE_KEY);
+  function markWorkflowDirty(tabId){
+    recentLocalWorkflowEdits[tabId] = Date.now();
+    saveDirtyMap(WORKFLOW_DIRTY_STORAGE_KEY, recentLocalWorkflowEdits);
+  }
+  function clearWorkflowDirty(tabId){
+    delete recentLocalWorkflowEdits[tabId];
+    saveDirtyMap(WORKFLOW_DIRTY_STORAGE_KEY, recentLocalWorkflowEdits);
+  }
+  function isWorkflowDirty(tabId){
+    var t = recentLocalWorkflowEdits[tabId];
+    return !!t && (Date.now() - t) < WORKFLOW_DIRTY_GRACE_MS;
+  }
+  // Collapses completions down to one record per itemId+dueDate (keeping the most recent by
+  // completedAt) — a safety net against duplicate "Everyday" entries, which could otherwise arise
+  // if two devices each pushed their own completion for the same item on the same day before either
+  // had seen the other's write.
+  function dedupeWorkflowCompletions(list){
+    var byKey = {};
+    (list || []).forEach(function(c){
+      var key = c.itemId + "|" + c.dueDate;
+      var existing = byKey[key];
+      if(!existing || new Date(c.completedAt || 0) >= new Date(existing.completedAt || 0)) byKey[key] = c;
+    });
+    return Object.keys(byKey).map(function(k){ return byKey[k]; });
+  }
+  function flattenWorkflowDocs(){
+    var out = new Map();
+    var bizModule = data.modules && data.modules.business;
+    if(!bizModule || bizModule.type !== "business") return out;
+    (bizModule.businesses || []).forEach(function(b){
+      (b.tabs || []).forEach(function(tab){
+        if(tab.type !== "workflow") return;
+        out.set(tab.id, {
+          tabId:tab.id, businessId:b.id, businessName:b.name || "", tabName:tab.name || "Workflow",
+          items:JSON.parse(JSON.stringify(tab.items || [])),
+          completions:dedupeWorkflowCompletions(tab.completions || [])
+        });
+      });
+    });
+    return out;
+  }
+  function mergeWorkflowDocsIntoData(docs){
+    if(!docs) return;
+    if(!data.modules.business || data.modules.business.type !== "business"){
+      data.modules.business = {id:"business", name:"Business", icon:"💼", accent:ACCENT_PALETTE[1], type:"business", isDefault:true, businesses:[]};
+    }
+    var bizModule = data.modules.business;
+    docs.forEach(function(wd){
+      var b = (bizModule.businesses || []).find(function(x){ return x.id === wd.businessId; });
+      if(!b){
+        b = {id:wd.businessId, name:wd.businessName || "Business", tabs:[]};
+        bizModule.businesses.push(b);
+      }else if(wd.businessName && !b.name){
+        b.name = wd.businessName;
+      }
+      var tab = (b.tabs || []).find(function(x){ return x.id === wd.tabId; });
+      if(!tab){
+        tab = {id:wd.tabId, type:"workflow", name:wd.tabName || "Workflow", items:[], completions:[], actionWorkflows:[], actionCompletions:[]};
+        if(!Array.isArray(b.tabs)) b.tabs = [];
+        b.tabs.push(tab);
+      }
+      if(Array.isArray(wd.items)) tab.items = JSON.parse(JSON.stringify(wd.items));
+      // Same protection as Maintenance — skip overwriting completions for a tab that was marked
+      // Done moments ago locally, so an unconfirmed write can't silently revert it back to pending.
+      if(Array.isArray(wd.completions) && !isWorkflowDirty(tab.id)) tab.completions = dedupeWorkflowCompletions(wd.completions);
     });
   }
 
@@ -3005,7 +3367,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     var gym = data.modules && data.modules.gym;
     if(!gym || gym.type !== "gym") return out;
     (gym.categories || []).forEach(function(c){
-      out.set(c.id, {categoryId:c.id, categoryName:c.name, presetPlan:JSON.parse(JSON.stringify(c.presetPlan || []))});
+      out.set(c.id, {categoryId:c.id, categoryName:c.name, presetPlan:JSON.parse(JSON.stringify(c.presetPlan || [])), planSetAt:c.planSetAt || null});
     });
     return out;
   }
@@ -3015,7 +3377,9 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     if(!gym || gym.type !== "gym") return;
     docs.forEach(function(gp){
       var cat = (gym.categories || []).find(function(c){ return c.id === gp.categoryId; });
-      if(cat && Array.isArray(gp.presetPlan)) cat.presetPlan = JSON.parse(JSON.stringify(gp.presetPlan));
+      if(!cat) return;
+      if(Array.isArray(gp.presetPlan)) cat.presetPlan = JSON.parse(JSON.stringify(gp.presetPlan));
+      if(typeof gp.planSetAt !== "undefined") cat.planSetAt = gp.planSetAt;
     });
   }
 
@@ -3024,6 +3388,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     mergePaperworkDocsIntoData(knownPaperworkDocs);
     mergeMaintenanceDocsIntoData(knownMaintenanceDocs);
     mergePaymentAllocationDocsIntoData(knownPaymentAllocationDocs);
+    mergeWorkflowDocsIntoData(knownWorkflowDocs);
     mergeGymPlanDocsIntoData(knownGymPlanDocs);
     mergeAttendanceDocsIntoData(knownAttendanceDocs);
     mergeDeviceBindingDocsIntoData(knownDeviceBindingDocs);
@@ -3046,7 +3411,12 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       // amount, still un-submitted), causing a false "invalid" error even though the user typed
       // something valid. A short delay lets that click finish first.
       active.addEventListener("blur", function(){ setTimeout(retry, 300); }, {once:true});
-      rerenderAfterRemote._deferTimer = setTimeout(retry, 4000);
+      // Worst-case fallback if blur never fires at all — kept short so a background sync landing
+      // while someone is mid-form never stalls the next thing they do for longer than this, which is
+      // exactly what a 4-second version of this timer could look like from the outside: consecutive
+      // actions (adding a labor charge, marking one task done and immediately starting the next)
+      // occasionally feeling stuck for several seconds at a time.
+      rerenderAfterRemote._deferTimer = setTimeout(retry, 1500);
       return;
     }
     try{
@@ -3055,6 +3425,8 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       if(activeTab === "home") renderHome();
       else if(activeTab === "progress" && !isStaff()) renderProgress();
       else if(activeTab === "tasksHub" && !isStaff()) renderTasksHub();
+      else if(activeTab === "staffTaskHub" && isStaff() && !isMechanicUser()) renderStaffTaskHubEntry();
+      else if(activeTab === "paperworkMonitoring" && currentStaffCanViewPaperworkMonitoring()) renderPaperworkMonitoringEntry();
       else if(activeTab === "summary" && !isStaff()) renderSummary();
       if(activeTab === "backup") renderBackup();
     }catch(err){ console.error("Remote render failed", err); }
@@ -3088,7 +3460,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     try{
       var paperwork = flattenPaperworkDocs();
       paperwork.forEach(function(pw, id){
-        writes.push(setDoc(doc(db,"ironLogPaperwork",id), Object.assign({}, pw, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true}));
+        tracked.push({p: setDoc(doc(db,"ironLogPaperwork",id), Object.assign({}, pw, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true}), clear: function(){ clearPaperworkDirty(id); }});
       });
     }catch(err){ console.error("Preparing paperwork writes failed", err); }
 
@@ -3111,6 +3483,13 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     }catch(err){ console.error("Preparing payment allocation writes failed", err); }
 
     try{
+      var workflow = flattenWorkflowDocs();
+      workflow.forEach(function(wd, id){
+        tracked.push({p: setDoc(doc(db,"ironLogWorkflow",id), Object.assign({}, wd, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true}), clear: function(){ clearWorkflowDirty(id); }});
+      });
+    }catch(err){ console.error("Preparing workflow writes failed", err); }
+
+    try{
       if(isFirebaseAdmin()){
         var plans = flattenGymPlanDocs();
         plans.forEach(function(gp,id){ writes.push(setDoc(doc(db,"ironLogGymPlans",id), Object.assign({}, gp, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true})); });
@@ -3122,7 +3501,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       var attendance = flattenAttendanceDocs();
       attendance.forEach(function(a, id){
         var canWrite = isFirebaseAdmin() || (staffId && a.staffMemberId === staffId);
-        if(canWrite) writes.push(setDoc(doc(db,"ironLogAttendance",id), Object.assign({}, a, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true}));
+        if(canWrite) tracked.push({p: setDoc(doc(db,"ironLogAttendance",id), Object.assign({}, a, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true}), clear: function(){ clearAttendanceDirty(id); }});
       });
       knownAttendanceDocs.forEach(function(remote, id){
         if(attendance.has(id)) return;
@@ -3148,7 +3527,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       var leaves = flattenLeaveDocs();
       leaves.forEach(function(l, id){
         var canWrite = isFirebaseAdmin() || (staffId && l.staffMemberId === staffId);
-        if(canWrite) writes.push(setDoc(doc(db,"ironLogLeaves",id), Object.assign({}, l, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true}));
+        if(canWrite) tracked.push({p: setDoc(doc(db,"ironLogLeaves",id), Object.assign({}, l, {updatedAt:serverTimestamp(), updatedBy:firebaseUser.uid}), {merge:true}), clear: function(){ clearLeaveDirty(id); }});
       });
       knownLeaveDocs.forEach(function(remote, id){
         if(leaves.has(id)) return;
@@ -3231,7 +3610,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     clearTimeout(cloudWriteTimer);
     cloudUnsubs.forEach(function(fn){ try{ fn(); }catch(e){} });
     cloudUnsubs = [];
-    knownTaskDocs = new Map(); knownPaperworkDocs = new Map(); knownMaintenanceDocs = new Map(); knownPaymentAllocationDocs = new Map(); knownGymPlanDocs = new Map(); knownAttendanceDocs = new Map();
+    knownTaskDocs = new Map(); knownPaperworkDocs = new Map(); knownMaintenanceDocs = new Map(); knownPaymentAllocationDocs = new Map(); knownWorkflowDocs = new Map(); knownGymPlanDocs = new Map(); knownAttendanceDocs = new Map();
     knownDeviceBindingDocs = new Map(); knownLeaveDocs = new Map(); knownActionCompletionDocs = new Map();
   }
 
@@ -3248,8 +3627,23 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       var baseSnap = await getDoc(APP_STATE_REF);
       if(baseSnap.exists() && baseSnap.data().payload){
         cloudApplying = true;
+        // Same protection as the ongoing APP_STATE_REF listener below — a dirty edit can still be
+        // sitting in the persisted dirty maps from just before this fresh login (e.g. Approve, then
+        // an immediate Logout/Login), and this initial read has no dirty-tracking of its own.
+        var dirtyPayments0 = collectDirtyPaymentAllocations();
+        var dirtyMaintenance0 = collectDirtyVehicleMaintenance();
+        var dirtyWorkflow0 = collectDirtyWorkflowCompletions();
+        var dirtyAttendance0 = collectDirtyAttendance();
+        var dirtyLeaves0 = collectDirtyLeaves();
+        var prevSalaryGenMonth0 = data.lastSalaryGenMonth;
         data = ensureModuleDefaults(baseSnap.data().payload);
         data.role = firebaseProfile.role;
+        restoreDirtyPaymentAllocations(dirtyPayments0);
+        restoreDirtyVehicleMaintenance(dirtyMaintenance0);
+        restoreDirtyWorkflowCompletions(dirtyWorkflow0);
+        restoreDirtyAttendance(dirtyAttendance0);
+        restoreDirtyLeaves(dirtyLeaves0);
+        restoreLastSalaryGenMonth(prevSalaryGenMonth0);
         persist(data);
         cloudApplying = false;
       }else if(isFirebaseAdmin()){
@@ -3300,8 +3694,20 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       if(!snap.exists() || !snap.data().payload) return;
       cloudApplying = true;
       try{
+        var dirtyPayments = collectDirtyPaymentAllocations();
+        var dirtyMaintenance = collectDirtyVehicleMaintenance();
+        var dirtyWorkflow = collectDirtyWorkflowCompletions();
+        var dirtyAttendance = collectDirtyAttendance();
+        var dirtyLeaves = collectDirtyLeaves();
+        var prevSalaryGenMonth = data.lastSalaryGenMonth;
         data = ensureModuleDefaults(snap.data().payload);
         data.role = firebaseProfile.role;
+        restoreDirtyPaymentAllocations(dirtyPayments);
+        restoreDirtyVehicleMaintenance(dirtyMaintenance);
+        restoreDirtyWorkflowCompletions(dirtyWorkflow);
+        restoreDirtyAttendance(dirtyAttendance);
+        restoreDirtyLeaves(dirtyLeaves);
+        restoreLastSalaryGenMonth(prevSalaryGenMonth);
         applyKnownDomainOverlays();
         persist(data);
       }catch(err){ console.error("App-state merge failed", err); }
@@ -3352,6 +3758,17 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       finally{ cloudApplying = false; }
       rerenderAfterRemote();
     }, function(err){ console.error("Payment allocation listener", err); }));
+
+    cloudUnsubs.push(onSnapshot(WORKFLOW_COL, function(snap){
+      var map = new Map();
+      snap.forEach(function(d){ map.set(d.id, d.data()); });
+      knownWorkflowDocs = map;
+      cloudApplying = true;
+      try{ mergeWorkflowDocsIntoData(map); persist(data); }
+      catch(err){ console.error("Workflow merge failed", err); }
+      finally{ cloudApplying = false; }
+      rerenderAfterRemote();
+    }, function(err){ console.error("Workflow listener", err); }));
 
     cloudUnsubs.push(onSnapshot(GYM_PLANS_COL, function(snap){
       var map = new Map();
@@ -3591,6 +4008,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     if(name === "progress" && isStaff()){ toast("Progress is restricted to Admin", true); return; }
     if(name === "tasksHub" && isStaff()){ toast("Tasks Hub is restricted to Admin", true); return; }
     if(name === "staffTaskHub" && (!isStaff() || isMechanicUser())){ toast("Task Hub is restricted for your role", true); return; }
+    if(name === "paperworkMonitoring" && !currentStaffCanViewPaperworkMonitoring()){ toast("Paperwork Monitoring is restricted for your role", true); return; }
     if(name === "backup" && isMechanicUser()){ toast("Backup is restricted for your role", true); return; }
     activeTab = name;
     try{ localStorage.setItem(ACTIVE_TAB_KEY, name); }catch(e){}
@@ -3605,6 +4023,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     }
     if(name === "home") renderHome();
     if(name === "staffTaskHub") renderStaffTaskHubEntry();
+    if(name === "paperworkMonitoring") renderPaperworkMonitoringEntry();
     if(name === "progress") renderProgress();
     if(name === "tasksHub") renderTasksHub();
     if(name === "summary") renderSummary();
@@ -3624,10 +4043,22 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     // only — no standard staff modules).
     var staffTaskHubBtn = document.getElementById("navStaffTaskHubBtn");
     if(staffTaskHubBtn) staffTaskHubBtn.style.display = (isStaff() && !mechanic) ? "flex" : "none";
+    // Its own dedicated main-nav tab, strictly for whoever can see the Assigned Paperwork Monitoring
+    // Dashboard (Operations Manager + anyone Admin explicitly granted) — no longer part of Task Hub.
+    var pwMonitoringBtn = document.getElementById("navPaperworkMonitoringBtn");
+    if(pwMonitoringBtn) pwMonitoringBtn.style.display = currentStaffCanViewPaperworkMonitoring() ? "flex" : "none";
     // Backup stays visible for everyone else, but a Mechanic's dashboard is meant to show only their
     // assigned works — no Backup, Task Hub, or other standard staff modules.
     var backupBtn = document.getElementById("navBackupBtn");
     if(backupBtn) backupBtn.style.display = mechanic ? "none" : "flex";
+  }
+
+  // Whether the CURRENTLY signed-in user should see the Paperwork Monitoring nav tab at all — must
+  // be Staff (not Admin, not the unauthenticated gate) and satisfy isPaperworkReportViewer.
+  function currentStaffCanViewPaperworkMonitoring(){
+    if(!isStaff()) return false;
+    var m = currentStaffMember();
+    return isPaperworkReportViewer(m);
   }
 
   // Resolves the current signed-in staff member the same way renderStaffGate does, then renders
@@ -3644,6 +4075,23 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       return;
     }
     renderStaffTaskHubPage(staffModule, member);
+  }
+
+  // Same resolution pattern as renderStaffTaskHubEntry, for the now-standalone Paperwork Monitoring
+  // main-nav tab.
+  function renderPaperworkMonitoringEntry(){
+    var wrap = document.getElementById("paperworkMonitoringContent");
+    if(!wrap) return;
+    var staffModule = findStaffModuleAny();
+    var staffId = currentFirebaseStaffId();
+    var member = (staffModule && staffId) ? findStaffMember(staffModule, staffId) : null;
+    if(!staffModule || !member || !isPaperworkReportViewer(member)){
+      wrap.innerHTML = '<div class="empty-state"><div class="big">⚠️</div><p>Your staff profile could not be found, or this dashboard isn\'t enabled for you. Contact your Admin.</p></div>';
+      return;
+    }
+    var monitoringData = computePaperworkMonitoringData();
+    wrap.innerHTML = renderPaperworkMonitoringSection(monitoringData);
+    wirePaperworkMonitoringSection(wrap, monitoringData);
   }
 
   function renderSummary(){
@@ -3723,8 +4171,8 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       '<div id="hubMaintPicker_' + entry.item.id + '"></div>' +
     '</div>';
   }
-  function renderPrepItemsHubSection(){
-    var all = getAllPrepItemsForHub();
+  function renderPrepItemsHubSection(all){
+    all = all || getAllPrepItemsForHub();
     var incomplete = all.filter(function(e){ return !isPrepItemDone(e); });
     var completed = all.filter(isPrepItemDone);
     var filterKey = "tasksHubPrep";
@@ -3798,20 +4246,28 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     var pending = all.filter(function(p){ return p.status !== "paid"; });
     var completed = all.filter(function(p){ return p.status === "paid"; });
     var filterKey = "tasksHubPayments";
-    var showing = getStaffListFilter(filterKey) === "completed" ? completed : pending;
+    var showing = (getStaffListFilter(filterKey) === "completed" ? completed : pending).slice().sort(function(a,b){ return new Date(b.createdAt) - new Date(a.createdAt); });
     var html = '<div class="section-title">💰 Payment Allocation</div>';
     html += pendingCompletedTabsHTML(filterKey, pending.length, completed.length);
     html += showing.length === 0
       ? '<div class="empty-state"><div class="big">💰</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "No completed payments yet." : "No payments awaiting action.") + '</p></div>'
-      : showing.slice().sort(function(a,b){ return new Date(b.createdAt) - new Date(a.createdAt); }).map(paymentAllocationRowHTML).join("");
+      : expandableListHTML(showing, filterKey + ":list", LIST_LIMIT, paymentAllocationRowHTML);
     return html;
   }
   function wirePaymentAllocationHubSection(wrap){
     wirePendingCompletedTabs(wrap, "tasksHubPayments", renderTasksHub);
     wrap.querySelectorAll(".payment-approve-btn").forEach(function(btn){
       btn.addEventListener("click", function(){
+        // Disable immediately, before any lookup or write — the visible click-to-disabled feedback
+        // is what actually stops someone from re-clicking a slow-feeling button, which is what led to
+        // firing this handler more than once for the same payment in quick succession.
+        if(btn.disabled) return;
+        btn.disabled = true;
         var p = (data.paymentAllocations || []).find(function(x){ return x.id === btn.getAttribute("data-payment-id"); });
-        if(!p) return;
+        // Guard: only a payment still actually awaiting Admin approval can be approved here — blocks
+        // any stale/duplicate click from re-approving (or worse, skipping straight past) a payment
+        // that's already moved on to the Operations Manager stage.
+        if(!p || p.status !== "pending_admin_approval"){ btn.disabled = false; return; }
         p.status = "pending_payment";
         p.approvedAt = new Date().toISOString();
         p.approvedBy = firebaseUser ? firebaseUser.uid : null;
@@ -3823,6 +4279,34 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     });
   }
 
+  // Accepts pre-computed lists (generalTasks/prepItems/pwVehicles) so a caller that's already built
+  // them for the section below doesn't force a second, redundant full pass over the same data —
+  // recomputing every one of these from scratch on every single click (Approve, Mark Complete, etc.)
+  // is what made rapid back-to-back actions in this hub feel sluggish.
+  function adminTasksHubPendingCompletedCounts(generalTasks, prepItems, pwVehicles){
+    generalTasks = generalTasks || getAllGeneralTasks();
+    prepItems = prepItems || getAllPrepItemsForHub();
+    pwVehicles = pwVehicles || getAllPrepVehiclesFlat();
+    var genPending = generalTasks.filter(function(e){ return e.task.status !== "completed"; }).length;
+    var genCompleted = generalTasks.filter(function(e){ return e.task.status === "completed"; }).length;
+
+    var prepPending = prepItems.filter(function(e){ return !isPrepItemDone(e); }).length;
+    var prepCompleted = prepItems.filter(isPrepItemDone).length;
+
+    var pwPending = pwVehicles.filter(function(e){ return !isVehiclePaperworkComplete(e.vehicle); }).length;
+    var pwCompleted = pwVehicles.filter(function(e){ return isVehiclePaperworkComplete(e.vehicle); }).length;
+
+    // Every payment/salary allocation counts as pending until fully paid — matches the same
+    // "awaiting any action, by anyone" definition used everywhere else in this dashboard.
+    var payAll = data.paymentAllocations || [];
+    var payPending = payAll.filter(function(p){ return p.status !== "paid"; }).length;
+    var payCompleted = payAll.filter(function(p){ return p.status === "paid"; }).length;
+
+    return {
+      pending: genPending + prepPending + pwPending + payPending,
+      completed: genCompleted + prepCompleted + pwCompleted + payCompleted
+    };
+  }
   function renderTasksHub(){
     var wrap = document.getElementById("tasksHubContent");
     if(!wrap) return;
@@ -3831,30 +4315,54 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       wrap.innerHTML = '<div class="empty-state"><div class="big">🗂️</div><p>Set up the Staff module first — General Tasks live alongside it.</p></div>';
       return;
     }
-    var all = getAllGeneralTasks().sort(function(a,b){ return new Date(b.task.createdAt) - new Date(a.task.createdAt); });
+    // Computed once here and threaded through to both the KPI totals and their matching section
+    // renderers below, instead of each of those independently re-scanning the same data.
+    var generalTasksAll = getAllGeneralTasks();
+    var prepItemsAll = getAllPrepItemsForHub();
+    var pwVehiclesAll = getAllPrepVehiclesFlat();
+
+    var all = generalTasksAll.slice().sort(function(a,b){ return new Date(b.task.createdAt) - new Date(a.task.createdAt); });
     var byId = {};
     all.forEach(function(e){ byId[e.task.id] = e.task; });
     if(all.some(function(e){ return e.task.isNew; })){ all.forEach(function(e){ e.task.isNew = false; }); saveData(); }
+    // Unified totals across every task type Admin oversees here — General Tasks, Vehicle Prep
+    // (Maintenance + Paperwork checklist items), Vehicle Paperwork wizard progress, and every
+    // Payment/Salary Allocation — so the top-line numbers reflect the whole dashboard, not just the
+    // General Tasks list directly below them.
+    var hubCounts = adminTasksHubPendingCompletedCounts(generalTasksAll, prepItemsAll, pwVehiclesAll);
+    var html = '<div class="task-hub-kpis">' +
+      '<div class="task-hub-kpi-card thk-pending"><div class="thk-icon">🕓</div><div class="thk-value">' + hubCounts.pending + '</div><div class="thk-label">Pending / Incomplete</div></div>' +
+      '<div class="task-hub-kpi-card thk-completed"><div class="thk-icon">✅</div><div class="thk-value">' + hubCounts.completed + '</div><div class="thk-label">Completed</div></div>' +
+    '</div>';
     var filterKey = "tasksHub";
     var pending = all.filter(function(e){ return e.task.status !== "completed"; });
     var completed = all.filter(function(e){ return e.task.status === "completed"; });
     var showing = getStaffListFilter(filterKey) === "completed" ? completed : pending;
-    var html = pendingCompletedTabsHTML(filterKey, pending.length, completed.length);
+    html += '<div class="section-title" style="margin-top:14px;">📋 General Tasks</div>';
+    html += pendingCompletedTabsHTML(filterKey, pending.length, completed.length);
     html += showing.length === 0
       ? '<div class="empty-state"><div class="big">🗂️</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "Nothing completed yet." : "No general tasks right now.") + '</p></div>'
       : expandableListHTML(showing, filterKey + ":list", LIST_LIMIT, function(e){ return staffTaskCardHTML(e, true, null); });
-    html += renderPrepItemsHubSection();
-    html += renderVehiclePaperworkReportSection();
-    html += renderUploadedFilesHubSection();
-    html += renderPaymentAllocationHubSection();
+    // Each of the sections below is independently guarded — a problem building any ONE of them (bad
+    // data shape, an edge case) must never blank out the General Tasks list above it, or any of the
+    // other sections below it. Before this, a single unhandled error anywhere in this function could
+    // abort the whole render silently, which looked exactly like "tasks aren't showing up."
+    var sectionHtml = {prep:"", pwReport:"", maintenance:"", uploads:"", payments:""};
+    try{ sectionHtml.prep = renderPrepItemsHubSection(prepItemsAll); }catch(err){ console.error("Prep Items Hub section failed", err); }
+    try{ sectionHtml.pwReport = renderVehiclePaperworkReportSection(pwVehiclesAll); }catch(err){ console.error("Vehicle Paperwork Report section failed", err); }
+    try{ sectionHtml.maintenance = '<div class="section-title">🔧 Maintenance</div><div id="tasksHubMaintenanceInner"></div>'; }catch(err){ console.error("Maintenance section failed", err); }
+    try{ sectionHtml.uploads = renderUploadedFilesHubSection(); }catch(err){ console.error("Uploaded Files Hub section failed", err); }
+    try{ sectionHtml.payments = renderPaymentAllocationHubSection(); }catch(err){ console.error("Payment Allocation Hub section failed", err); }
+    html += sectionHtml.prep + sectionHtml.pwReport + sectionHtml.maintenance + sectionHtml.uploads + sectionHtml.payments;
     wrap.innerHTML = html;
-    wirePendingCompletedTabs(wrap, filterKey, renderTasksHub);
-    wireStaffTaskCardEvents(wrap, staffModule, null, true, byId, renderTasksHub);
-    wirePrepHubSection(wrap);
-    wirePendingCompletedTabs(wrap, "tasksHubPwReport", renderTasksHub);
-    wirePendingCompletedTabs(wrap, "tasksHubUploads", renderTasksHub);
-    wirePaymentAllocationHubSection(wrap);
-    wireViewMoreButtons(wrap, renderTasksHub);
+    try{ wirePendingCompletedTabs(wrap, filterKey, renderTasksHub); }catch(err){ console.error(err); }
+    try{ wireStaffTaskCardEvents(wrap, staffModule, null, true, byId, renderTasksHub); }catch(err){ console.error(err); }
+    try{ wirePrepHubSection(wrap); }catch(err){ console.error(err); }
+    try{ wirePendingCompletedTabs(wrap, "tasksHubPwReport", renderTasksHub); }catch(err){ console.error(err); }
+    try{ renderSummaryMaintenancePanel("tasksHubMaintenanceInner"); }catch(err){ console.error("Maintenance panel render failed", err); }
+    try{ wirePendingCompletedTabs(wrap, "tasksHubUploads", renderTasksHub); }catch(err){ console.error(err); }
+    try{ wirePaymentAllocationHubSection(wrap); }catch(err){ console.error(err); }
+    try{ wireViewMoreButtons(wrap, renderTasksHub); }catch(err){ console.error(err); }
     wrap.querySelectorAll(".hub-upload-del-rows").forEach(function(btn){
       btn.addEventListener("click", function(){
         var completionId = btn.getAttribute("data-completion-id");
@@ -3994,8 +4502,12 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     return html;
   }
 
-  function renderVehiclePaperworkReportSection(){
-    var allVehicles = getAllPrepVehiclesFlat();
+  // Clean, read-only report list — mirrors the same card style used for the staff's own "Assigned
+  // Vehicle Paperwork" cards (stage badge, Dead End badge, days-since-upload counter), rather than
+  // the per-vehicle-card assignment dropdown from before, which cluttered the report and wasn't the
+  // right place for that control.
+  function renderVehiclePaperworkReportSection(allVehicles){
+    allVehicles = allVehicles || getAllPrepVehiclesFlat();
     var filterKey = "tasksHubPwReport";
     var pending = allVehicles.filter(function(e){ return !isVehiclePaperworkComplete(e.vehicle); });
     var completed = allVehicles.filter(function(e){ return isVehiclePaperworkComplete(e.vehicle); });
@@ -4010,12 +4522,22 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       : expandableListHTML(showing, filterKey + ":list", LIST_LIMIT, function(entry){
           var v = entry.vehicle;
           var modelLabel = getPrepVehicleModel(v);
+          var activeStage = getActivePaperworkStage(v);
+          var deadEndBadge = paperworkDeadEndBadgeHTML(v);
+          var uploadDays = daysSinceVehicleUpload(v);
           return '<div class="card card-tight">' +
             '<div class="hist-row" style="border:none;padding:0;">' +
               '<div class="left"><div class="date" style="font-weight:600;">' + esc(v.vehicleNumber || "—") + '</div>' +
-                '<div class="sess">' + esc(entry.business.name) + (modelLabel ? (' · ' + esc(modelLabel)) : '') + '</div></div>' +
-              '<div class="right">' + paperworkStageProgressLabel(v) + '</div>' +
+                '<div class="sess">' + esc(entry.business.name) + (modelLabel ? (' · ' + esc(modelLabel)) : '') + (v.segment ? (' · ' + esc(v.segment)) : '') + '</div></div>' +
+              '<div class="right" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">' +
+                (uploadDays !== null ? '<span class="pw-age-counter" title="Days since this vehicle was uploaded from Stock Prep">📅 ' + uploadDays + 'd since upload</span>' : '') +
+                paperworkStageProgressLabel(v) +
+              '</div>' +
             '</div>' +
+            ((activeStage || deadEndBadge) ? ('<div class="pw-card-badges">' +
+              (activeStage ? ('<span class="pw-stage-badge">📍 ' + esc(activeStage.label) + ' — ' + esc(activeStage.subStatus) + '</span>') : '') +
+              deadEndBadge +
+            '</div>') : '') +
           '</div>';
         });
     return html;
@@ -4451,16 +4973,21 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     else renderBizLedgerPanel(module, business, tab);
   }
 
-  function staffAssignOptions(){
+  function staffAssignOptions(business){
     var staffModule = findStaffModuleAny();
-    return (staffModule ? staffModule.staffMembers : []) || [];
+    var all = (staffModule ? staffModule.staffMembers : []) || [];
+    // Same fix as the peer-task modal: once there's a specific business context, only staff actually
+    // allocated to it (or unrestricted) are assignable — previously this returned everyone regardless,
+    // so a task could be assigned to someone not allocated to the business and fail to route to them.
+    if(!business) return all;
+    return all.filter(function(s){ return !s.allowedBusinessIds || s.allowedBusinessIds.indexOf(business.id) !== -1; });
   }
 
   var bizTaskFormOpen = {}; // business.id -> bool, transient
 
   function renderBizTasksPanel(module, business){
     var panel = document.getElementById("bizTasksPanel");
-    var staffOptions = staffAssignOptions();
+    var staffOptions = staffAssignOptions(business);
     var formOpen = !!bizTaskFormOpen[business.id];
     var preservedVehicle = document.getElementById("taskVehicleInput") ? document.getElementById("taskVehicleInput").value : "";
     panel.innerHTML =
@@ -5561,6 +6088,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         if(existing){ existing.status = "completed"; existing.completedAt = new Date().toISOString(); }
         else{ tab.completions.push({id: uid(), itemId: itemId, dueDate: dateStr, status:"completed", completedAt: new Date().toISOString()}); }
         workflowConfirmState[itemId + "|" + dateStr] = false;
+        markWorkflowDirty(tab.id);
         saveData();
         renderHeader();
         renderBizWorkflowPanel(module, business, tab);
@@ -5601,7 +6129,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     var wrap = document.getElementById("workflowAddFormWrap");
     if(!wrap) return;
     if(!workflowAddFormOpen[tab.id]){ wrap.innerHTML = ""; return; }
-    var staffOptions = staffAssignOptions();
+    var staffOptions = staffAssignOptions(business);
     wrap.innerHTML =
       '<div class="manage-item" style="margin-top:14px;">' +
         '<input class="input" id="wfNewName" placeholder="Task name" style="margin-bottom:8px;">' +
@@ -5672,7 +6200,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     var wrap = document.getElementById("actionWfAddFormWrap");
     if(!wrap) return;
     if(!actionWfAddFormOpen[tab.id]){ wrap.innerHTML = ""; return; }
-    var staffOptions = staffAssignOptions();
+    var staffOptions = staffAssignOptions(business);
     if(staffOptions.length === 0){
       wrap.innerHTML = '<p class="backup-note">Add someone to the Staff Directory first — Action Workflows must be assigned to a specific staff member.</p>';
       return;
@@ -6619,8 +7147,9 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
   var summaryMaintExpandedVehicle = null; // vehicle.id currently expanded inline, transient
   var summaryMaintAddOpenFor = null; // vehicle.id whose "+ Add Maintenance Item" form is open, transient
 
-  function renderSummaryMaintenancePanel(){
-    var wrap = document.getElementById("summaryMaintenanceInner");
+  function renderSummaryMaintenancePanel(wrapId){
+    wrapId = wrapId || "summaryMaintenanceInner";
+    var wrap = document.getElementById(wrapId);
     if(!wrap) return;
     var all = getAllPrepVehiclesFlat();
     var hasAssignment = function(entry){ return (entry.vehicle.maintenance || []).some(function(i){ return !!i.assignedTo; }); };
@@ -6630,8 +7159,8 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
 
     var html = '<p class="backup-note" style="margin-top:0;">Quickly assign a mechanic — or add categories and spare parts — to any vehicle here, without opening its Stock Prep tab individually.</p>';
     html += '<div class="pc-tabs">' +
-      '<button class="pc-tab' + (summaryMaintFilter === "notassigned" ? " active" : "") + '" id="summaryMaintTabNotAssigned">Not Assigned (' + notAssigned.length + ')</button>' +
-      '<button class="pc-tab' + (summaryMaintFilter === "assigned" ? " active" : "") + '" id="summaryMaintTabAssigned">Assigned (' + assigned.length + ')</button>' +
+      '<button class="pc-tab' + (summaryMaintFilter === "notassigned" ? " active" : "") + '" id="summaryMaintTabNotAssigned' + wrapId + '">Not Assigned (' + notAssigned.length + ')</button>' +
+      '<button class="pc-tab' + (summaryMaintFilter === "assigned" ? " active" : "") + '" id="summaryMaintTabAssigned' + wrapId + '">Assigned (' + assigned.length + ')</button>' +
     '</div>';
 
     if(all.length === 0){
@@ -6639,12 +7168,13 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     }else if(showing.length === 0){
       html += '<div class="empty-state"><div class="big">🔧</div><p>' + (summaryMaintFilter === "assigned" ? "No vehicles with a mechanic assigned yet." : "Every vehicle already has a mechanic assigned. 🎉") + '</p></div>';
     }else{
-      html += showing.map(summaryMaintVehicleRowHTML).join("");
+      html += expandableListHTML(showing, wrapId + ":list", LIST_LIMIT, summaryMaintVehicleRowHTML);
     }
     wrap.innerHTML = html;
 
-    document.getElementById("summaryMaintTabNotAssigned").addEventListener("click", function(){ summaryMaintFilter = "notassigned"; summaryMaintExpandedVehicle = null; renderSummaryMaintenancePanel(); });
-    document.getElementById("summaryMaintTabAssigned").addEventListener("click", function(){ summaryMaintFilter = "assigned"; summaryMaintExpandedVehicle = null; renderSummaryMaintenancePanel(); });
+    document.getElementById("summaryMaintTabNotAssigned" + wrapId).addEventListener("click", function(){ summaryMaintFilter = "notassigned"; summaryMaintExpandedVehicle = null; renderSummaryMaintenancePanel(wrapId); });
+    document.getElementById("summaryMaintTabAssigned" + wrapId).addEventListener("click", function(){ summaryMaintFilter = "assigned"; summaryMaintExpandedVehicle = null; renderSummaryMaintenancePanel(wrapId); });
+    wireViewMoreButtons(wrap, function(){ renderSummaryMaintenancePanel(wrapId); });
 
     wrap.querySelectorAll(".summary-maint-vehicle-row").forEach(function(row){
       row.addEventListener("click", function(e){
@@ -6652,14 +7182,14 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         var vid = row.getAttribute("data-vehicle-id");
         summaryMaintExpandedVehicle = (summaryMaintExpandedVehicle === vid) ? null : vid;
         summaryMaintAddOpenFor = null;
-        renderSummaryMaintenancePanel();
+        renderSummaryMaintenancePanel(wrapId);
       });
     });
 
     var expandedEntry = all.find(function(e){ return e.vehicle.id === summaryMaintExpandedVehicle; });
     if(expandedEntry){
       var bizModule = data.modules.business;
-      wirePrepStatusBadges(wrap, expandedEntry.vehicle.maintenance, renderSummaryMaintenancePanel, expandedEntry.vehicle.id);
+      wirePrepStatusBadges(wrap, expandedEntry.vehicle.maintenance, function(){ renderSummaryMaintenancePanel(wrapId); }, expandedEntry.vehicle.id);
       wrap.querySelectorAll(".maint-assign-select").forEach(function(sel){
         sel.addEventListener("change", function(){
           var item = expandedEntry.vehicle.maintenance.find(function(i){ return i.id === sel.getAttribute("data-item-id"); });
@@ -6676,19 +7206,19 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
           expandedEntry.vehicle.maintenance = expandedEntry.vehicle.maintenance.filter(function(i){ return i.id !== btn.getAttribute("data-item-id"); });
           markMaintenanceDirty(expandedEntry.vehicle.id);
           saveData();
-          renderSummaryMaintenancePanel();
+          renderSummaryMaintenancePanel(wrapId);
         });
       });
       var addBtn = wrap.querySelector(".summary-maint-toggle-add");
       if(addBtn) addBtn.addEventListener("click", function(){
         var vid = addBtn.getAttribute("data-vehicle-id");
         summaryMaintAddOpenFor = (summaryMaintAddOpenFor === vid) ? null : vid;
-        renderSummaryMaintenancePanel();
+        renderSummaryMaintenancePanel(wrapId);
       });
       if(summaryMaintAddOpenFor === expandedEntry.vehicle.id){
         renderMaintAddForm(bizModule, expandedEntry.business, expandedEntry.tab, expandedEntry.vehicle, {
-          wrapId: "summaryMaintAddForm_" + expandedEntry.vehicle.id,
-          onSaved: function(){ summaryMaintAddOpenFor = null; renderSummaryMaintenancePanel(); }
+          wrapId: "summaryMaintAddForm_" + wrapId + "_" + expandedEntry.vehicle.id,
+          onSaved: function(){ summaryMaintAddOpenFor = null; renderSummaryMaintenancePanel(wrapId); }
         });
       }
     }
@@ -6751,6 +7281,8 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
   var staffAddFormOpen = false;
   var staffOfficeConfigOpen = false;
   var staffDesignationsManagerOpen = false;
+  var staffPwViewersManagerOpen = false;
+  var staffPwAccessManagerOpen = false;
   var staffLoginFormOpen = false;
   var staffEditFormOpen = {}; // staffId -> bool, transient
   var staffRulebookOpen = false;
@@ -6838,6 +7370,16 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     var m = currentStaffMember();
     return !!(m && m.designation === "Operations Manager");
   }
+  // Whether a given staff member can view the Assigned Paperwork Monitoring Dashboard — automatic
+  // for anyone with the Operations Manager designation, plus anyone Admin has explicitly added to
+  // paperworkReportViewerIds (so a specific non-Ops-Manager person can be granted the same visibility
+  // without changing their designation).
+  function isPaperworkReportViewer(member){
+    if(!member) return false;
+    if(member.designation === "Operations Manager") return true;
+    var staffModule = findStaffModuleAny();
+    return !!(staffModule && (staffModule.paperworkReportViewerIds || []).indexOf(member.id) !== -1);
+  }
   // Primary defense is clearPaymentDirty() below, called only once Firestore actually confirms the
   // write (see writeDomainCollections) — this TTL is just a safety net so a permanently-failing
   // write doesn't lock this device out of ever accepting server updates for that entry again.
@@ -6912,18 +7454,30 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
   function maybeGenerateMonthlySalaryAllocations(){
     if(!isFirebaseAdmin()) return;
     var now = new Date();
+    // Only ever runs on the 1st of the month — there's no reason for this check to do anything, or
+    // for a salary approval request to be visible at all, on any other day. This is now the primary
+    // gate (not just the month-key guard below), so even if that guard were ever bypassed by a stale
+    // sync reverting data.lastSalaryGenMonth, generation still can't happen on the wrong day.
+    if(now.getDate() !== 1) return;
     var monthKey = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0");
     if(data.lastSalaryGenMonth === monthKey) return;
     var staffModule = findStaffModuleAny();
     if(!staffModule) return; // retry next check once the Staff module actually exists
     if(!Array.isArray(data.paymentAllocations)) data.paymentAllocations = [];
+    // Pay out for the month that just ended — generation happens on/after the 1st of the new month,
+    // so the previous month is the one with a complete, final attendance record to compute from.
+    // Uses the actual computed net salary (attendance, Sundays/Holidays paid, leaves, fines) rather
+    // than a flat base figure, so what lands in Payment Allocation is the real amount owed.
+    var prevMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    var prevMonthKey = prevMonthDate.getFullYear() + "-" + String(prevMonthDate.getMonth() + 1).padStart(2, "0");
     var createdAny = false;
     (staffModule.staffMembers || []).forEach(function(s){
-      var already = data.paymentAllocations.some(function(p){ return p.type === "salary" && p.staffId === s.id && p.month === monthKey; });
+      var already = data.paymentAllocations.some(function(p){ return p.type === "salary" && p.staffId === s.id && p.month === prevMonthKey; });
       if(already) return;
+      var res = computeMonthlySalary(staffModule, s, prevMonthKey);
       var p = {
-        id: uid(), type:"salary", staffId: s.id, amount: s.baseSalary || 0, month: monthKey,
-        description: "Monthly Salary — " + monthLabel(monthKey),
+        id: uid(), type:"salary", staffId: s.id, amount: Math.round(res.net), month: prevMonthKey,
+        description: "Monthly Salary — " + monthLabel(prevMonthKey) + " (" + res.daysWorked + " present, " + res.halfDays + " half-day, " + res.leaveDays + " leave, " + res.offDays + " off/holiday, ₹" + res.fines + " fines)",
         status:"pending_admin_approval", createdAt:new Date().toISOString(),
         approvedAt:null, approvedBy:null, paidAt:null, paidBy:null
       };
@@ -6933,6 +7487,54 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     });
     data.lastSalaryGenMonth = monthKey;
     if(createdAny) saveData();
+  }
+
+  // Fills in explicit attendance records for days that would otherwise just be silent gaps — Sundays
+  // (paid "Off Day"), Admin-marked holidays (paid "Holiday"), and missed punches once their 7pm
+  // cutoff has passed (unpaid "Leave", auto-marked). Salary math already treated a missing record as
+  // a leave day on the fly (computeDayAttendance), but the attendance HISTORY list only ever showed
+  // records that actually existed — so a missed day simply never appeared there at all. This makes it
+  // an explicit, visible row instead. Admin-only, idempotent (never touches a date that already has a
+  // record), and bounded to the last 60 days so it stays cheap regardless of staff tenure.
+  function maybeAutoMarkAttendance(){
+    if(!isFirebaseAdmin()) return;
+    var staffModule = findStaffModuleAny();
+    if(!staffModule) return;
+    var now = new Date();
+    var todayStr = isoDateStr(now);
+    var pastFineDeadlineToday = nowMinutesOfDay() >= FINE_DEADLINE_MIN; // 7:00 PM
+    var todayMidnight = new Date(now); todayMidnight.setHours(0,0,0,0);
+    var lookbackStart = new Date(now); lookbackStart.setDate(lookbackStart.getDate() - 60); lookbackStart.setHours(0,0,0,0);
+    var changed = false;
+    (staffModule.staffMembers || []).forEach(function(s){
+      if(!Array.isArray(s.attendance)) s.attendance = [];
+      var existingDates = {};
+      s.attendance.forEach(function(a){ existingDates[a.date] = true; });
+      var start = s.createdAt ? new Date(s.createdAt) : new Date(lookbackStart);
+      start.setHours(0,0,0,0);
+      if(start < lookbackStart) start = new Date(lookbackStart);
+      var cursor = new Date(start);
+      while(cursor <= todayMidnight){
+        var dStr = isoDateStr(cursor);
+        var isToday = dStr === todayStr;
+        if(isToday && !pastFineDeadlineToday){ cursor.setDate(cursor.getDate() + 1); continue; }
+        if(!existingDates[dStr]){
+          var isHol = (staffModule.holidays || []).some(function(h){ return h.date === dStr; });
+          var isSun = cursor.getDay() === 0;
+          var autoStatus = isHol ? "holiday" : (isSun ? "off" : "leave");
+          s.attendance.push({
+            id: uid(), date:dStr, punchInAt:null, punchInLat:null, punchInLng:null, punchInValid:null, punchInAdminSet:false,
+            punchOutAt:null, punchOutLat:null, punchOutLng:null, punchOutValid:null, fine:0, punchOutAdminSet:false,
+            autoStatus:autoStatus, autoMarked:true
+          });
+          markAttendanceDirty(s.id + "_" + dStr);
+          existingDates[dStr] = true;
+          changed = true;
+        }
+        cursor.setDate(cursor.getDate() + 1);
+      }
+    });
+    if(changed) saveData();
   }
 
   async function staffAlreadyHasLogin(staffMember){
@@ -7116,6 +7718,14 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         '<p class="backup-note">The roles available when adding or editing a staff member. "Staff" and "Mechanic" are built in — add your own, like "Operations Manager", for anything else you want to assign work to exclusively.</p>' +
         '<button class="link-btn" id="btnToggleDesignationsManager" style="padding-left:0;">' + (staffDesignationsManagerOpen ? "Hide" : "Manage designations") + '</button>' +
         '<div id="staffDesignationsManagerWrap"></div>' +
+        '<div class="section-title">📄 Assigned Paperwork</div>' +
+        '<p class="backup-note">Which staff members have the Assigned Vehicle Paperwork module on their own dashboard. Enabled by default for everyone (so nothing changes until you act) — turn it off here for specific people to hide that tab from their dashboard entirely.</p>' +
+        '<button class="link-btn" id="btnTogglePwAccessManager" style="padding-left:0;">' + (staffPwAccessManagerOpen ? "Hide" : "Manage module access") + '</button>' +
+        '<div id="staffPwAccessManagerWrap"></div>' +
+        '<div class="section-title">📄 Paperwork Report Viewers</div>' +
+        '<p class="backup-note">Anyone with the "Operations Manager" designation automatically sees the Assigned Paperwork Monitoring Dashboard in their Task Hub. Add specific other people here to grant them the same visibility.</p>' +
+        '<button class="link-btn" id="btnTogglePwViewersManager" style="padding-left:0;">' + (staffPwViewersManagerOpen ? "Hide" : "Manage report viewers") + '</button>' +
+        '<div id="staffPwViewersManagerWrap"></div>' +
         '<div class="section-title">Staff Directory</div>' +
         '<div class="tile-grid" id="staffGrid"></div>' +
         '<div id="addStaffFormWrap"></div>' +
@@ -7132,12 +7742,22 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         staffDesignationsManagerOpen = !staffDesignationsManagerOpen;
         renderStaffModuleBody(module);
       });
+      document.getElementById("btnTogglePwAccessManager").addEventListener("click", function(){
+        staffPwAccessManagerOpen = !staffPwAccessManagerOpen;
+        renderStaffModuleBody(module);
+      });
+      document.getElementById("btnTogglePwViewersManager").addEventListener("click", function(){
+        staffPwViewersManagerOpen = !staffPwViewersManagerOpen;
+        renderStaffModuleBody(module);
+      });
       document.getElementById("btnToggleCreateLogin").addEventListener("click", function(){
         staffLoginFormOpen = !staffLoginFormOpen;
         renderStaffModuleBody(module);
       });
       renderStaffOfficeConfig(module);
       renderStaffDesignationsManager(module);
+      renderStaffPwAccessManager(module);
+      renderStaffPwViewersManager(module);
       renderStaffGrid(module);
       renderAddStaffForm(module);
       renderCreateStaffLoginForm(module);
@@ -7332,6 +7952,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         designations.map(function(d){ return '<option value="' + esc(d) + '"' + (staff.designation === d ? " selected" : "") + '>' + esc(d) + '</option>'; }).join("") +
       '</select></div>' +
       '<p class="backup-note" style="margin:0 0 10px;">Mechanic gets a restricted dashboard showing only their assigned Stock Prep maintenance works — no Task Hub, Backup, or other staff modules.</p>' +
+      '<p class="backup-note" style="margin:0 0 10px;">Assigned Vehicle Paperwork access is managed from the dedicated <b>📄 Assigned Paperwork</b> section on the Staff directory screen, not here.</p>' +
       '<button class="btn btn-primary" id="btnSaveStaffEdit" style="width:100%;">Save Changes</button>' +
     '</div>';
     document.getElementById("btnSaveStaffEdit").addEventListener("click", function(){
@@ -7409,6 +8030,78 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         saveData();
         renderStaffDesignationsManager(module);
         toast(val + " removed");
+      });
+    });
+  }
+
+  // ---------- Assigned Paperwork — which staff members have the module on their own dashboard at
+  // all. This is the ONE canonical place this is managed (deliberately not buried inside each
+  // individual staff member's Edit form) since it's module-level access, not a per-person edit. ----------
+  function renderStaffPwAccessManager(module){
+    var wrap = document.getElementById("staffPwAccessManagerWrap");
+    if(!wrap) return;
+    if(!staffPwAccessManagerOpen){ wrap.innerHTML = ""; return; }
+    var members = module.staffMembers || [];
+    if(members.length === 0){
+      wrap.innerHTML = '<p class="backup-note">Add staff members first.</p>';
+      return;
+    }
+    wrap.innerHTML = '<div class="card">' +
+      members.map(function(s){
+        var enabled = s.paperworkModuleEnabled !== false;
+        return '<div class="hist-row" style="border:none;padding:4px 0;">' +
+          '<div class="left">' + esc(s.name) + (s.designation && s.designation !== "Staff" ? (' <span style="color:var(--text-faint);">(' + esc(s.designation) + ')</span>') : '') + '</div>' +
+          '<div class="right"><button class="switch' + (enabled ? " on" : "") + ' pw-access-toggle" data-staff-id="' + s.id + '"><span class="knob"></span></button></div>' +
+        '</div>';
+      }).join("") +
+    '</div>';
+    wrap.querySelectorAll(".pw-access-toggle").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var sid = btn.getAttribute("data-staff-id");
+        var s = members.find(function(m){ return m.id === sid; });
+        if(!s) return;
+        s.paperworkModuleEnabled = s.paperworkModuleEnabled === false ? true : false;
+        btn.classList.toggle("on", s.paperworkModuleEnabled);
+        saveData();
+        toast(s.paperworkModuleEnabled ? (s.name + " — access granted") : (s.name + " — access removed"));
+      });
+    });
+  }
+
+  // ---------- Paperwork Report Viewers — who (besides Operations Managers) can see the Assigned
+  // Paperwork Monitoring Dashboard ----------
+  function renderStaffPwViewersManager(module){
+    var wrap = document.getElementById("staffPwViewersManagerWrap");
+    if(!wrap) return;
+    if(!staffPwViewersManagerOpen){ wrap.innerHTML = ""; return; }
+    if(!Array.isArray(module.paperworkReportViewerIds)) module.paperworkReportViewerIds = [];
+    var members = module.staffMembers || [];
+    if(members.length === 0){
+      wrap.innerHTML = '<p class="backup-note">Add staff members first.</p>';
+      return;
+    }
+    wrap.innerHTML = '<div class="card">' +
+      members.map(function(s){
+        var isOpsMgr = s.designation === "Operations Manager";
+        var checked = isOpsMgr || module.paperworkReportViewerIds.indexOf(s.id) !== -1;
+        return '<div class="hist-row" style="border:none;padding:4px 0;">' +
+          '<div class="left"><label style="display:flex;align-items:center;gap:8px;cursor:' + (isOpsMgr ? "default" : "pointer") + ';">' +
+            '<input type="checkbox" class="pw-viewer-check" data-staff-id="' + s.id + '"' + (checked ? " checked" : "") + (isOpsMgr ? " disabled" : "") + '>' +
+            '<span>' + esc(s.name) + (isOpsMgr ? ' <span style="color:var(--text-faint);">(Operations Manager — automatic)</span>' : '') + '</span>' +
+          '</label></div>' +
+        '</div>';
+      }).join("") +
+    '</div>';
+    wrap.querySelectorAll(".pw-viewer-check").forEach(function(cb){
+      cb.addEventListener("change", function(){
+        var sid = cb.getAttribute("data-staff-id");
+        if(cb.checked){
+          if(module.paperworkReportViewerIds.indexOf(sid) === -1) module.paperworkReportViewerIds.push(sid);
+        }else{
+          module.paperworkReportViewerIds = module.paperworkReportViewerIds.filter(function(id){ return id !== sid; });
+        }
+        saveData();
+        toast(cb.checked ? "Access granted" : "Access removed");
       });
     });
   }
@@ -7943,7 +8636,17 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     }).length;
     var awPending = awItems.length - awCompleted;
 
-    return {pending: mainPending + wfPending + awPending, completed: mainCompleted + wfCompleted + awCompleted};
+    // Payment Allocation only ever shows in Task Hub for an Operations Manager (see
+    // renderOpsManagerPaymentSection) — folded into the same top-line KPI count so it reads as
+    // "everything awaiting you" rather than a separate, easy-to-miss number.
+    var payPending = 0, payCompleted = 0;
+    if(staff.designation === "Operations Manager"){
+      var payAll = (data.paymentAllocations || []).filter(function(p){ return p.status === "pending_payment" || p.status === "paid"; });
+      payPending = payAll.filter(function(p){ return p.status === "pending_payment"; }).length;
+      payCompleted = payAll.filter(function(p){ return p.status === "paid"; }).length;
+    }
+
+    return {pending: mainPending + wfPending + awPending + payPending, completed: mainCompleted + wfCompleted + awCompleted + payCompleted};
   }
   function renderStaffTaskHubPage(module, staff){
     var wrap = document.getElementById("staffTaskHubContent");
@@ -7957,12 +8660,22 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     html += '<div class="section-title">🗓️ Workflows</div><div id="taskHubWorkflowList"></div>';
     html += '<div class="section-title">⚡ Action-Based Tasks</div><div id="taskHubActionWfList"></div>';
     var isOpsMgr = staff.designation === "Operations Manager";
-    if(isOpsMgr) html += renderOpsManagerPaymentSection(staff);
+    if(isOpsMgr) html += '<div id="taskHubPaymentSection">' + renderOpsManagerPaymentSection(staff) + '</div>';
+    // Assigned Paperwork Monitoring has its own dedicated main-nav tab now (between Task Hub and
+    // Backup) rather than living inside Task Hub — see panel-paperworkMonitoring / renderPaperworkMonitoringEntry.
     wrap.innerHTML = html;
     renderStaffTaskList(module, staff, false, {wrapId:"taskHubMainTasksList", scope:"hub"});
     renderStaffWorkflowList(module, staff, {wrapId:"taskHubWorkflowList", scope:"hub"});
     renderStaffActionWfList(module, staff, {wrapId:"taskHubActionWfList", scope:"hub"});
-    if(isOpsMgr) wireOpsManagerPaymentSection(wrap, module, staff);
+    if(isOpsMgr){
+      wireOpsManagerPaymentSection(wrap, module, staff);
+      // Scoped to just this section's own subtree — wiring the whole `wrap` here would re-bind the
+      // OTHER lists' View More buttons (Main Tasks, Workflows, Action-Based) to this heavier
+      // full-page rerender instead of their own lighter, list-specific one, since each already wires
+      // its own View More during its own render just above.
+      var paymentSectionWrap = document.getElementById("taskHubPaymentSection");
+      if(paymentSectionWrap) wireViewMoreButtons(paymentSectionWrap, function(){ renderStaffTaskHubPage(module, staff); });
+    }
   }
 
   // ---------- Operations Manager Task Hub -> Payment Allocation section (strictly Ops Manager only) ----------
@@ -7981,12 +8694,12 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     var pending = all.filter(function(p){ return p.status === "pending_payment"; });
     var paid = all.filter(function(p){ return p.status === "paid"; });
     var filterKey = "opsMgrPayments:" + staff.id;
-    var showing = getStaffListFilter(filterKey) === "completed" ? paid : pending;
+    var showing = (getStaffListFilter(filterKey) === "completed" ? paid : pending).slice().sort(function(a,b){ return new Date(b.createdAt) - new Date(a.createdAt); });
     var html = '<div class="section-title">💰 Payment Allocation</div>';
     html += pendingCompletedTabsHTML(filterKey, pending.length, paid.length);
     html += showing.length === 0
       ? '<div class="empty-state"><div class="big">💰</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "No payments completed yet." : "No payments awaiting processing.") + '</p></div>'
-      : showing.slice().sort(function(a,b){ return new Date(b.createdAt) - new Date(a.createdAt); }).map(opsManagerPaymentRowHTML).join("");
+      : expandableListHTML(showing, filterKey + ":list", LIST_LIMIT, opsManagerPaymentRowHTML);
     return html;
   }
   function wireOpsManagerPaymentSection(wrap, module, staff){
@@ -8001,21 +8714,159 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
           '</div>'
         );
         document.getElementById("paymentConfirmNo").addEventListener("click", closeModal);
-        document.getElementById("paymentConfirmYes").addEventListener("click", function(){
+        var confirmYesBtn = document.getElementById("paymentConfirmYes");
+        confirmYesBtn.addEventListener("click", function(){
+          if(confirmYesBtn.disabled) return;
+          confirmYesBtn.disabled = true;
           var p = (data.paymentAllocations || []).find(function(x){ return x.id === paymentId; });
-          if(p){
-            p.status = "paid";
-            p.paidAt = new Date().toISOString();
-            p.paidBy = staff.id;
-            markPaymentDirty(p.id);
-            saveData();
-          }
+          // Guard: only a payment actually awaiting the Operations Manager can be completed here —
+          // blocks a stale/duplicate confirm click from re-completing an already-paid entry.
+          if(!p || p.status !== "pending_payment"){ closeModal(); return; }
+          p.status = "paid";
+          p.paidAt = new Date().toISOString();
+          p.paidBy = staff.id;
+          markPaymentDirty(p.id);
+          saveData();
           closeModal();
           renderStaffTaskHubPage(module, staff);
           toast("Payment marked successful");
         });
       });
     });
+  }
+
+  // ---------- Assigned Paperwork Monitoring Dashboard (Operations Manager + designated viewers) ----------
+  // Gated by isPaperworkReportViewer — automatic for Operations Manager, plus anyone Admin has
+  // explicitly added via the Staff module's "Paperwork Report Viewers" panel.
+  function resolveStaffName(staffId){
+    if(!staffId) return null;
+    var staffModule = findStaffModuleAny();
+    var m = staffModule ? findStaffMember(staffModule, staffId) : null;
+    return m ? m.name : "Unknown";
+  }
+  function computePaperworkMonitoringData(){
+    var allVehicles = getAllPrepVehiclesFlat(); // [{business, tab, vehicle}]
+    var perStaff = {}; // staffId -> {staffId, name, totalAssigned, completed, pending}
+    var trackedVehicles = [];
+
+    allVehicles.forEach(function(entry){
+      var v = entry.vehicle;
+      var complete = isVehiclePaperworkComplete(v);
+      if(v.paperworkAssignedTo){
+        var sId = v.paperworkAssignedTo;
+        if(!perStaff[sId]) perStaff[sId] = {staffId:sId, name: resolveStaffName(sId) || "Unknown", totalAssigned:0, completed:0, pending:0};
+        perStaff[sId].totalAssigned++;
+        if(complete) perStaff[sId].completed++; else perStaff[sId].pending++;
+      }
+      if(complete) return; // the monitoring stream tracks work still in progress
+      trackedVehicles.push({
+        vehicle:v, business:entry.business,
+        uploadDays: daysSinceVehicleUpload(v),
+        inactivity: paperworkInactivityInfo(v),
+        assignedName: resolveStaffName(v.paperworkAssignedTo),
+        activeStage: getActivePaperworkStage(v)
+      });
+    });
+
+    // Most recently active first — a vehicle that's never been touched sorts by its upload date instead.
+    trackedVehicles.sort(function(a,b){
+      var at = a.inactivity.lastActivity !== null ? a.inactivity.lastActivity : new Date(a.vehicle.createdAt || 0).getTime();
+      var bt = b.inactivity.lastActivity !== null ? b.inactivity.lastActivity : new Date(b.vehicle.createdAt || 0).getTime();
+      return bt - at;
+    });
+
+    return {
+      perStaffList: Object.keys(perStaff).map(function(k){ return perStaff[k]; }).sort(function(a,b){ return b.totalAssigned - a.totalAssigned; }),
+      // Every tracked (incomplete) vehicle — this is the "Recently Active" stream. Inactive ones stay
+      // in it (styled red), they never disappear from here; the Inactive tab below is purely a filter
+      // over this SAME list, not a separate disappearing bucket.
+      trackedVehicles: trackedVehicles,
+      staleItems: trackedVehicles.filter(function(t){ return t.inactivity.isInactive; }),
+      totalPending: allVehicles.filter(function(e){ return !isVehiclePaperworkComplete(e.vehicle); }).length,
+      totalCompleted: allVehicles.filter(function(e){ return isVehiclePaperworkComplete(e.vehicle); }).length
+    };
+  }
+  function paperworkMonitorCardHTML(t){
+    var v = t.vehicle;
+    var modelLabel = getPrepVehicleModel(v);
+    var isInactive = t.inactivity.isInactive;
+    var deadEndBadge = paperworkDeadEndBadgeHTML(v);
+    return '<div class="card card-tight' + (isInactive ? " card-inactive" : "") + '">' +
+      '<div class="hist-row" style="border:none;padding:0;">' +
+        '<div class="left"><div class="date" style="font-weight:700;">' + esc(v.vehicleNumber || "Vehicle") + (modelLabel ? (' <span style="font-weight:500;color:var(--text-faint);">— ' + esc(modelLabel) + '</span>') : '') + '</div>' +
+          '<div class="sess">' + esc(t.business.name) + (v.segment ? (' · ' + esc(v.segment)) : '') + (t.assignedName ? (' · Assigned to ' + esc(t.assignedName)) : '') + '</div>' +
+          '<div class="sess" style="margin-top:2px;' + (isInactive ? "color:var(--danger);font-weight:700;" : "") + '">' +
+            (t.inactivity.everTouched ? ('Last activity ' + t.inactivity.daysSinceActivity + ' day' + (t.inactivity.daysSinceActivity === 1 ? "" : "s") + ' ago' + (t.inactivity.lastActivityBy ? (' · by ' + esc(t.inactivity.lastActivityBy)) : '')) : 'Never worked on') +
+          '</div>' +
+        '</div>' +
+        '<div class="right">' + (t.uploadDays !== null ? '<span class="pw-age-counter" title="Days since this vehicle was uploaded from Stock Prep">📅 ' + t.uploadDays + 'd since upload</span>' : '') + '</div>' +
+      '</div>' +
+      ((t.activeStage || deadEndBadge) ? ('<div class="pw-card-badges">' +
+        (t.activeStage ? ('<span class="pw-stage-badge">📍 ' + esc(t.activeStage.label) + ' — ' + esc(t.activeStage.subStatus) + '</span>') : '') +
+        deadEndBadge +
+      '</div>') : '') +
+    '</div>';
+  }
+  function paperworkStaleAlertModalHTML(staleItems){
+    return '<div class="modal-header"><h3 class="modal-title">⚠️ Inactive Paperwork (10+ Days)</h3><button class="modal-close-btn" id="modalCloseBtn">✕</button></div>' +
+      '<div class="modal-body">' +
+        (staleItems.length === 0 ? '<p class="backup-note" style="margin-top:0;">Nothing inactive right now.</p>' : staleItems.map(paperworkMonitorCardHTML).join("")) +
+      '</div>';
+  }
+  // "active" shows every tracked (incomplete) vehicle, inactive ones included but styled red; "stale"
+  // filters that SAME list down to only the 10+ day inactive items — a real inline filter, not a
+  // separate disappearing bucket (the popup alert still fires once per session below too).
+  var paperworkMonitoringFilter = "active";
+  function renderPaperworkMonitoringSection(d){
+    var html = '<div class="section-title">📄 Assigned Paperwork Monitoring</div>';
+    html += '<div class="task-hub-kpis">' +
+      '<div class="task-hub-kpi-card thk-pending"><div class="thk-icon">🕓</div><div class="thk-value">' + d.totalPending + '</div><div class="thk-label">Pending / Incomplete</div></div>' +
+      '<div class="task-hub-kpi-card thk-completed"><div class="thk-icon">✅</div><div class="thk-value">' + d.totalCompleted + '</div><div class="thk-label">Completed</div></div>' +
+    '</div>';
+
+    if(d.staleItems.length > 0){
+      html += '<div class="card card-tight" style="border-color:var(--danger);background:var(--danger-soft);margin-top:12px;">' +
+        '<div style="font-weight:700;color:var(--danger);">⚠️ ' + d.staleItems.length + ' item' + (d.staleItems.length === 1 ? "" : "s") + ' with no activity for 10+ days</div>' +
+      '</div>';
+    }
+
+    html += '<div class="section-title" style="margin-top:14px;">👥 Status By Staff Member</div>';
+    html += d.perStaffList.length === 0
+      ? '<p class="backup-note">No vehicles have been assigned to a specific staff member yet — assign them from the Admin Task Hub\'s Vehicle Paperwork Report.</p>'
+      : d.perStaffList.map(function(s){
+          var pct = s.totalAssigned > 0 ? Math.round((s.completed / s.totalAssigned) * 100) : 0;
+          return '<div class="card card-tight">' +
+            '<div class="hist-row" style="border:none;padding:0;">' +
+              '<div class="left"><div class="date" style="font-weight:700;">' + esc(s.name) + '</div>' +
+                '<div class="sess">' + s.completed + ' completed · ' + s.pending + ' pending · ' + s.totalAssigned + ' total</div></div>' +
+              '<div class="right"><span class="badge-pill' + (pct >= 80 ? " completed" : (pct >= 50 ? "" : " pending-red")) + '">' + pct + '% efficiency</span></div>' +
+            '</div></div>';
+        }).join("");
+
+    html += '<div class="section-title" style="margin-top:14px;">Vehicles</div>';
+    html += '<div class="pc-tabs">' +
+      '<button class="pc-tab' + (paperworkMonitoringFilter === "active" ? " active" : "") + '" id="pwMonitorTabAll">Recently Active (' + d.trackedVehicles.length + ')</button>' +
+      '<button class="pc-tab' + (paperworkMonitoringFilter === "stale" ? " active" : "") + '" id="pwMonitorTabStale">⚠️ Inactive (10+ Days) (' + d.staleItems.length + ')</button>' +
+    '</div>';
+    var showingList = paperworkMonitoringFilter === "stale" ? d.staleItems : d.trackedVehicles;
+    html += showingList.length === 0
+      ? '<div class="empty-state"><div class="big">' + (paperworkMonitoringFilter === "stale" ? "✅" : "📄") + '</div><p>' + (paperworkMonitoringFilter === "stale" ? "Nothing inactive right now." : "No paperwork in progress right now.") + '</p></div>'
+      : showingList.map(paperworkMonitorCardHTML).join("");
+    return html;
+  }
+  // Auto-pops the inactivity alert once per page session the first time a viewer's Task Hub loads
+  // with stale items present — not on every re-render, which would otherwise nag on every click.
+  var paperworkStaleAlertShownThisSession = false;
+  function wirePaperworkMonitoringSection(wrap, monitoringData){
+    var tabAll = document.getElementById("pwMonitorTabAll");
+    var tabStale = document.getElementById("pwMonitorTabStale");
+    if(tabAll) tabAll.addEventListener("click", function(){ paperworkMonitoringFilter = "active"; renderPaperworkMonitoringEntry(); });
+    if(tabStale) tabStale.addEventListener("click", function(){ paperworkMonitoringFilter = "stale"; renderPaperworkMonitoringEntry(); });
+    if(monitoringData.staleItems.length > 0 && !paperworkStaleAlertShownThisSession){
+      paperworkStaleAlertShownThisSession = true;
+      showModal(paperworkStaleAlertModalHTML(monitoringData.staleItems));
+      document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
+    }
   }
 
   function wireStaffTaskCardEvents(wrap, module, staff, isAdminView, byId, rerender){
@@ -8183,22 +9034,44 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       btn.addEventListener("click", function(){
         var itemId = btn.getAttribute("data-item-id"), tabId = btn.getAttribute("data-tab-id");
         var itemName = btn.getAttribute("data-item-name");
-        if(!confirm('Mark "' + itemName + '" as Done? This will submit it as completed for today.')) return;
-        var tab = null;
-        var bizModule = data.modules.business;
-        if(bizModule && bizModule.type === "business"){
-          (bizModule.businesses || []).forEach(function(biz){
-            (biz.tabs || []).forEach(function(t){ if(t.id === tabId) tab = t; });
-          });
-        }
-        if(!tab) return;
-        var dateStr = isoDateStr(new Date());
-        var existing = tab.completions.find(function(c){ return c.itemId === itemId && c.dueDate === dateStr; });
-        if(existing){ existing.status = "completed"; existing.completedAt = new Date().toISOString(); }
-        else tab.completions.push({id: uid(), itemId:itemId, dueDate:dateStr, status:"completed", completedAt:new Date().toISOString()});
-        saveData();
-        renderStaffWorkflowList(module, staff, opts);
-        toast("Marked done ✅");
+        // Styled confirmation modal (matching the rest of the app) instead of a bare browser
+        // confirm() — the task is only ever marked Done after the "Yes" button is actually clicked.
+        showModal(
+          '<div class="modal-header"><h3 class="modal-title">Confirm Completion</h3><button class="modal-close-btn" id="modalCloseBtn">✕</button></div>' +
+          '<div class="modal-body"><p class="backup-note" style="margin-top:0;">Mark "' + esc(itemName) + '" as Done? This submits it as completed for today.</p>' +
+            '<div class="btn-row" style="margin-top:14px;"><button class="btn btn-ghost" id="wfConfirmNo">Cancel</button><button class="btn btn-primary" id="wfConfirmYes">Yes, Mark Done</button></div>' +
+          '</div>'
+        );
+        document.getElementById("wfConfirmNo").addEventListener("click", closeModal);
+        document.getElementById("wfConfirmYes").addEventListener("click", function(){
+          closeModal();
+          var tab = null;
+          var bizModule = data.modules.business;
+          if(bizModule && bizModule.type === "business"){
+            (bizModule.businesses || []).forEach(function(biz){
+              (biz.tabs || []).forEach(function(t){ if(t.id === tabId) tab = t; });
+            });
+          }
+          if(!tab) return;
+          var dateStr = isoDateStr(new Date());
+          var existing = tab.completions.find(function(c){ return c.itemId === itemId && c.dueDate === dateStr; });
+          // Guards against a duplicate "Everyday" completion for the same item+day pair — belt and
+          // suspenders alongside the same de-duplication applied on the sync side.
+          if(existing){ existing.status = "completed"; existing.completedAt = new Date().toISOString(); }
+          else tab.completions.push({id: uid(), itemId:itemId, dueDate:dateStr, status:"completed", completedAt:new Date().toISOString()});
+          markWorkflowDirty(tab.id);
+          saveData();
+          // Same immediate, non-debounced local persist + cloud push used for the mechanic's Mark
+          // Complete — this is a high-risk-of-loss action (easy to close the app right after), so it
+          // gets the maximum possible head start rather than waiting on the normal debounces.
+          clearTimeout(localPersistTimer);
+          persist(data);
+          localPersistPending = false;
+          clearTimeout(cloudWriteTimer);
+          syncLocalChangesToFirebase().catch(function(){});
+          renderStaffWorkflowList(module, staff, opts);
+          toast("Marked done ✅");
+        });
       });
     });
   }
@@ -8218,6 +9091,38 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
   function isVehiclePaperworkComplete(vehicle){
     return clampPaperworkStageIndex(vehicle.paperworkStageIndex) >= PAPERWORK_STAGES.length;
   }
+  var PAPERWORK_INACTIVITY_THRESHOLD_DAYS = 10;
+  // Single source of truth for "how stale is this vehicle's paperwork" — used identically by the
+  // staff-facing card list (red background + day counter) and the Operations Manager monitoring
+  // dashboard, so the two can never disagree about which vehicles count as inactive.
+  // "Zero activity for 10+ days" covers BOTH a vehicle that was worked on and then went stale (measured
+  // from its last stage save) AND one that's never been touched at all since it was uploaded (measured
+  // from createdAt) — either way, nothing has happened on it for 10+ days.
+  function paperworkInactivityInfo(vehicle){
+    var stages = vehicle.paperworkStages || {};
+    var lastActivity = null, lastActivityBy = null;
+    Object.keys(stages).forEach(function(key){
+      var sd = stages[key];
+      if(sd && sd.savedAt){
+        var t = new Date(sd.savedAt).getTime();
+        if(!lastActivity || t > lastActivity){ lastActivity = t; lastActivityBy = sd.savedBy || null; }
+      }
+    });
+    var referenceTime = lastActivity !== null ? lastActivity : (vehicle.createdAt ? new Date(vehicle.createdAt).getTime() : Date.now());
+    var daysSinceActivity = Math.floor((Date.now() - referenceTime) / (24*60*60*1000));
+    return {
+      lastActivity: lastActivity, lastActivityBy: lastActivityBy,
+      everTouched: lastActivity !== null,
+      daysSinceActivity: daysSinceActivity,
+      isInactive: daysSinceActivity >= PAPERWORK_INACTIVITY_THRESHOLD_DAYS
+    };
+  }
+  // "Days since uploaded" — a separate counter from inactivity, always measured from when the
+  // vehicle was first added in Stock Prep, regardless of any paperwork activity since.
+  function daysSinceVehicleUpload(vehicle){
+    if(!vehicle.createdAt) return null;
+    return Math.floor((Date.now() - new Date(vehicle.createdAt).getTime()) / (24*60*60*1000));
+  }
   // vehicle.paperworkStageIndex is the single persisted source of truth for "where should this
   // vehicle's wizard resume" — it is set explicitly whenever staff click Next/Prev/Finish, and is
   // never derived from subStatus (staff can leave a stage's subStatus as Pending/In Process and
@@ -8230,20 +9135,32 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
   }
   // Dead End Date lives on whichever stage is flagged hasDeadEnd (currently Insurance) — found
   // dynamically rather than hardcoding the key, so this keeps working if that stage config changes.
-  function paperworkDeadEndCountdownHTML(vehicle){
+  function getPaperworkDeadEndInfo(vehicle){
     var stages = vehicle.paperworkStages || {};
     var stageDef = PAPERWORK_STAGES.find(function(s){ return s.hasDeadEnd; });
-    if(!stageDef) return "";
+    if(!stageDef) return null;
     var d = stages[stageDef.key];
-    if(!d || !d.deadEndDate) return "";
+    if(!d || !d.deadEndDate) return null;
     var target = new Date(d.deadEndDate + "T00:00:00");
     var today = new Date(); today.setHours(0,0,0,0);
     var daysLeft = Math.round((target - today) / 86400000);
     var countdownText = daysLeft < 0 ? ("Overdue by " + Math.abs(daysLeft) + " day" + (Math.abs(daysLeft) === 1 ? "" : "s"))
       : daysLeft === 0 ? "Due today"
       : (daysLeft + " day" + (daysLeft === 1 ? "" : "s") + " left");
-    var color = daysLeft < 0 ? "var(--danger)" : (daysLeft <= 3 ? "var(--danger)" : "var(--text-faint)");
-    return '<div class="sess" style="color:' + color + ';margin-top:2px;">Dead End: ' + esc(fmtDate(d.deadEndDate)) + ' (' + countdownText + ')</div>';
+    return {deadEndDate:d.deadEndDate, daysLeft:daysLeft, countdownText:countdownText, urgent: daysLeft <= 3};
+  }
+  // Bold, badge-styled call-out (not small muted text) — this is the detail staff kept missing on
+  // the card, so it needs to actually catch the eye rather than blend into the rest of the card.
+  function paperworkDeadEndBadgeHTML(vehicle){
+    var info = getPaperworkDeadEndInfo(vehicle);
+    if(!info) return "";
+    return '<span class="pw-deadend-badge' + (info.urgent ? " urgent" : "") + '">⏰ Dead End: ' + esc(fmtDate(info.deadEndDate)) + ' · ' + esc(info.countdownText) + '</span>';
+  }
+  // Kept for backward compatibility with any existing callers — now just wraps the badge in the
+  // same flex row used elsewhere so it still drops cleanly into a card.
+  function paperworkDeadEndCountdownHTML(vehicle){
+    var badge = paperworkDeadEndBadgeHTML(vehicle);
+    return badge ? ('<div class="pw-card-badges">' + badge + '</div>') : "";
   }
   function getActivePaperworkStage(vehicle){
     if(isVehiclePaperworkComplete(vehicle)) return null; // advanced past the final stage
@@ -8293,17 +9210,29 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         ? '<div class="empty-state"><div class="big">' + (getStaffListFilter(filterKey) === "completed" ? "📄" : "✅") + '</div><p>' + (getStaffListFilter(filterKey) === "completed" ? "No vehicles fully completed yet." : "Nothing incomplete right now.") + '</p></div>'
         : showing.map(function(entry){
             var activeStage = getActivePaperworkStage(entry.vehicle);
-            return '<div class="card card-tight staff-pw-open" data-vehicle-id="' + entry.vehicle.id + '">' +
+            var vehicle = entry.vehicle;
+            var complete = isVehiclePaperworkComplete(vehicle);
+            var inactivity = complete ? null : paperworkInactivityInfo(vehicle);
+            var isInactive = !!(inactivity && inactivity.isInactive);
+            var uploadDays = daysSinceVehicleUpload(vehicle);
+            var deadEndBadge = paperworkDeadEndBadgeHTML(vehicle);
+            return '<div class="card card-tight staff-pw-open' + (isInactive ? " card-inactive" : "") + '" data-vehicle-id="' + vehicle.id + '">' +
               '<div class="hist-row" style="border:none;padding:0;">' +
-                '<div class="left"><div class="date" style="font-weight:600;">' + esc(entry.vehicle.vehicleNumber || "—") + '</div>' +
-                  '<div class="sess">' + esc(entry.business.name) + (getPrepVehicleModel(entry.vehicle) ? (' · ' + esc(getPrepVehicleModel(entry.vehicle))) : '') + (entry.vehicle.segment ? (' · ' + esc(entry.vehicle.segment)) : '') + '</div>' +
-                  (activeStage ? '<div class="sess" style="color:var(--accent);font-weight:600;margin-top:2px;">' + esc(activeStage.label) + ' - ' + esc(activeStage.subStatus) + '</div>' : '') +
-                  paperworkDeadEndCountdownHTML(entry.vehicle) +
+                '<div class="left"><div class="date" style="font-weight:600;">' + esc(vehicle.vehicleNumber || "—") + '</div>' +
+                  '<div class="sess">' + esc(entry.business.name) + (getPrepVehicleModel(vehicle) ? (' · ' + esc(getPrepVehicleModel(vehicle))) : '') + (vehicle.segment ? (' · ' + esc(vehicle.segment)) : '') + '</div>' +
+                  (isInactive ? '<div class="sess" style="color:var(--danger);font-weight:700;margin-top:2px;">⚠️ No activity for ' + inactivity.daysSinceActivity + ' days</div>' : '') +
                 '</div>' +
-                '<div class="right" style="display:flex;align-items:center;gap:8px;">' + paperworkStageProgressLabel(entry.vehicle) +
-                  '<button class="btn btn-primary btn-header-action">Proceed →</button>' +
+                '<div class="right" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">' +
+                  (uploadDays !== null ? '<span class="pw-age-counter" title="Days since this vehicle was uploaded from Stock Prep">📅 ' + uploadDays + 'd since upload</span>' : '') +
+                  '<div style="display:flex;align-items:center;gap:8px;">' + paperworkStageProgressLabel(vehicle) +
+                    '<button class="btn btn-primary btn-header-action">Proceed →</button>' +
+                  '</div>' +
                 '</div>' +
               '</div>' +
+              ((activeStage || deadEndBadge) ? ('<div class="pw-card-badges">' +
+                (activeStage ? ('<span class="pw-stage-badge">📍 ' + esc(activeStage.label) + ' — ' + esc(activeStage.subStatus) + '</span>') : '') +
+                deadEndBadge +
+              '</div>') : '') +
             '</div>';
           }).join("");
       wrap.innerHTML = html;
@@ -8339,6 +9268,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     html += '<div class="pw-wizard-header">' +
       '<div class="pw-wizard-vehicle">' + esc(vehicle.vehicleNumber || "Vehicle") + '</div>' +
       '<div class="pw-wizard-sub">' + esc(entry.business.name) + (getPrepVehicleModel(vehicle) ? (' · ' + esc(getPrepVehicleModel(vehicle))) : '') + (vehicle.segment ? (' · ' + esc(vehicle.segment)) : '') + '</div>' +
+      paperworkDeadEndBadgeHTML(vehicle) +
     '</div>';
     html += '<div class="pw-wizard-progress">Stage ' + (stageIdx + 1) + ' of ' + PAPERWORK_STAGES.length + ': ' + esc(stageDef.label) + '</div>';
 
@@ -8373,7 +9303,19 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     function saveStage(){
       readForm();
       stageData.savedAt = new Date().toISOString();
+      stageData.savedBy = member.id;
+      markPaperworkDirty(vehicle.id);
       saveData();
+      // Immediate, non-debounced local persist + cloud push — same treatment as every other
+      // high-risk-of-loss staff action in this app (mechanic Mark Complete, workflow Mark Done).
+      // Waiting on the normal debounce is exactly what made Save feel like it "needed 2-3 clicks":
+      // the click always registered, but nothing visibly changed and the write hadn't gone out yet,
+      // so it looked like nothing happened.
+      clearTimeout(localPersistTimer);
+      persist(data);
+      localPersistPending = false;
+      clearTimeout(cloudWriteTimer);
+      syncLocalChangesToFirebase().catch(function(){});
     }
     // Only gate on the Dead End Date now — the subStatus labels are informational only and never
     // block progression, and the old applicability toggle has been replaced by the Next confirmation.
@@ -8391,6 +9333,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       // moved past — mark it applicable so summary/report views stay meaningful without the old
       // manual toggle.
       stageData.toggle = true;
+      markPaperworkDirty(vehicle.id);
       if(!isLastStage){
         vehicle.paperworkStageIndex = stageIdx + 1;
         saveData();
@@ -8407,6 +9350,10 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     }
 
     document.getElementById("btnBackToPwList").addEventListener("click", function(){
+      // Persist whatever's currently in the form before leaving — previously this discarded any
+      // unsaved edit silently, which could look like "my click didn't work" if someone had just
+      // typed a Dead End Date or picked a status and hit Back without hitting Save first.
+      saveStage();
       staffPaperworkView = null;
       renderStaffDashPaperworkTab(module, member);
     });
@@ -8420,13 +9367,18 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         });
         stageData.subStatus = radio.value;
         stageData.savedAt = new Date().toISOString();
+        stageData.savedBy = member.id;
+        markPaperworkDirty(vehicle.id);
         saveData();
       });
     });
     document.getElementById("pwBtnSave").addEventListener("click", function(){
       saveStage();
       toast("Saved");
-      renderStaffPaperworkVehicleDetail(module, member, entry);
+      // Auto-redirect back to the main vehicle list on Save, rather than staying on the wizard —
+      // this also doubles as the visible confirmation that the click actually registered.
+      staffPaperworkView = null;
+      renderStaffDashPaperworkTab(module, member);
     });
     document.getElementById("pwBtnNext").addEventListener("click", function(){
       if(!validateBeforeAdvance()) return;
@@ -8448,6 +9400,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       saveStage();
       if(stageIdx > 0){
         vehicle.paperworkStageIndex = stageIdx - 1;
+        markPaperworkDirty(vehicle.id);
         saveData();
         renderStaffPaperworkVehicleDetail(module, member, entry);
       }
@@ -8484,25 +9437,35 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
 
   function openStaffNewTaskModal(module, actingStaff, isAdminActing){
     var creatorId = isAdminActing ? "admin" : actingStaff.id;
-    var assignOptions = isAdminActing
-      ? (module.staffMembers || [])
-      : (module.staffMembers || []).filter(function(s){ return s.id !== actingStaff.id; });
     var allowedBusinesses = getAllowedBusinessesForStaff(actingStaff);
+    // Base pool before any company filtering — same set the old form always showed regardless of
+    // company, used as-is when "— None —" (a General Task) is selected.
+    function baseAssignPool(){
+      return isAdminActing
+        ? (module.staffMembers || [])
+        : (module.staffMembers || []).filter(function(s){ return s.id !== actingStaff.id; });
+    }
+    // Once a company is chosen, only staff actually allocated to it (or unrestricted) are assignable —
+    // this is the fix: previously you could assign to someone not allocated to the chosen company at
+    // all, and the task would fail to route/sync to them correctly.
+    function assignOptionsForCompany(companyId){
+      var base = baseAssignPool();
+      if(!companyId) return base;
+      return base.filter(function(s){ return !s.allowedBusinessIds || s.allowedBusinessIds.indexOf(companyId) !== -1; });
+    }
     showModal(
       '<div class="modal-header"><h3 class="modal-title">New Task</h3><button class="modal-close-btn" id="modalCloseBtn">✕</button></div>' +
       '<div class="modal-body">' +
         '<div class="field" style="margin-bottom:10px;"><label>Task</label><input class="input" id="newPeerTaskTitle" placeholder="What needs doing?"></div>' +
-        '<div class="row-2">' +
-          '<div class="field" style="margin-bottom:10px;"><label>Target Date</label><input class="input" type="date" id="newPeerTaskDate"></div>' +
-          '<div class="field" style="margin-bottom:10px;"><label>Assign To</label><select class="input" id="newPeerTaskAssign">' +
-            (isAdminActing ? '' : '<option value="admin">Admin</option>') +
-            assignOptions.map(function(s){ return '<option value="' + s.id + '"' + (isAdminActing && s.id === actingStaff.id ? " selected" : "") + '>' + esc(s.name) + '</option>'; }).join("") +
-          '</select></div>' +
-        '</div>' +
         (allowedBusinesses.length > 0 ? '<div class="field" style="margin-bottom:10px;"><label>Company <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><select class="input" id="newPeerTaskCompany">' +
-          '<option value="">— None —</option>' +
+          '<option value="">— None (General Task) —</option>' +
           allowedBusinesses.map(function(b){ return '<option value="' + b.id + '">' + esc(b.name) + '</option>'; }).join("") +
         '</select></div>' : '') +
+        '<p class="backup-note" style="margin-top:-4px;">Pick a company first — "Assign To" then only shows staff actually allocated to it.</p>' +
+        '<div class="row-2">' +
+          '<div class="field" style="margin-bottom:10px;"><label>Target Date</label><input class="input" type="date" id="newPeerTaskDate"></div>' +
+          '<div class="field" style="margin-bottom:10px;"><label>Assign To</label><select class="input" id="newPeerTaskAssign"></select></div>' +
+        '</div>' +
         vehiclePickerButtonHTML("newPeerTaskVehicle", "", true) +
         '<div class="field" style="margin-bottom:14px;"><label>Notes <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><textarea class="input task-notes-input" id="newPeerTaskNotes" rows="3" placeholder="Add details, reminders, links…"></textarea></div>' +
         '<button class="btn btn-primary" id="btnCreatePeerTask" style="width:100%;">Create Task</button>' +
@@ -8514,6 +9477,24 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       var companyId = companySelect ? companySelect.value : "";
       return allowedBusinesses.find(function(b){ return b.id === companyId; }) || null;
     }
+    function refreshAssignOptions(){
+      var assignSelect = document.getElementById("newPeerTaskAssign");
+      if(!assignSelect) return;
+      var companyId = currentPeerTaskBusiness() ? currentPeerTaskBusiness().id : "";
+      var prevValue = assignSelect.value;
+      var options = assignOptionsForCompany(companyId || null);
+      assignSelect.innerHTML = (isAdminActing ? '' : '<option value="admin">Admin</option>') +
+        options.map(function(s){ return '<option value="' + s.id + '">' + esc(s.name) + '</option>'; }).join("");
+      // Keep the previous selection if it's still valid after filtering (e.g. broadening back to
+      // "None"); otherwise fall back to a sensible default rather than silently leaving a stale pick.
+      var stillValid = Array.prototype.some.call(assignSelect.options, function(o){ return o.value === prevValue; });
+      if(stillValid){
+        assignSelect.value = prevValue;
+      }else if(isAdminActing && options.some(function(s){ return s.id === actingStaff.id; })){
+        assignSelect.value = actingStaff.id;
+      }
+      if(!stillValid && prevValue) toast("Assignee reset — not allocated to this company", true);
+    }
     function refreshVehicleOptions(){
       var biz = currentPeerTaskBusiness();
       applyVehicleSelection("newPeerTaskVehicle", "", null); // company changed — any prior pick may not belong to the new company
@@ -8524,7 +9505,11 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       }
     }
     var companySelectEl = document.getElementById("newPeerTaskCompany");
-    if(companySelectEl) companySelectEl.addEventListener("change", refreshVehicleOptions);
+    if(companySelectEl) companySelectEl.addEventListener("change", function(){
+      refreshAssignOptions();
+      refreshVehicleOptions();
+    });
+    refreshAssignOptions();
     refreshVehicleOptions();
     var peerVpBtn = document.querySelector('.vehicle-picker-btn[data-target="newPeerTaskVehicle"]');
     if(peerVpBtn) peerVpBtn.addEventListener("click", function(){
@@ -8543,6 +9528,16 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       var vehicleInput = document.getElementById("newPeerTaskVehicle");
       var vehicleNumber = vehicleInput ? (vehicleInput.value || null) : null;
       if(!title){ toast("Enter a task", true); return; }
+      // Defensive re-check at submit time — the dropdown filtering already prevents this in normal
+      // use, but this is the actual boundary that guarantees a task can never be created for someone
+      // not allocated to the chosen company.
+      if(companyId && assignTo !== "admin"){
+        var assignee = (module.staffMembers || []).find(function(s){ return s.id === assignTo; });
+        if(assignee && assignee.allowedBusinessIds && assignee.allowedBusinessIds.indexOf(companyId) === -1){
+          toast("That staff member isn't allocated to the selected company", true);
+          return;
+        }
+      }
       var newTask = {id: uid(), title:title, deadline:date, status:"pending", createdAt:new Date().toISOString(), completedAt:null, notes:noteText, assignedTo:assignTo, createdBy:creatorId, extensionRequest:null, isNew:true, vehicleNumber:vehicleNumber, companyId:null, chat:[]};
 
       // Route by business tag: a tagged company means this task belongs to that Business's own Tasks tab,
@@ -8606,7 +9601,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     '</p>';
     html += '<button class="link-btn" id="btnToggleSalaryBreakdown" style="padding-left:0;">' + (breakdownOpen ? "Hide" : "Show") + ' day-by-day breakdown</button>';
     if(breakdownOpen){
-      var statusLabel = {present:"Present", halfday:"Half Day", leave:"Leave", off:"Off"};
+      var statusLabel = {present:"Present", halfday:"Half Day", leave:"Leave", off:"Off Day", holiday:"Holiday"};
       html += '<div class="sheet-scroll" style="margin-top:8px;"><table class="sheet-table"><thead><tr><th class="sheet-col-head">Date</th><th class="sheet-col-head">Status</th><th class="sheet-col-head ledger-num-head">Fine</th></tr></thead><tbody>' +
         res.breakdown.slice().reverse().map(function(b){
           return '<tr><td><span class="sheet-cell-locked ledger-text-cell">' + fmtDate(b.date) + '</span></td>' +
@@ -8671,7 +9666,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       listHtml = '<div class="empty-state"><div class="big">📍</div><p>No attendance recorded yet.</p></div>';
     }else{
       function timeLabel(iso){ return new Date(iso).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}); }
-      var statusMeta = {present:{label:"Present", cls:"completed"}, halfday:{label:"Half Day", cls:""}, leave:{label:"Leave", cls:"pending-red"}};
+      var statusMeta = {present:{label:"Present", cls:"completed"}, halfday:{label:"Half Day", cls:""}, leave:{label:"Leave", cls:"pending-red"}, off:{label:"Off Day", cls:"badge-neutral"}, holiday:{label:"Holiday", cls:"completed"}};
       listHtml = expandableListHTML(records, "staffAtt:" + staff.id, LIST_LIMIT, function(r){
         var info = computeDayAttendance(r, r.date);
         var meta = statusMeta[info.status];
@@ -8729,6 +9724,10 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
           if(rec){
             if(inVal){ rec.punchInAt = rec.date + "T" + inVal + ":00"; rec.punchInAdminSet = true; rec.punchInValid = true; }
             if(outVal){ rec.punchOutAt = rec.date + "T" + outVal + ":00"; rec.punchOutAdminSet = true; rec.punchOutValid = true; }
+            // A real (even admin-entered) punch always wins over an auto-marked status — see the
+            // Punch Consideration Rule used throughout this file.
+            rec.autoStatus = null; rec.autoMarked = false;
+            markAttendanceDirty(staff.id + "_" + rec.date);
             saveData();
           }
           staffPunchFixOpen[id] = false;
@@ -8761,6 +9760,10 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       var rec = getOrCreateAttendanceRecord(staff, dateVal);
       if(inVal){ rec.punchInAt = dateVal + "T" + inVal + ":00"; rec.punchInAdminSet = true; rec.punchInValid = true; }
       if(outVal){ rec.punchOutAt = dateVal + "T" + outVal + ":00"; rec.punchOutAdminSet = true; rec.punchOutValid = true; }
+      // A real (even admin-entered) punch always wins over an auto-marked status — see the Punch
+      // Consideration Rule used throughout this file.
+      rec.autoStatus = null; rec.autoMarked = false;
+      markAttendanceDirty(staff.id + "_" + dateVal);
       saveData();
       attendanceBackfillOpen = false;
       renderStaffAttendanceList(module, staff, true);
@@ -8768,6 +9771,44 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     });
   }
 
+  // Applies (or removes) an approved Leave request's effect on attendance history — the connection
+  // that was missing before: approving a leave request only ever changed the request's own status,
+  // never actually touched the staff member's attendance record for that date.
+  function applyApprovedLeaveToAttendance(staff, leave){
+    if(leave.type !== "Leave") return; // "Break" requests don't affect attendance/salary
+    if(!Array.isArray(staff.attendance)) staff.attendance = [];
+    var rec = staff.attendance.find(function(a){ return a.date === leave.date; });
+    if(!rec){
+      staff.attendance.push({
+        id: uid(), date:leave.date, punchInAt:null, punchInLat:null, punchInLng:null, punchInValid:null, punchInAdminSet:false,
+        punchOutAt:null, punchOutLat:null, punchOutLng:null, punchOutValid:null, fine:0, punchOutAdminSet:false,
+        autoStatus:"leave", autoMarked:true, leaveRequestId:leave.id
+      });
+    }else if(!rec.punchInAt){
+      // No real punch recorded for that date yet — safe to mark it as an explicit Leave.
+      rec.autoStatus = "leave";
+      rec.autoMarked = true;
+      rec.leaveRequestId = leave.id;
+    }
+    // If a real punch already exists for that date, it's left untouched — an actual punch always
+    // takes priority over a leave marking (the same Punch Consideration Rule used on correction below).
+  }
+  function removeLeaveMarkFromAttendance(staff, leave){
+    if(!Array.isArray(staff.attendance)) return;
+    var rec = staff.attendance.find(function(a){ return a.date === leave.date; });
+    if(!rec) return;
+    if(!rec.punchInAt && rec.autoMarked){
+      // No real punch — remove the auto-marked record entirely, returning the day to a normal
+      // "not yet recorded" state (it'll reflect correctly once actually punched, or get
+      // re-auto-marked as Leave if it's still empty once that day's own 7pm cutoff passes).
+      staff.attendance = staff.attendance.filter(function(a){ return a.id !== rec.id; });
+    }else if(rec.autoStatus){
+      // Punch Consideration Rule: a real punch now exists for that day — clear the auto-status so
+      // the day's status derives from the actual punch (Present/Half Day/etc.) instead.
+      rec.autoStatus = null;
+      rec.autoMarked = false;
+    }
+  }
   function renderStaffLeaveList(module, staff, isAdminView){
     var wrap = document.getElementById("staffLeaveList");
     if(!wrap) return;
@@ -8776,22 +9817,53 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       wrap.innerHTML = '<div class="empty-state"><div class="big">🌴</div><p>No leave or break requests yet.</p></div>';
       return;
     }
+    var todayStr = todayDateInputValue();
     wrap.innerHTML = leaves.map(function(l){
       var statusBadge = l.status === "approved" ? '<span class="badge-pill completed">✓ Approved</span>'
         : l.status === "rejected" ? '<span class="badge-pill pending-red">✕ Rejected</span>'
         : '<span class="badge-pill">Pending</span>';
-      var actions = (isAdminView && l.status === "pending")
-        ? ('<div class="btn-row" style="margin-top:8px;"><button class="btn btn-ghost btn-sm staff-leave-reject" data-leave-id="' + l.id + '">Reject</button><button class="btn btn-primary btn-sm staff-leave-approve" data-leave-id="' + l.id + '">Approve</button></div>')
-        : '';
-      return '<div class="card card-tight"><div class="hist-row" style="border:none;padding:0 0 6px;">' +
+      var html = '<div class="card card-tight"><div class="hist-row" style="border:none;padding:0 0 6px;">' +
         '<div class="left"><div class="date" style="font-weight:600;">' + esc(l.type) + ' — ' + fmtDate(l.date) + '</div>' + (l.reason ? '<div class="sess">' + esc(l.reason) + '</div>' : '') + '</div>' +
-        '<div class="right">' + statusBadge + '</div></div>' + actions + '</div>';
+        '<div class="right">' + statusBadge + '</div></div>';
+
+      if(isAdminView && l.status === "pending"){
+        html += '<div class="btn-row" style="margin-top:8px;"><button class="btn btn-ghost btn-sm staff-leave-reject" data-leave-id="' + l.id + '">Reject</button><button class="btn btn-primary btn-sm staff-leave-approve" data-leave-id="' + l.id + '">Approve</button></div>';
+      }
+
+      // Correction / override workflow — only ever applies to an approved Leave dated in the
+      // future. Today's date is locked (requirement: same-day approved leave can't be modified or
+      // reversed by the staff member), and past-dated leaves are moot once the day has already passed.
+      if(l.type === "Leave" && l.status === "approved" && l.date > todayStr){
+        if(l.correctionStatus === "pending"){
+          html += isAdminView
+            ? ('<p class="backup-note" style="margin-top:8px;">Correction requested: "' + esc(l.correctionReason || "") + '"</p>' +
+               '<div class="btn-row"><button class="btn btn-ghost btn-sm leave-correction-reject" data-leave-id="' + l.id + '">Reject Correction</button><button class="btn btn-primary btn-sm leave-correction-approve" data-leave-id="' + l.id + '">Approve Correction</button></div>')
+            : '<p class="backup-note" style="margin-top:8px;color:var(--accent);">Correction request pending Admin review.</p>';
+        }else if(l.correctionStatus === "approved"){
+          html += '<p class="backup-note" style="margin-top:8px;color:var(--up);">✅ Correction approved — no longer marked as Leave.</p>';
+        }else if(!isAdminView){
+          html += (l.correctionStatus === "rejected" ? '<p class="backup-note" style="margin-top:8px;">Previous correction request was rejected.</p>' : '') +
+            '<button class="link-btn leave-request-correction" data-leave-id="' + l.id + '" style="padding-left:0;margin-top:4px;">I\'ll actually be working this day — request removal</button>';
+        }
+      }else if(l.type === "Leave" && l.status === "approved" && l.date === todayStr && !isAdminView){
+        html += '<p class="backup-note" style="margin-top:8px;">Locked for today — this can\'t be changed.</p>';
+      }
+      html += '</div>';
+      return html;
     }).join("");
+
     wrap.querySelectorAll(".staff-leave-approve").forEach(function(btn){
       btn.addEventListener("click", function(){
         var l = staff.leaves.find(function(x){ return x.id === btn.getAttribute("data-leave-id"); });
-        if(l){ l.status = "approved"; markLeaveDirty(l.id); saveData(); }
+        if(l){
+          l.status = "approved";
+          applyApprovedLeaveToAttendance(staff, l);
+          markLeaveDirty(l.id);
+          markAttendanceDirty(staff.id + "_" + l.date);
+          saveData();
+        }
         renderStaffLeaveList(module, staff, isAdminView);
+        renderStaffAttendanceList(module, staff, isAdminView);
         toast("Leave approved");
       });
     });
@@ -8801,6 +9873,57 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         if(l){ l.status = "rejected"; markLeaveDirty(l.id); saveData(); }
         renderStaffLeaveList(module, staff, isAdminView);
         toast("Leave rejected");
+      });
+    });
+    wrap.querySelectorAll(".leave-request-correction").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var leaveId = btn.getAttribute("data-leave-id");
+        showModal(
+          '<div class="modal-header"><h3 class="modal-title">Request Removal</h3><button class="modal-close-btn" id="modalCloseBtn">✕</button></div>' +
+          '<div class="modal-body"><p class="backup-note" style="margin-top:0;">Let Admin know you\'ll actually be working this day instead.</p>' +
+            '<div class="field" style="margin:10px 0;"><label>Note <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><input class="input" id="leaveCorrectionNote" placeholder="e.g. Plans changed, I\'ll be working"></div>' +
+            '<div class="btn-row"><button class="btn btn-ghost" id="leaveCorrectionCancel">Cancel</button><button class="btn btn-primary" id="leaveCorrectionSubmit">Submit</button></div>' +
+          '</div>'
+        );
+        document.getElementById("leaveCorrectionCancel").addEventListener("click", closeModal);
+        document.getElementById("leaveCorrectionSubmit").addEventListener("click", function(){
+          var note = document.getElementById("leaveCorrectionNote").value.trim();
+          var l = staff.leaves.find(function(x){ return x.id === leaveId; });
+          if(l){
+            l.correctionRequested = true;
+            l.correctionReason = note;
+            l.correctionRequestedAt = new Date().toISOString();
+            l.correctionStatus = "pending";
+            markLeaveDirty(l.id);
+            saveData();
+          }
+          closeModal();
+          renderStaffLeaveList(module, staff, isAdminView);
+          toast("Correction request submitted");
+        });
+      });
+    });
+    wrap.querySelectorAll(".leave-correction-approve").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var l = staff.leaves.find(function(x){ return x.id === btn.getAttribute("data-leave-id"); });
+        if(l){
+          l.correctionStatus = "approved";
+          removeLeaveMarkFromAttendance(staff, l);
+          markLeaveDirty(l.id);
+          markAttendanceDirty(staff.id + "_" + l.date);
+          saveData();
+        }
+        renderStaffLeaveList(module, staff, isAdminView);
+        renderStaffAttendanceList(module, staff, isAdminView);
+        toast("Correction approved");
+      });
+    });
+    wrap.querySelectorAll(".leave-correction-reject").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var l = staff.leaves.find(function(x){ return x.id === btn.getAttribute("data-leave-id"); });
+        if(l){ l.correctionStatus = "rejected"; markLeaveDirty(l.id); saveData(); }
+        renderStaffLeaveList(module, staff, isAdminView);
+        toast("Correction rejected");
       });
     });
   }
@@ -8836,6 +9959,10 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
   // everything downstream. dateStr lets today's still-open record be treated differently from a closed
   // past day: a missing punch-out only fines once the day is actually over (past, or today past 7pm).
   function computeDayAttendance(rec, dateStr){
+    // Explicit auto-marked status (Off Day / Holiday / auto Leave from the 7pm cutoff — see
+    // maybeAutoMarkAttendance) takes priority over deriving from punch times, since these records
+    // are never expected to have punch data at all.
+    if(rec && rec.autoStatus) return {status: rec.autoStatus, fine: 0};
     if(!rec || !rec.punchInAt) return {status:"leave", fine:0};
     var inMin = minutesOfDay(rec.punchInAt);
     var outMin = rec.punchOutAt ? minutesOfDay(rec.punchOutAt) : null;
@@ -8871,14 +9998,18 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     var perDayRate = member.baseSalary / totalDaysInMonth;
     var today = new Date(); today.setHours(0,0,0,0);
 
-    var daysWorked = 0, halfDays = 0, leaveDays = 0, totalFines = 0, workingDaysSoFar = 0;
+    var daysWorked = 0, halfDays = 0, leaveDays = 0, offDays = 0, totalFines = 0, workingDaysSoFar = 0;
     var breakdown = [];
     for(var day = 1; day <= totalDaysInMonth; day++){
       var dObj = new Date(year, month, day);
       if(dObj > today) break;
       var dateStr = isoDateStr(dObj);
       if(isNonWorkingDay(module, dateStr)){
-        breakdown.push({date:dateStr, status:"off", fine:0});
+        // Sunday vs an Admin-marked Holiday are distinguished for display, but both are paid days —
+        // see the gross calculation below, where "off" and "holiday" are credited the same way.
+        var isHolidayDate = (module.holidays || []).some(function(h){ return h.date === dateStr; });
+        offDays++;
+        breakdown.push({date:dateStr, status: isHolidayDate ? "holiday" : "off", fine:0});
         continue;
       }
       workingDaysSoFar++;
@@ -8894,14 +10025,16 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     var cashLeaveApplies = leaveDays === 1;
     var gross = 0;
     breakdown.forEach(function(b){
-      if(b.status === "off") return;
+      // Sunday and Admin-marked Holidays are paid days — they count toward salary the same as a
+      // normal present day, rather than being skipped.
+      if(b.status === "off" || b.status === "holiday"){ gross += perDayRate; return; }
       if(b.status === "present") gross += perDayRate;
       else if(b.status === "halfday") gross += perDayRate * 0.5;
       else if(b.status === "leave" && cashLeaveApplies) gross += perDayRate;
     });
     var net = Math.max(0, gross - totalFines);
     return {monthKey:monthKey, perDayRate:perDayRate, totalDaysInMonth:totalDaysInMonth, workingDays:workingDaysSoFar,
-      daysWorked:daysWorked, halfDays:halfDays, leaveDays:leaveDays, fines:totalFines,
+      daysWorked:daysWorked, halfDays:halfDays, leaveDays:leaveDays, offDays:offDays, fines:totalFines,
       cashLeaveApplies:cashLeaveApplies, gross:gross, net:net, breakdown:breakdown};
   }
   // Indian financial year: April–March. Returns how many cash-leave credits have accumulated unused
@@ -8970,7 +10103,12 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       var rec = getTodayAttendanceRecord(member);
       if(type === "in"){ rec.punchInAt = new Date().toISOString(); rec.punchInLat = lat; rec.punchInLng = lng; rec.punchInValid = valid; }
       else{ rec.punchOutAt = new Date().toISOString(); rec.punchOutLat = lat; rec.punchOutLng = lng; rec.punchOutValid = valid; }
+      // A real punch always wins over an auto-marked status (Punch Consideration Rule) — clears any
+      // stale "Off Day"/"Holiday"/auto "Leave" flag left on today's record so it derives from this
+      // actual punch instead.
+      rec.autoStatus = null; rec.autoMarked = false;
       if(!member.deviceId){ member.deviceId = getThisDeviceId(); member.deviceRegisteredAt = new Date().toISOString(); }
+      markAttendanceDirty(member.id + "_" + rec.date);
       saveData();
       renderStaffDashboard(module, member);
       if(!valid) toast("You are not at the office.", true);
@@ -9000,6 +10138,10 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
 
   function renderStaffDashboard(module, member){
     var wrap = document.getElementById("homeModuleScreen");
+    var paperworkEnabled = member.paperworkModuleEnabled !== false;
+    // Admin may have this tab active from a previous session for a member who's since had the
+    // module disabled — bounce back to a tab that's actually visible rather than showing a dead panel.
+    if(staffDashboardTab === "paperwork" && !paperworkEnabled) staffDashboardTab = "attendance";
     var html = '<div class="module-header">' +
       '<div class="m-icon" style="background:' + hexToRgba(module.accent,.16) + ';">👤</div>' +
       '<div><div class="m-name">' + esc(member.name) + '</div><div class="m-meta">ID: ' + esc(member.staffId || "—") + '</div></div>' +
@@ -9007,11 +10149,11 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     html += '<div class="biz-subtabs" id="staffDashTabs">' +
       '<button class="biz-subtab-btn' + (staffDashboardTab === "attendance" ? " active" : "") + '" data-dashtab="attendance">📍 Attendance</button>' +
       '<button class="biz-subtab-btn' + (staffDashboardTab === "work" ? " active" : "") + '" data-dashtab="work">✅ Work</button>' +
-      '<button class="biz-subtab-btn' + (staffDashboardTab === "paperwork" ? " active" : "") + '" data-dashtab="paperwork">📄 Assigned Vehicle Paperwork</button>' +
+      (paperworkEnabled ? ('<button class="biz-subtab-btn' + (staffDashboardTab === "paperwork" ? " active" : "") + '" data-dashtab="paperwork">📄 Assigned Vehicle Paperwork</button>') : '') +
     '</div>';
     html += '<div id="staffDashAttendancePanel" style="display:' + (staffDashboardTab === "attendance" ? "block" : "none") + ';"></div>';
     html += '<div id="staffDashWorkPanel" style="display:' + (staffDashboardTab === "work" ? "block" : "none") + ';"></div>';
-    html += '<div id="staffDashPaperworkPanel" style="display:' + (staffDashboardTab === "paperwork" ? "block" : "none") + ';"></div>';
+    if(paperworkEnabled) html += '<div id="staffDashPaperworkPanel" style="display:' + (staffDashboardTab === "paperwork" ? "block" : "none") + ';"></div>';
 
     wrap.innerHTML = html;
 
@@ -9025,7 +10167,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
 
     if(staffDashboardTab === "attendance") renderStaffDashAttendanceTab(module, member);
     else if(staffDashboardTab === "work") renderStaffDashWorkTab(module, member);
-    else renderStaffDashPaperworkTab(module, member);
+    else if(paperworkEnabled) renderStaffDashPaperworkTab(module, member);
   }
 
   function renderStaffDashAttendanceTab(module, member){
@@ -9065,8 +10207,9 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     html += '<div class="section-title">Request Leave / Break</div><div class="quickadd">' +
       '<div class="row-2">' +
         '<div class="field" style="margin-bottom:10px;"><label>Type</label><select class="input" id="staffLeaveType"><option value="Leave">Leave</option><option value="Break">Break</option></select></div>' +
-        '<div class="field" style="margin-bottom:10px;"><label>Date</label><input class="input" type="date" id="staffLeaveDate" value="' + todayDateInputValue() + '"></div>' +
+        '<div class="field" style="margin-bottom:10px;"><label>Date</label><input class="input" type="date" id="staffLeaveDate" value="' + todayDateInputValue() + '" min="' + todayDateInputValue() + '"></div>' +
       '</div>' +
+      '<p class="backup-note" style="margin-top:-4px;">Leave can only be requested for today or a future date — past dates can\'t be back-dated.</p>' +
       '<div class="field" style="margin-bottom:10px;"><label>Reason <span style="text-transform:none;letter-spacing:0;">(optional)</span></label><input class="input" id="staffLeaveReason" placeholder="Optional"></div>' +
       '<button class="btn btn-primary" id="staffLeaveSubmit">Submit Request</button>' +
     '</div>';
@@ -9090,8 +10233,12 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       var type = document.getElementById("staffLeaveType").value;
       var date = document.getElementById("staffLeaveDate").value || todayDateInputValue();
       var reason = document.getElementById("staffLeaveReason").value.trim();
+      // Back-dating is not allowed — today or later only. Checked here too since the date input's
+      // min attribute alone can be bypassed (typed directly, or on browsers with weak date-input support).
+      if(date < todayDateInputValue()){ toast("Leave can't be requested for a past date", true); return; }
       var newLeaveId = uid();
-      member.leaves.push({id: newLeaveId, type:type, date:date, reason:reason, status:"pending", requestedAt:new Date().toISOString()});
+      member.leaves.push({id: newLeaveId, type:type, date:date, reason:reason, status:"pending", requestedAt:new Date().toISOString(),
+        correctionRequested:false, correctionReason:null, correctionRequestedAt:null, correctionStatus:null});
       markLeaveDirty(newLeaveId);
       saveData();
       document.getElementById("staffLeaveReason").value = "";
@@ -9156,6 +10303,12 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       '</div>' +
     '</div>';
   }
+  // Looks up the labor Payment Allocation entry linked to a specific maintenance item (see
+  // upsertLaborPaymentAllocation, which sets sourceItemId when the entry is created) — the single
+  // source of truth for whether the Operations Manager has actually confirmed payment yet.
+  function findLaborPaymentAllocation(itemId){
+    return (data.paymentAllocations || []).find(function(p){ return p.type === "labor" && p.sourceItemId === itemId; });
+  }
   function mechanicWorkItemHTML(entry, displayIndex){
     var item = entry.item, vehicle = entry.vehicle;
     var isDone = item.status === "Done";
@@ -9165,7 +10318,16 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     // "Vehicle Name - Segment" as requested — vehicle number is the identifier staff actually use to
     // recognize a vehicle, shown alongside its Segment right in the item header.
     var vehicleLabel = (vehicle.vehicleNumber || "Vehicle") + (vehicle.segment ? (" - " + vehicle.segment) : "");
+    var payment = isDone ? findLaborPaymentAllocation(item.id) : null;
+    var paymentSuccessful = !!(payment && payment.status === "paid" && payment.paidAt);
     var html = '<li class="card card-tight mechanic-work-item" data-item-id="' + item.id + '">';
+    if(paymentSuccessful){
+      // Sits directly on top of the card, ahead of everything else, per the requirement — the exact
+      // date/time is whatever the Operations Manager's confirmation stamped on payment.paidAt.
+      html += '<div class="payment-success-banner"><span>✅ Payment Successful</span><span class="psb-time">' +
+        esc(new Date(payment.paidAt).toLocaleString(undefined, {month:"short", day:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit"})) +
+      '</span></div>';
+    }
     html += '<div class="prep-report-line" style="margin-bottom:4px;"><b>' + esc(vehicleLabel) + '</b> <span style="color:var(--text-faint);font-weight:500;">— ' + esc(entry.business.name) + '</span></div>';
     html += maintenanceCategoryBlockHTML(item, displayIndex, false);
     if(isDone){
@@ -9210,6 +10372,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     });
     wrap.querySelectorAll(".mechanic-labor-submit").forEach(function(btn){
       btn.addEventListener("click", function(){
+        if(btn.disabled) return;
         var itemId = btn.getAttribute("data-item-id");
         var isEdit = btn.getAttribute("data-is-edit") === "1";
         var entry = findEntry(itemId);
@@ -9217,6 +10380,10 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
         var input = wrap.querySelector('.mechanic-labor-input[data-item-id="' + itemId + '"]');
         var raw = input ? input.value.trim() : "";
         if(raw === "" || isNaN(Number(raw)) || Number(raw) < 0){ toast("Enter a valid Labor Charge amount", true); return; }
+        // Disabled only once validation passes — immediate visual feedback that the click registered,
+        // and blocks a rapid second click on the same button from doing any redundant work while the
+        // (heavier) dashboard rerender below is still in progress.
+        btn.disabled = true;
         // This click handler IS the state-mutating boundary for this action (there's no separate
         // server to enforce it), so the 24h lock is re-checked right here — never trust that the
         // Edit button being visible means the window is still open.
@@ -10688,6 +11855,10 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
   function renderGymDraftArea(module){
     document.getElementById("draftCatName").textContent = gymDraft.categoryName;
     var cat = module.categories.find(function(c){ return c.id === gymDraft.categoryId; });
+    // Keeps the "Expires in Xh Ym" countdown live, and flips the checklist over to its expired/empty
+    // state automatically the moment the 18-hour window closes — without this, both would only ever
+    // update on the next unrelated user interaction, not the instant time actually runs out.
+    startTodaysPlanCountdownTicker(module);
     var exWrap = document.getElementById("exercisePickerChips");
     exWrap.innerHTML = "";
     var presets = cat ? cat.exercises : [];
@@ -10720,8 +11891,23 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
   function renderPlanChecklist(module, cat){
     var wrap = document.getElementById("planChecklistWrap");
     if(!wrap) return;
-    if(!cat || !cat.presetPlan || cat.presetPlan.length === 0){ wrap.innerHTML = ""; return; }
-    var html = '<div class="plan-checklist"><div class="plan-checklist-title">Today\'s Plan</div>';
+    var expiry = cat ? todaysPlanExpiryInfo(cat) : {active:false};
+    if(!cat || !expiry.active){
+      // Either no plan was ever set for this day type, or the 18-hour window has passed — either
+      // way there's nothing to check off right now, so point clearly at where to fix that.
+      wrap.innerHTML = '<div class="plan-checklist plan-checklist-empty">' +
+        '<div class="plan-checklist-title">Today\'s Plan</div>' +
+        '<div class="empty-state" style="padding:20px 14px;">' +
+          '<div class="big">💪</div>' +
+          '<p>To start today\'s workout with Progressive Overload, please go to "Plan Workouts" and set today\'s plan.</p>' +
+        '</div>' +
+      '</div>';
+      return;
+    }
+    var html = '<div class="plan-checklist">' +
+      '<div class="plan-checklist-title-row"><div class="plan-checklist-title">Today\'s Plan</div>' +
+        '<span class="plan-expiry-badge">⏰ ' + esc(expiry.label) + '</span>' +
+      '</div>';
     cat.presetPlan.forEach(function(plan){ html += planExerciseCardHTML(plan); });
     html += '</div>';
     wrap.innerHTML = html;
@@ -10983,6 +12169,32 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     }
     return null;
   }
+  var TODAYS_PLAN_EXPIRY_MS = 18 * 60 * 60 * 1000;
+  // Whether a category's plan (set via "Plan Workouts", carting exercises or editing set targets)
+  // is still within its 18-hour active window — same single source of truth used by the live
+  // checklist's countdown badge and its expired/empty state.
+  function todaysPlanExpiryInfo(cat){
+    if(!cat.planSetAt || !cat.presetPlan || cat.presetPlan.length === 0) return {active:false};
+    var setAt = new Date(cat.planSetAt).getTime();
+    var remainingMs = setAt + TODAYS_PLAN_EXPIRY_MS - Date.now();
+    if(remainingMs <= 0) return {active:false};
+    var hoursLeft = Math.floor(remainingMs / (60*60*1000));
+    var minutesLeft = Math.floor((remainingMs % (60*60*1000)) / (60*1000));
+    return {active:true, hoursLeft:hoursLeft, minutesLeft:minutesLeft, label: "Expires in " + hoursLeft + "h " + minutesLeft + "m"};
+  }
+  // One shared interval, lazily started on first use and left running — each tick is a cheap no-op
+  // whenever the checklist isn't currently on screen (the element just won't exist), so there's no
+  // need for careful start/stop lifecycle management tied to navigating in and out of the gym module.
+  var todaysPlanTickerStarted = false;
+  function startTodaysPlanCountdownTicker(module){
+    if(todaysPlanTickerStarted) return;
+    todaysPlanTickerStarted = true;
+    setInterval(function(){
+      if(!document.getElementById("planChecklistWrap")) return;
+      var cat = module.categories.find(function(c){ return c.id === gymDraft.categoryId; });
+      renderPlanChecklist(module, cat);
+    }, 60000);
+  }
 
   function compareCardHTML(match, todayWeight, todayReps){
     var hasToday = todayWeight !== null && todayWeight !== undefined;
@@ -11146,6 +12358,8 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
           var r = parseInt(input.value, 10);
           st.reps = isNaN(r) ? 0 : r;
         }
+        // Editing a target also refreshes the 18-hour "Today's Plan" window.
+        cat.planSetAt = new Date().toISOString();
         saveData();
       });
     });
@@ -11189,11 +12403,18 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     var wrap = document.getElementById("planCartFormWrap_" + wrapId);
     if(!wrap) return;
     if(!planCartingExercise){ wrap.innerHTML = ""; return; }
+    // Progressive Overload: pre-fill with the exact weight/reps from the last time this exercise was
+    // logged for this same day type, so the fields only need a nudge upward rather than a full
+    // manual re-entry.
+    var lastMatch = findLastMatch(module, targetCat.id, planCartingExercise);
+    var suggestedWeight = lastMatch ? lastMatch.weight : "";
+    var suggestedReps = lastMatch ? lastMatch.reps : "";
     wrap.innerHTML = '<div class="quickadd" style="margin-top:8px;">' +
       '<div class="ex-name">' + esc(planCartingExercise) + '</div>' +
+      (lastMatch ? ('<p class="backup-note" style="margin-top:-2px;">Last time: ' + lastMatch.weight + esc(data.unit) + ' × ' + lastMatch.reps + ' (Sess ' + lastMatch.sessionNumber + ', ' + esc(fmtDate(lastMatch.date)) + '). Pre-filled below — bump it up for progressive overload.</p>') : '') +
       '<div class="row-3" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">' +
-        '<input class="input input-mono" id="cartWeight_' + wrapId + '" inputmode="decimal" placeholder="' + esc(data.unit) + '">' +
-        '<input class="input input-mono" id="cartReps_' + wrapId + '" inputmode="numeric" placeholder="Reps">' +
+        '<input class="input input-mono" id="cartWeight_' + wrapId + '" inputmode="decimal" placeholder="' + esc(data.unit) + '" value="' + suggestedWeight + '">' +
+        '<input class="input input-mono" id="cartReps_' + wrapId + '" inputmode="numeric" placeholder="Reps" value="' + suggestedReps + '">' +
         '<input class="input input-mono" id="cartSets_' + wrapId + '" inputmode="numeric" placeholder="Sets" value="3">' +
       '</div>' +
       '<button class="btn btn-primary btn-sm" id="cartAddBtn_' + wrapId + '" style="width:100%;margin-top:8px;">Add to Today\'s Plan</button>' +
@@ -11208,6 +12429,8 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       var setTargets = [];
       for(var i = 0; i < sets; i++) setTargets.push({weight:w, reps:r});
       targetCat.presetPlan.push({id: uid(), exercise: planCartingExercise, setTargets: setTargets});
+      // Adding to the plan (re)activates the 18-hour "Today's Plan" window for this day type.
+      targetCat.planSetAt = new Date().toISOString();
       saveData();
       var exAdded = planCartingExercise;
       planCartingExercise = null;
@@ -11328,7 +12551,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
       var name = input.value.trim();
       if(!name){ toast("Enter a category name", true); return; }
       if(module.categories.some(function(c){ return c.name.toLowerCase() === name.toLowerCase(); })){ toast("That category already exists", true); return; }
-      module.categories.push({id: uid(), name: name, exercises: [], isDefault: false, presetPlan: []});
+      module.categories.push({id: uid(), name: name, exercises: [], isDefault: false, presetPlan: [], planSetAt: null});
       saveData();
       gymManageOpen = true;
       renderGymModuleBody(module);
@@ -12374,6 +13597,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
   function runAppInit(){
     syncRoleUI();
     renderHeader();
+    maybeAutoMarkAttendance();
     maybeGenerateMonthlySalaryAllocations();
     var restoredTab = "home";
     try{ restoredTab = localStorage.getItem(ACTIVE_TAB_KEY) || "home"; }catch(e){}
@@ -12381,6 +13605,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     if(restoredTab === "progress" && isStaff()) restoredTab = "home";
     if(restoredTab === "tasksHub" && isStaff()) restoredTab = "home";
     if(restoredTab === "staffTaskHub" && (!isStaff() || isMechanicUser())) restoredTab = "home";
+    if(restoredTab === "paperworkMonitoring" && !currentStaffCanViewPaperworkMonitoring()) restoredTab = "home";
     if(restoredTab === "backup" && isMechanicUser()) restoredTab = "home";
     activeTab = restoredTab;
     document.querySelectorAll(".tab-btn").forEach(function(b){
@@ -12391,6 +13616,7 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObjec
     });
     renderHome();
     if(restoredTab === "staffTaskHub") renderStaffTaskHubEntry();
+    if(restoredTab === "paperworkMonitoring") renderPaperworkMonitoringEntry();
     if(restoredTab === "progress") renderProgress();
     if(restoredTab === "tasksHub") renderTasksHub();
     if(restoredTab === "summary") renderSummary();
